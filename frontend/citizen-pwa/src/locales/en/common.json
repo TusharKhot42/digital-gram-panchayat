@@ -164,5 +164,30 @@
       "applicationProcess": "How to apply",
       "officialSite": "Official website"
     }
+  },
+  "tax": {
+    "type": {
+      "Property": "Property Tax (Gharpatti)",
+      "Water": "Water Tax (Panipatti)"
+    },
+    "status": {
+      "Unpaid": "Unpaid",
+      "Partial": "Partly paid",
+      "Paid": "Paid"
+    },
+    "summary": {
+      "title": "My Taxes",
+      "totalDues": "Total outstanding dues",
+      "allYears": "All years",
+      "empty": "No tax records found for your account.",
+      "loadError": "Could not load tax records"
+    },
+    "card": {
+      "assessed": "Assessed",
+      "paid": "Paid",
+      "dues": "Dues",
+      "dueBy": "Due by",
+      "history": "Payment history"
+    }
   }
 }

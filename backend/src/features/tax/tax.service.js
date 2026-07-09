@@ -33,6 +33,24 @@ async function audit(officerId, action, record, before, after) {
   });
 }
 
+/**
+ * Tax-scoped citizen lookup by mobile so an officer can attach a record to the right
+ * person. Returns minimal fields only — full user management arrives in M8.
+ * @param {string} mobile
+ */
+export async function lookupCitizen(mobile) {
+  const citizen = await User.findOne({ mobile, role: ROLES.CITIZEN }).select(
+    'fullName mobile village',
+  );
+  if (!citizen) throw new AppError(404, 'CITIZEN_NOT_FOUND', 'No citizen found with that mobile');
+  return {
+    id: citizen.id,
+    fullName: citizen.fullName,
+    mobile: citizen.mobile,
+    village: citizen.village,
+  };
+}
+
 /** @param {{ officerId: string, body: object }} params */
 export async function createRecord({ officerId, body }) {
   const citizen = await User.findOne({ _id: body.citizenId, role: ROLES.CITIZEN }).catch(

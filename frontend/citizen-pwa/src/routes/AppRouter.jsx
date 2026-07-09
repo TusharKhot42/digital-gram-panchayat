@@ -13,6 +13,7 @@ import { NoticeList } from '@/features/notices/pages/NoticeList';
 import { NoticeDetail } from '@/features/notices/pages/NoticeDetail';
 import { SchemeList } from '@/features/schemes/pages/SchemeList';
 import { SchemeDetail } from '@/features/schemes/pages/SchemeDetail';
+import { TaxSummary } from '@/features/tax/pages/TaxSummary';
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
           { path: 'notices/:id', element: <NoticeDetail /> },
           { path: 'schemes', element: <SchemeList /> },
           { path: 'schemes/:id', element: <SchemeDetail /> },
+          { path: 'tax', element: <TaxSummary /> },
           { path: 'profile', element: <Profile /> },
           { path: '*', element: <NotFound /> },
         ],

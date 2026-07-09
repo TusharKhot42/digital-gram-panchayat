@@ -9,6 +9,9 @@ import { NoticesList } from '@/features/notices/NoticesList';
 import { NoticeForm } from '@/features/notices/NoticeForm';
 import { SchemesList } from '@/features/schemes/SchemesList';
 import { SchemeForm } from '@/features/schemes/SchemeForm';
+import { TaxList } from '@/features/tax/TaxList';
+import { TaxForm } from '@/features/tax/TaxForm';
+import { TaxDetail } from '@/features/tax/TaxDetail';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -29,6 +32,9 @@ const router = createBrowserRouter([
           { path: 'schemes', element: <SchemesList /> },
           { path: 'schemes/new', element: <SchemeForm /> },
           { path: 'schemes/:id/edit', element: <SchemeForm /> },
+          { path: 'tax', element: <TaxList /> },
+          { path: 'tax/new', element: <TaxForm /> },
+          { path: 'tax/:id', element: <TaxDetail /> },
           { path: '*', element: <NotFound /> },
         ],
       },

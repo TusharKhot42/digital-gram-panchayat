@@ -221,6 +221,85 @@
       "actionFailed": "Action failed"
     }
   },
+  "tax": {
+    "type": {
+      "Property": "Property Tax (Gharpatti)",
+      "Water": "Water Tax (Panipatti)"
+    },
+    "status": {
+      "Unpaid": "Unpaid",
+      "Partial": "Partly paid",
+      "Paid": "Paid"
+    },
+    "action": {
+      "create": "Record created",
+      "update": "Updated",
+      "payment": "Payment recorded"
+    },
+    "card": {
+      "assessed": "Assessed",
+      "paid": "Paid",
+      "dues": "Dues"
+    },
+    "dash": {
+      "title": "Tax Records",
+      "new": "New record",
+      "search": "Search id, property…",
+      "allTypes": "All types",
+      "allStatuses": "All statuses",
+      "record": "Record",
+      "type": "Type",
+      "year": "Year",
+      "amount": "Amount",
+      "dues": "Dues",
+      "status": "Status",
+      "empty": "No tax records match your filters.",
+      "loadError": "Could not load records",
+      "total": "{{total}} records",
+      "prev": "Prev",
+      "next": "Next"
+    },
+    "form": {
+      "back": "Back to tax records",
+      "createTitle": "Create tax record",
+      "citizenMobile": "Citizen mobile",
+      "lookup": "Find",
+      "badMobile": "Enter a valid 10-digit mobile",
+      "citizenNotFound": "No citizen found with that mobile",
+      "lookupFirst": "Find the citizen first",
+      "taxType": "Tax type",
+      "financialYear": "Financial year",
+      "badYear": "Use format 2025-2026",
+      "propertyNumber": "Property / connection number",
+      "amount": "Assessed amount",
+      "badAmount": "Amount cannot be negative",
+      "dueDate": "Due date",
+      "required": "This field is required",
+      "save": "Create record",
+      "created": "Tax record created",
+      "failed": "Could not create record"
+    },
+    "detail": {
+      "back": "Back to tax records",
+      "notFound": "Tax record not found",
+      "payments": "Payments",
+      "date": "Date",
+      "receipt": "Receipt",
+      "amount": "Amount",
+      "noPayments": "No payments recorded yet.",
+      "auditTimeline": "Audit timeline",
+      "recordPayment": "Record a payment",
+      "receiptNo": "Receipt no. (optional)",
+      "addPayment": "Add payment",
+      "fullyPaid": "Fully paid",
+      "paymentRecorded": "Payment recorded",
+      "paymentFailed": "Could not record payment",
+      "updateAmount": "Update assessed amount",
+      "saveAmount": "Update amount",
+      "updated": "Amount updated",
+      "updateFailed": "Could not update amount"
+    }
+  },
   "auth": {
     "officerSignIn": "Officer sign in",
     "email": "Email",

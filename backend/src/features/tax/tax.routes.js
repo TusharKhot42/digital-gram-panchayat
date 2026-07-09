@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { query } from 'express-validator';
 import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
@@ -30,6 +31,14 @@ export const adminTaxRouter = Router();
 
 adminTaxRouter.use(authenticate, authorize(ROLES.OFFICER));
 
+adminTaxRouter.get(
+  '/lookup',
+  query('mobile')
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage('Enter a valid 10-digit mobile'),
+  validate,
+  controller.lookupCitizen,
+);
 adminTaxRouter.get('/', listQueryValidation, validate, controller.adminList);
 adminTaxRouter.get('/:id', taxIdParamValidation, validate, controller.adminGetOne);
 adminTaxRouter.get('/:id/history', taxIdParamValidation, validate, controller.history);
