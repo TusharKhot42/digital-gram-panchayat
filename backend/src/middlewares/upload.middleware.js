@@ -51,3 +51,45 @@ export function uploadComplaintImages(req, res, next) {
     next(new AppError(400, 'UPLOAD_ERROR', 'Image upload failed'));
   });
 }
+
+const ALLOWED_ATTACHMENT_MIME = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+]);
+
+const attachmentUpload = multer({
+  storage,
+  limits: { fileSize: MAX_UPLOAD_SIZE_BYTES },
+  fileFilter(_req, file, cb) {
+    if (ALLOWED_ATTACHMENT_MIME.has(file.mimetype)) {
+      cb(null, true);
+      return;
+    }
+    cb(new AppError(400, 'INVALID_FILE_TYPE', 'Attachment must be a PDF or image'));
+  },
+});
+
+/**
+ * Accept a single optional notice attachment (PDF or image, <=5MB) under `attachment`.
+ */
+export function uploadNoticeAttachment(req, res, next) {
+  const handler = attachmentUpload.single('attachment');
+  handler(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'The attachment must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Attachment upload failed'));
+  });
+}

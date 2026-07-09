@@ -74,6 +74,41 @@
  * @property {ComplaintStatusEntry[]} statusHistory
  * @property {string} createdAt
  * @property {string} updatedAt
+ *
+ * @typedef {Object} NoticeBroadcast
+ * @property {boolean} sms
+ * @property {boolean} voice
+ * @property {string} [summary]
+ * @property {string} [dispatchedAt]
+ * @property {number} [recipientCount]
+ *
+ * @typedef {Object} Notice
+ * @property {string} id
+ * @property {string} noticeId  - human id, e.g. NTC-2026-000001
+ * @property {string} title
+ * @property {string} [summary]
+ * @property {string} content
+ * @property {'General'|'WaterSupply'|'Electricity'|'Health'|'Event'|'Emergency'|'Tax'|'Other'} category
+ * @property {string} [attachmentUrl]
+ * @property {'pdf'|'image'} [attachmentType]
+ * @property {string} [publishDate]
+ * @property {string} [expiryDate]
+ * @property {boolean} isPublished
+ * @property {boolean} isActive
+ * @property {NoticeBroadcast} [broadcast]
+ * @property {string} createdBy
+ * @property {string} createdAt
+ * @property {string} updatedAt
+ *
+ * @typedef {Object} Notification
+ * @property {string} id
+ * @property {string} to
+ * @property {'sms'|'voice'} channel
+ * @property {'otp'|'complaintUpdate'|'noticeBroadcast'|'dakhalaUpdate'} purpose
+ * @property {string} body
+ * @property {'queued'|'sent'|'failed'} status
+ * @property {string} [error]
+ * @property {string} at
  */
 
 export {};

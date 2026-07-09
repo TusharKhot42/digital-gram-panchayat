@@ -9,6 +9,8 @@ import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import { ComplaintHistory } from '@/features/complaints/pages/ComplaintHistory';
 import { NewComplaint } from '@/features/complaints/pages/NewComplaint';
 import { ComplaintDetail } from '@/features/complaints/pages/ComplaintDetail';
+import { NoticeList } from '@/features/notices/pages/NoticeList';
+import { NoticeDetail } from '@/features/notices/pages/NoticeDetail';
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
           { path: 'complaints', element: <ComplaintHistory /> },
           { path: 'complaints/new', element: <NewComplaint /> },
           { path: 'complaints/:id', element: <ComplaintDetail /> },
+          { path: 'notices', element: <NoticeList /> },
+          { path: 'notices/:id', element: <NoticeDetail /> },
           { path: 'profile', element: <Profile /> },
           { path: '*', element: <NotFound /> },
         ],

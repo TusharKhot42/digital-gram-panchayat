@@ -103,5 +103,32 @@
       "timeline": "Status timeline",
       "remarks": "Officer remarks"
     }
+  },
+  "notice": {
+    "category": {
+      "General": "General",
+      "WaterSupply": "Water Supply",
+      "Electricity": "Electricity",
+      "Health": "Health",
+      "Event": "Event",
+      "Emergency": "Emergency",
+      "Tax": "Tax",
+      "Other": "Other"
+    },
+    "list": {
+      "title": "Notices",
+      "search": "Search notices…",
+      "allCategories": "All categories",
+      "empty": "No notices to show yet.",
+      "loadError": "Could not load notices"
+    },
+    "detail": {
+      "back": "Back to notices",
+      "notFound": "Notice not found",
+      "attachment": "Attachment",
+      "pdfAttachment": "PDF document",
+      "download": "Download",
+      "open": "Open"
+    }
   }
 }

@@ -68,6 +68,86 @@
       "remarks": "Remarks"
     }
   },
+  "notice": {
+    "category": {
+      "General": "General",
+      "WaterSupply": "Water Supply",
+      "Electricity": "Electricity",
+      "Health": "Health",
+      "Event": "Event",
+      "Emergency": "Emergency",
+      "Tax": "Tax",
+      "Other": "Other"
+    },
+    "state": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "dash": {
+      "title": "Notices",
+      "new": "New notice",
+      "search": "Search notices…",
+      "notice": "Notice",
+      "category": "Category",
+      "state": "State",
+      "date": "Created",
+      "actions": "Actions",
+      "edit": "Edit",
+      "publish": "Publish",
+      "archive": "Archive",
+      "broadcast": "Broadcast",
+      "delete": "Delete",
+      "empty": "No notices yet.",
+      "loadError": "Could not load notices",
+      "total": "{{total}} notices",
+      "prev": "Prev",
+      "next": "Next",
+      "hint": "Publish a notice to make it visible to citizens; broadcast to send SMS/voice."
+    },
+    "form": {
+      "back": "Back to notices",
+      "createTitle": "Create notice",
+      "editTitle": "Edit notice",
+      "title": "Title",
+      "summary": "Summary (used for SMS)",
+      "content": "Content",
+      "category": "Category",
+      "expiry": "Expiry date",
+      "attachment": "Attachment (PDF or image)",
+      "chooseFile": "Choose a file",
+      "replaceFile": "Replace attachment",
+      "publishNow": "Publish immediately",
+      "required": "This field is required",
+      "save": "Save notice",
+      "created": "Notice created",
+      "updated": "Notice updated",
+      "failed": "Could not save notice"
+    },
+    "delete": {
+      "title": "Delete notice?",
+      "message": "\"{{title}}\" will be removed from citizens. This is a soft delete."
+    },
+    "broadcast": {
+      "title": "Broadcast notice",
+      "sms": "SMS",
+      "voice": "Voice call",
+      "summary": "Summary",
+      "send": "Send broadcast",
+      "pickChannel": "Choose at least one channel",
+      "summaryRequired": "A summary is required",
+      "costWarning": "This sends a message to every registered citizen. Confirm before proceeding."
+    },
+    "dialog": {
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "published": "Notice published",
+      "archived": "Notice archived",
+      "deleted": "Notice deleted",
+      "broadcastSent": "Broadcast sent to {{count}} citizens",
+      "actionFailed": "Action failed"
+    }
+  },
   "auth": {
     "officerSignIn": "Officer sign in",
     "email": "Email",

@@ -40,6 +40,35 @@ export const NoticeChannel = {
   Voice: 'voice',
 };
 
+export const NoticeCategory = {
+  General: 'General',
+  WaterSupply: 'WaterSupply',
+  Electricity: 'Electricity',
+  Health: 'Health',
+  Event: 'Event',
+  Emergency: 'Emergency',
+  Tax: 'Tax',
+  Other: 'Other',
+};
+
+export const AttachmentType = {
+  Pdf: 'pdf',
+  Image: 'image',
+};
+
+export const NotificationStatus = {
+  Queued: 'queued',
+  Sent: 'sent',
+  Failed: 'failed',
+};
+
+export const NotificationPurpose = {
+  Otp: 'otp',
+  ComplaintUpdate: 'complaintUpdate',
+  NoticeBroadcast: 'noticeBroadcast',
+  DakhalaUpdate: 'dakhalaUpdate',
+};
+
 export const TaxType = {
   Gharpatti: 'Gharpatti',
   PaniPatti: 'PaniPatti',

@@ -103,5 +103,32 @@
       "timeline": "स्थिती कालरेखा",
       "remarks": "अधिकारी शेरे"
     }
+  },
+  "notice": {
+    "category": {
+      "General": "सामान्य",
+      "WaterSupply": "पाणीपुरवठा",
+      "Electricity": "वीज",
+      "Health": "आरोग्य",
+      "Event": "कार्यक्रम",
+      "Emergency": "आणीबाणी",
+      "Tax": "कर",
+      "Other": "इतर"
+    },
+    "list": {
+      "title": "सूचना",
+      "search": "सूचना शोधा…",
+      "allCategories": "सर्व प्रवर्ग",
+      "empty": "अद्याप कोणतीही सूचना नाही.",
+      "loadError": "सूचना लोड करता आल्या नाहीत"
+    },
+    "detail": {
+      "back": "सूचनांकडे परत",
+      "notFound": "सूचना सापडली नाही",
+      "attachment": "संलग्नक",
+      "pdfAttachment": "PDF दस्तऐवज",
+      "download": "डाउनलोड करा",
+      "open": "उघडा"
+    }
   }
 }

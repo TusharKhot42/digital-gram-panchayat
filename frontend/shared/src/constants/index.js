@@ -18,6 +18,24 @@ export const COMPLAINT_STATUSES = ['Pending', 'InProgress', 'Resolved'];
 
 export const COMPLAINT_PRIORITIES = ['Low', 'Medium', 'High'];
 
+export const NOTICE_CATEGORIES = [
+  'General',
+  'WaterSupply',
+  'Electricity',
+  'Health',
+  'Event',
+  'Emergency',
+  'Tax',
+  'Other',
+];
+
+export const BROADCAST_CHANNELS = ['sms', 'voice'];
+
+// SMS body cap for broadcast summaries (blueprint 5.3).
+export const SMS_SUMMARY_MAX_LENGTH = 160;
+
+export const ATTACHMENT_TYPES = ['pdf', 'image'];
+
 export const CERT_TYPES = ['Income', 'Residence', 'Caste', 'Birth', 'Death', 'Other'];
 
 export const STATUS_COLOR_MAP = {
