@@ -7,12 +7,16 @@
     "home": "Home",
     "complaints": "Complaints",
     "notices": "Notices",
+    "schemes": "Schemes",
+    "tax": "Tax",
     "dakhala": "Certificates",
     "profile": "Profile"
   },
   "home": {
     "welcome": "Welcome",
-    "comingSoon": "Services will appear here as they go live."
+    "comingSoon": "Services will appear here as they go live.",
+    "pickService": "Choose a service",
+    "soon": "Soon"
   },
   "notFound": {
     "title": "Page not found",
@@ -129,6 +133,36 @@
       "pdfAttachment": "PDF document",
       "download": "Download",
       "open": "Open"
+    }
+  },
+  "scheme": {
+    "category": {
+      "Agriculture": "Agriculture",
+      "Health": "Health",
+      "Education": "Education",
+      "Housing": "Housing",
+      "Employment": "Employment",
+      "Women": "Women",
+      "SeniorCitizen": "Senior Citizen",
+      "Financial": "Financial",
+      "Other": "Other"
+    },
+    "list": {
+      "title": "Government Schemes",
+      "search": "Search schemes…",
+      "allCategories": "All categories",
+      "empty": "No schemes to show yet.",
+      "loadError": "Could not load schemes"
+    },
+    "detail": {
+      "back": "Back to schemes",
+      "notFound": "Scheme not found",
+      "description": "About",
+      "eligibility": "Eligibility",
+      "requiredDocuments": "Required documents",
+      "benefits": "Benefits",
+      "applicationProcess": "How to apply",
+      "officialSite": "Official website"
     }
   }
 }

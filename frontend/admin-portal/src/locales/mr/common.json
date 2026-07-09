@@ -148,6 +148,79 @@
       "actionFailed": "क्रिया अयशस्वी"
     }
   },
+  "scheme": {
+    "category": {
+      "Agriculture": "शेती",
+      "Health": "आरोग्य",
+      "Education": "शिक्षण",
+      "Housing": "घरकुल",
+      "Employment": "रोजगार",
+      "Women": "महिला",
+      "SeniorCitizen": "ज्येष्ठ नागरिक",
+      "Financial": "आर्थिक",
+      "Other": "इतर"
+    },
+    "state": {
+      "published": "प्रकाशित",
+      "draft": "मसुदा"
+    },
+    "dash": {
+      "title": "शासकीय योजना",
+      "new": "नवीन योजना",
+      "search": "योजना शोधा…",
+      "scheme": "योजना",
+      "category": "प्रवर्ग",
+      "state": "स्थिती",
+      "date": "तयार केले",
+      "actions": "क्रिया",
+      "edit": "संपादित करा",
+      "publish": "प्रकाशित करा",
+      "unpublish": "अप्रकाशित करा",
+      "delete": "हटवा",
+      "empty": "अद्याप योजना नाहीत.",
+      "loadError": "योजना लोड करता आल्या नाहीत",
+      "total": "{{total}} योजना",
+      "prev": "मागील",
+      "next": "पुढील"
+    },
+    "form": {
+      "back": "योजनांकडे परत",
+      "createTitle": "योजना तयार करा",
+      "editTitle": "योजना संपादित करा",
+      "title": "शीर्षक",
+      "summary": "सारांश",
+      "description": "तपशील",
+      "category": "प्रवर्ग",
+      "website": "अधिकृत संकेतस्थळ",
+      "eligibility": "पात्रता",
+      "requiredDocuments": "आवश्यक कागदपत्रे",
+      "docsHint": "प्रत्येक ओळीवर एक कागदपत्र",
+      "benefits": "लाभ",
+      "applicationProcess": "अर्ज कसा करावा",
+      "image": "प्रतिमा",
+      "chooseImage": "प्रतिमा निवडा",
+      "replaceImage": "प्रतिमा बदला",
+      "publishNow": "लगेच प्रकाशित करा",
+      "required": "हे क्षेत्र आवश्यक आहे",
+      "save": "योजना जतन करा",
+      "created": "योजना तयार झाली",
+      "updated": "योजना अद्यतनित झाली",
+      "failed": "योजना जतन करता आली नाही"
+    },
+    "delete": {
+      "title": "योजना हटवायची?",
+      "message": "\"{{title}}\" नागरिकांकडून काढली जाईल. हे सॉफ्ट डिलीट आहे."
+    },
+    "dialog": {
+      "cancel": "रद्द करा"
+    },
+    "toast": {
+      "published": "योजना प्रकाशित झाली",
+      "unpublished": "योजना अप्रकाशित झाली",
+      "deleted": "योजना हटवली",
+      "actionFailed": "क्रिया अयशस्वी"
+    }
+  },
   "auth": {
     "officerSignIn": "अधिकारी लॉगिन",
     "email": "ईमेल",

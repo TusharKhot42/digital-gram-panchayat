@@ -11,6 +11,8 @@ import { NewComplaint } from '@/features/complaints/pages/NewComplaint';
 import { ComplaintDetail } from '@/features/complaints/pages/ComplaintDetail';
 import { NoticeList } from '@/features/notices/pages/NoticeList';
 import { NoticeDetail } from '@/features/notices/pages/NoticeDetail';
+import { SchemeList } from '@/features/schemes/pages/SchemeList';
+import { SchemeDetail } from '@/features/schemes/pages/SchemeDetail';
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
           { path: 'complaints/:id', element: <ComplaintDetail /> },
           { path: 'notices', element: <NoticeList /> },
           { path: 'notices/:id', element: <NoticeDetail /> },
+          { path: 'schemes', element: <SchemeList /> },
+          { path: 'schemes/:id', element: <SchemeDetail /> },
           { path: 'profile', element: <Profile /> },
           { path: '*', element: <NotFound /> },
         ],

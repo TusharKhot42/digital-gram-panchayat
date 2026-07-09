@@ -7,6 +7,8 @@ import { ComplaintsList } from '@/features/complaints/ComplaintsList';
 import { ComplaintDetail } from '@/features/complaints/ComplaintDetail';
 import { NoticesList } from '@/features/notices/NoticesList';
 import { NoticeForm } from '@/features/notices/NoticeForm';
+import { SchemesList } from '@/features/schemes/SchemesList';
+import { SchemeForm } from '@/features/schemes/SchemeForm';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -24,6 +26,9 @@ const router = createBrowserRouter([
           { path: 'notices', element: <NoticesList /> },
           { path: 'notices/new', element: <NoticeForm /> },
           { path: 'notices/:id/edit', element: <NoticeForm /> },
+          { path: 'schemes', element: <SchemesList /> },
+          { path: 'schemes/new', element: <SchemeForm /> },
+          { path: 'schemes/:id/edit', element: <SchemeForm /> },
           { path: '*', element: <NotFound /> },
         ],
       },

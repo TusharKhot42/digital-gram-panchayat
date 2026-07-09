@@ -7,12 +7,16 @@
     "home": "मुख्यपृष्ठ",
     "complaints": "तक्रारी",
     "notices": "सूचना",
+    "schemes": "योजना",
+    "tax": "कर",
     "dakhala": "दाखले",
     "profile": "प्रोफाईल"
   },
   "home": {
     "welcome": "स्वागत आहे",
-    "comingSoon": "सेवा उपलब्ध झाल्यावर इथे दिसतील."
+    "comingSoon": "सेवा उपलब्ध झाल्यावर इथे दिसतील.",
+    "pickService": "सेवा निवडा",
+    "soon": "लवकरच"
   },
   "notFound": {
     "title": "पान सापडले नाही",
@@ -129,6 +133,36 @@
       "pdfAttachment": "PDF दस्तऐवज",
       "download": "डाउनलोड करा",
       "open": "उघडा"
+    }
+  },
+  "scheme": {
+    "category": {
+      "Agriculture": "शेती",
+      "Health": "आरोग्य",
+      "Education": "शिक्षण",
+      "Housing": "घरकुल",
+      "Employment": "रोजगार",
+      "Women": "महिला",
+      "SeniorCitizen": "ज्येष्ठ नागरिक",
+      "Financial": "आर्थिक",
+      "Other": "इतर"
+    },
+    "list": {
+      "title": "शासकीय योजना",
+      "search": "योजना शोधा…",
+      "allCategories": "सर्व प्रवर्ग",
+      "empty": "अद्याप कोणतीही योजना नाही.",
+      "loadError": "योजना लोड करता आल्या नाहीत"
+    },
+    "detail": {
+      "back": "योजनांकडे परत",
+      "notFound": "योजना सापडली नाही",
+      "description": "माहिती",
+      "eligibility": "पात्रता",
+      "requiredDocuments": "आवश्यक कागदपत्रे",
+      "benefits": "लाभ",
+      "applicationProcess": "अर्ज कसा करावा",
+      "officialSite": "अधिकृत संकेतस्थळ"
     }
   }
 }

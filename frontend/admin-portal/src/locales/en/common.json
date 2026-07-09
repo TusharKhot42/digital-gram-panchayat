@@ -148,6 +148,79 @@
       "actionFailed": "Action failed"
     }
   },
+  "scheme": {
+    "category": {
+      "Agriculture": "Agriculture",
+      "Health": "Health",
+      "Education": "Education",
+      "Housing": "Housing",
+      "Employment": "Employment",
+      "Women": "Women",
+      "SeniorCitizen": "Senior Citizen",
+      "Financial": "Financial",
+      "Other": "Other"
+    },
+    "state": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "dash": {
+      "title": "Government Schemes",
+      "new": "New scheme",
+      "search": "Search schemes…",
+      "scheme": "Scheme",
+      "category": "Category",
+      "state": "State",
+      "date": "Created",
+      "actions": "Actions",
+      "edit": "Edit",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "delete": "Delete",
+      "empty": "No schemes yet.",
+      "loadError": "Could not load schemes",
+      "total": "{{total}} schemes",
+      "prev": "Prev",
+      "next": "Next"
+    },
+    "form": {
+      "back": "Back to schemes",
+      "createTitle": "Create scheme",
+      "editTitle": "Edit scheme",
+      "title": "Title",
+      "summary": "Summary",
+      "description": "Description",
+      "category": "Category",
+      "website": "Official website",
+      "eligibility": "Eligibility",
+      "requiredDocuments": "Required documents",
+      "docsHint": "One document per line",
+      "benefits": "Benefits",
+      "applicationProcess": "How to apply",
+      "image": "Image",
+      "chooseImage": "Choose an image",
+      "replaceImage": "Replace image",
+      "publishNow": "Publish immediately",
+      "required": "This field is required",
+      "save": "Save scheme",
+      "created": "Scheme created",
+      "updated": "Scheme updated",
+      "failed": "Could not save scheme"
+    },
+    "delete": {
+      "title": "Delete scheme?",
+      "message": "\"{{title}}\" will be removed from citizens. This is a soft delete."
+    },
+    "dialog": {
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "published": "Scheme published",
+      "unpublished": "Scheme unpublished",
+      "deleted": "Scheme deleted",
+      "actionFailed": "Action failed"
+    }
+  },
   "auth": {
     "officerSignIn": "Officer sign in",
     "email": "Email",
