@@ -10,14 +10,17 @@ Full plan: [`docs/architecture/blueprint.md`](docs/architecture/blueprint.md) ·
 ## Monorepo layout
 
 ```
-frontend/citizen-pwa/  Citizen-facing installable PWA (React + Vite + TS)
-frontend/admin-portal/ Officer admin portal (React + Vite + TS)
-frontend/shared/       Zod schemas, types, enums, constants — imported by all three
-backend/                Express REST API (TS)
+frontend/citizen-pwa/  Citizen-facing installable PWA (React + Vite, JavaScript/JSX)
+frontend/admin-portal/ Officer admin portal (React + Vite, JavaScript/JSX)
+frontend/shared/       Zod schemas, enums, constants, utils — imported by all three
+backend/                Express REST API (Node.js, ES Modules)
 docs/                   Architecture, API specs, manuals, ADRs
 scripts/                DB seed, backup, icon-gen, env-check tooling
 .github/workflows/      CI pipelines
 ```
+
+Stack: **MERN** (MongoDB, Express, React, Node.js), JavaScript throughout — ES Modules on the
+backend, JSX on the frontends. No TypeScript.
 
 See [`docs/architecture/overview.md`](docs/architecture/overview.md) for the full architecture
 explanation and [`docs/development-guide.md`](docs/development-guide.md) for conventions.
@@ -57,20 +60,21 @@ Every environment variable explained: [`docs/environment-guide.md`](docs/environ
 
 ## Common scripts (run from repo root)
 
-| Script                                    | Does                                                                        |
-| ----------------------------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`                             | Run backend + both frontends concurrently                                   |
-| `npm run build`                           | Build shared package, then server, then both frontends, in dependency order |
-| `npm run lint` / `npm run lint:fix`       | ESLint across the whole monorepo                                            |
-| `npm run typecheck`                       | `tsc --noEmit` in every workspace                                           |
-| `npm run test`                            | Run every workspace's test suite                                            |
-| `npm run format` / `npm run format:check` | Prettier write / check across the monorepo                                  |
+| Script                                    | Does                                       |
+| ----------------------------------------- | ------------------------------------------ |
+| `npm run dev`                             | Run backend + both frontends concurrently  |
+| `npm run build`                           | Build both frontend apps (Vite)            |
+| `npm run lint` / `npm run lint:fix`       | ESLint across the whole monorepo           |
+| `npm run test`                            | Run every workspace's test suite           |
+| `npm run format` / `npm run format:check` | Prettier write / check across the monorepo |
 
 ## Tech stack
 
-Backend: Node.js, Express, TypeScript, MongoDB Atlas + Mongoose, Zod, JWT, Cloudinary, Twilio/MSG91.
-Frontend (both): React, Vite, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, Axios, React Hook
-Form + Zod, i18next. Citizen PWA adds Framer Motion, Workbox (installable, offline read).
+Backend: Node.js, Express, JavaScript (ES Modules), MongoDB + Mongoose, JWT, bcryptjs, Multer,
+Cloudinary, PDFKit, Helmet, CORS, Morgan, Express Validator (Zod used for env + shared schemas).
+Frontend (both): React, JavaScript (JSX), Vite, Tailwind CSS, React Router, Axios, TanStack Query,
+React Hook Form, React Hot Toast, i18next. Citizen PWA adds Framer Motion (installable, offline read
+land in a later milestone).
 
 ## Status
 
@@ -82,5 +86,5 @@ shells. No business features yet — those land starting Milestone 2 (Authentica
 
 Branch off `develop`, one `feature/<name>` branch per milestone/slice, conventional commits
 (`feat|fix|chore|test|docs|refactor|style|perf|build|ci: description`) — enforced by a commit-msg
-hook. PRs need CI green (lint + typecheck + test) and one reviewer. Full conventions:
+hook. PRs need CI green (lint + build + test) and one reviewer. Full conventions:
 [`docs/development-guide.md`](docs/development-guide.md).
