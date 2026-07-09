@@ -1,0 +1,44 @@
+import mongoose from 'mongoose';
+import { SCHEME_CATEGORIES } from '@dgp/shared';
+
+const { Schema, model } = mongoose;
+
+const schemeSchema = new Schema(
+  {
+    schemeId: { type: String, required: true, unique: true },
+    title: { type: String, required: true, trim: true },
+    summary: { type: String, trim: true },
+    description: { type: String, required: true, trim: true },
+    category: { type: String, enum: SCHEME_CATEGORIES, default: 'Other', index: true },
+    eligibility: { type: String, trim: true },
+    requiredDocuments: { type: [String], default: [] },
+    benefits: { type: String, trim: true },
+    applicationProcess: { type: String, trim: true },
+    officialWebsite: { type: String, trim: true },
+    imageUrl: { type: String },
+    publishDate: { type: Date },
+    expiryDate: { type: Date },
+    isPublished: { type: Boolean, default: false, index: true },
+    isActive: { type: Boolean, default: true, index: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform(_doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        return ret;
+      },
+    },
+  },
+);
+
+schemeSchema.index({ createdAt: -1 });
+// Text index for keyword search (blueprint 5.4). Regex search is used as the primary
+// path; this supports future $text queries without a migration.
+schemeSchema.index({ title: 'text', summary: 'text', description: 'text' });
+
+export const Scheme = model('Scheme', schemeSchema);

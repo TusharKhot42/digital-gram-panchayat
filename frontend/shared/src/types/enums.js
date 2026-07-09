@@ -56,6 +56,18 @@ export const AttachmentType = {
   Image: 'image',
 };
 
+export const SchemeCategory = {
+  Agriculture: 'Agriculture',
+  Health: 'Health',
+  Education: 'Education',
+  Housing: 'Housing',
+  Employment: 'Employment',
+  Women: 'Women',
+  SeniorCitizen: 'SeniorCitizen',
+  Financial: 'Financial',
+  Other: 'Other',
+};
+
 export const NotificationStatus = {
   Queued: 'queued',
   Sent: 'sent',

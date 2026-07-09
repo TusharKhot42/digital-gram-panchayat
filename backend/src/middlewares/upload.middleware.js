@@ -93,3 +93,25 @@ export function uploadNoticeAttachment(req, res, next) {
     next(new AppError(400, 'UPLOAD_ERROR', 'Attachment upload failed'));
   });
 }
+
+/**
+ * Accept a single optional image (<=5MB) under `image` — reuses the image-only filter.
+ */
+export function uploadSingleImage(req, res, next) {
+  const handler = upload.single('image');
+  handler(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'The image must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Image upload failed'));
+  });
+}

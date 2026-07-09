@@ -36,6 +36,18 @@ export const SMS_SUMMARY_MAX_LENGTH = 160;
 
 export const ATTACHMENT_TYPES = ['pdf', 'image'];
 
+export const SCHEME_CATEGORIES = [
+  'Agriculture',
+  'Health',
+  'Education',
+  'Housing',
+  'Employment',
+  'Women',
+  'SeniorCitizen',
+  'Financial',
+  'Other',
+];
+
 export const CERT_TYPES = ['Income', 'Residence', 'Caste', 'Birth', 'Death', 'Other'];
 
 export const STATUS_COLOR_MAP = {

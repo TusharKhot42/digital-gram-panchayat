@@ -7,6 +7,7 @@ import { healthRouter } from './features/health/health.routes.js';
 import { citizenAuthRouter, adminAuthRouter } from './features/auth/auth.routes.js';
 import { complaintRouter, adminComplaintRouter } from './features/complaints/complaint.routes.js';
 import { noticeRouter, adminNoticeRouter } from './features/notices/notice.routes.js';
+import { schemeRouter, adminSchemeRouter } from './features/schemes/scheme.routes.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
@@ -32,6 +33,8 @@ export function createApp() {
   apiRouter.use('/admin/complaints', adminComplaintRouter);
   apiRouter.use('/notices', noticeRouter);
   apiRouter.use('/admin/notices', adminNoticeRouter);
+  apiRouter.use('/schemes', schemeRouter);
+  apiRouter.use('/admin/schemes', adminSchemeRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);
 
   app.use(notFoundMiddleware);

@@ -109,6 +109,27 @@
  * @property {'queued'|'sent'|'failed'} status
  * @property {string} [error]
  * @property {string} at
+ *
+ * @typedef {Object} Scheme
+ * @property {string} id
+ * @property {string} schemeId  - human id, e.g. SCH-2026-000001
+ * @property {string} title
+ * @property {string} [summary]
+ * @property {string} description
+ * @property {'Agriculture'|'Health'|'Education'|'Housing'|'Employment'|'Women'|'SeniorCitizen'|'Financial'|'Other'} category
+ * @property {string} [eligibility]
+ * @property {string[]} [requiredDocuments]
+ * @property {string} [benefits]
+ * @property {string} [applicationProcess]
+ * @property {string} [officialWebsite]
+ * @property {string} [imageUrl]
+ * @property {string} [publishDate]
+ * @property {string} [expiryDate]
+ * @property {boolean} isPublished
+ * @property {boolean} isActive
+ * @property {string} createdBy
+ * @property {string} createdAt
+ * @property {string} updatedAt
  */
 
 export {};
