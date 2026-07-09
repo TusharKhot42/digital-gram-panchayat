@@ -29,6 +29,12 @@ export const ComplaintStatus = {
   Resolved: 'Resolved',
 };
 
+export const ComplaintPriority = {
+  Low: 'Low',
+  Medium: 'Medium',
+  High: 'High',
+};
+
 export const NoticeChannel = {
   Sms: 'sms',
   Voice: 'voice',

@@ -41,6 +41,39 @@
  * @property {'citizen'|'officer'} role
  * @property {number} iat
  * @property {number} exp
+ *
+ * @typedef {Object} GeoPoint
+ * @property {'Point'} type
+ * @property {[number, number]} coordinates  - [longitude, latitude]
+ *
+ * @typedef {Object} ComplaintRemark
+ * @property {string} officerId
+ * @property {string} note
+ * @property {string} at
+ *
+ * @typedef {Object} ComplaintStatusEntry
+ * @property {'Pending'|'InProgress'|'Resolved'} status
+ * @property {string} by
+ * @property {string} at
+ *
+ * @typedef {Object} Complaint
+ * @property {string} id
+ * @property {string} complaintId  - human id, e.g. CMP-2026-000001
+ * @property {string} citizenId
+ * @property {'Road'|'WaterSupply'|'Sanitation'|'Electricity'|'Other'} category
+ * @property {string} title
+ * @property {string} description
+ * @property {string[]} images
+ * @property {GeoPoint} [location]
+ * @property {number} [accuracy]
+ * @property {string} [address]
+ * @property {string} [ward]
+ * @property {'Pending'|'InProgress'|'Resolved'} status
+ * @property {'Low'|'Medium'|'High'} priority
+ * @property {ComplaintRemark[]} remarks
+ * @property {ComplaintStatusEntry[]} statusHistory
+ * @property {string} createdAt
+ * @property {string} updatedAt
  */
 
 export {};

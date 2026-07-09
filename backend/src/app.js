@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { env } from './config/env.js';
 import { healthRouter } from './features/health/health.routes.js';
 import { citizenAuthRouter, adminAuthRouter } from './features/auth/auth.routes.js';
+import { complaintRouter, adminComplaintRouter } from './features/complaints/complaint.routes.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
@@ -26,6 +27,8 @@ export function createApp() {
   apiRouter.use('/health', healthRouter);
   apiRouter.use('/auth', citizenAuthRouter);
   apiRouter.use('/admin', adminAuthRouter);
+  apiRouter.use('/complaints', complaintRouter);
+  apiRouter.use('/admin/complaints', adminComplaintRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);
 
   app.use(notFoundMiddleware);

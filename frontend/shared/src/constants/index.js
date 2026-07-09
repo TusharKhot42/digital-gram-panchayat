@@ -14,6 +14,10 @@ export const PAGINATION_DEFAULTS = {
 
 export const COMPLAINT_CATEGORIES = ['Road', 'WaterSupply', 'Sanitation', 'Electricity', 'Other'];
 
+export const COMPLAINT_STATUSES = ['Pending', 'InProgress', 'Resolved'];
+
+export const COMPLAINT_PRIORITIES = ['Low', 'Medium', 'High'];
+
 export const CERT_TYPES = ['Income', 'Residence', 'Caste', 'Birth', 'Death', 'Other'];
 
 export const STATUS_COLOR_MAP = {
