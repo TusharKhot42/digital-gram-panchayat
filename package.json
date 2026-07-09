@@ -1,0 +1,57 @@
+{
+  "name": "digital-gram-panchayat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Digital Gram Panchayat — citizen services platform (Grampanchayat Sakharale). Monorepo: citizen PWA, admin portal, backend API, shared package.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n SERVER,CITIZEN,ADMIN -c blue,green,magenta \"npm run dev -w server\" \"npm run dev -w apps/citizen-pwa\" \"npm run dev -w apps/admin-portal\"",
+    "dev:server": "npm run dev -w server",
+    "dev:citizen": "npm run dev -w apps/citizen-pwa",
+    "dev:admin": "npm run dev -w apps/admin-portal",
+    "build": "npm run build -w packages/shared && npm run build -w server && npm run build -w apps/citizen-pwa && npm run build -w apps/admin-portal",
+    "build:shared": "npm run build -w packages/shared",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

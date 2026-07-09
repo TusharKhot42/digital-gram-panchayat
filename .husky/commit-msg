@@ -1,0 +1,15 @@
+commit_msg_file="$1"
+commit_msg=$(head -n1 "$commit_msg_file")
+
+pattern="^(feat|fix|chore|test|docs|refactor|style|perf|build|ci|release)(\([a-z0-9-]+\))?!?: .{1,100}$"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+  echo ""
+  echo "ERROR: commit message does not follow Conventional Commits."
+  echo "  Expected: <type>(<optional-scope>): <description>"
+  echo "  Types: feat|fix|chore|test|docs|refactor|style|perf|build|ci|release"
+  echo "  Example: feat(complaints): add GPS capture to submit form"
+  echo ""
+  echo "  Got: $commit_msg"
+  exit 1
+fi

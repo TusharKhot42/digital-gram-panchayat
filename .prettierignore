@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+coverage
+.turbo
+dev-dist
+package-lock.json
+*.md.bak
+docs/manuals/**/*.pdf
+
+# Pinned source planning docs — kept byte-identical to the originals, not reformatted
+docs/architecture/blueprint.md
+docs/architecture/execution-plan.md
