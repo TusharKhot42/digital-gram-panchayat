@@ -45,6 +45,12 @@ export default [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
+      // TS has separate value/type namespaces — `const X = ...; type X = ...` (the
+      // `as const` object + derived union pattern used for our enums) is valid TS that
+      // this rule can't distinguish from a real accidental redeclare. TS itself is the
+      // authority on actual redeclare errors, so this rule is redundant here.
+      'no-redeclare': 'off',
+      '@typescript-eslint/no-redeclare': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

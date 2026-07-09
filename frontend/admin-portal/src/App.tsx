@@ -1,0 +1,16 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/services/query-client';
+import { ThemeProvider, LanguageProvider } from '@/store';
+import { AppRouter } from '@/routes/AppRouter';
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AppRouter />
+        </LanguageProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}

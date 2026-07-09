@@ -1,0 +1,26 @@
+{
+  "appName": "DGP Admin Portal",
+  "nav": {
+    "dashboard": "Dashboard",
+    "complaints": "Complaints",
+    "notices": "Notices",
+    "dakhala": "Certificates",
+    "tax": "Tax Records",
+    "schemes": "Schemes",
+    "users": "Users",
+    "reports": "Reports"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "citizens": "Total Citizens",
+    "pendingComplaints": "Pending Complaints",
+    "pendingDakhala": "Pending Certificates",
+    "activeNotices": "Active Notices",
+    "comingSoon": "Live metrics arrive once feature data exists (Milestone 8)."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "The page you're looking for doesn't exist.",
+    "backHome": "Back to Dashboard"
+  }
+}

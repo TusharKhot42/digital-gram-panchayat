@@ -27,6 +27,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
+    "postinstall": "npm run build:shared",
     "clean": "npm run clean --workspaces --if-present"
   },
   "devDependencies": {

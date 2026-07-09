@@ -1,0 +1,27 @@
+{
+  "appName": "Digital Gram Panchayat",
+  "splash": {
+    "tagline": "Your Panchayat, on your phone"
+  },
+  "nav": {
+    "home": "Home",
+    "complaints": "Complaints",
+    "notices": "Notices",
+    "dakhala": "Certificates",
+    "profile": "Profile"
+  },
+  "home": {
+    "welcome": "Welcome",
+    "comingSoon": "Services will appear here as they go live."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "The page you're looking for doesn't exist.",
+    "backHome": "Back to Home"
+  },
+  "common": {
+    "loading": "Loading…",
+    "online": "Online",
+    "offline": "Offline"
+  }
+}
