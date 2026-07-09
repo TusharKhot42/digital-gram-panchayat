@@ -10,17 +10,16 @@
     "npm": ">=10.0.0"
   },
   "workspaces": [
-    "apps/*",
-    "server",
-    "packages/*"
+    "frontend/*",
+    "backend"
   ],
   "scripts": {
-    "dev": "concurrently -k -n SERVER,CITIZEN,ADMIN -c blue,green,magenta \"npm run dev -w server\" \"npm run dev -w apps/citizen-pwa\" \"npm run dev -w apps/admin-portal\"",
-    "dev:server": "npm run dev -w server",
-    "dev:citizen": "npm run dev -w apps/citizen-pwa",
-    "dev:admin": "npm run dev -w apps/admin-portal",
-    "build": "npm run build -w packages/shared && npm run build -w server && npm run build -w apps/citizen-pwa && npm run build -w apps/admin-portal",
-    "build:shared": "npm run build -w packages/shared",
+    "dev": "concurrently -k -n BACKEND,CITIZEN,ADMIN -c blue,green,magenta \"npm run dev -w backend\" \"npm run dev -w frontend/citizen-pwa\" \"npm run dev -w frontend/admin-portal\"",
+    "dev:server": "npm run dev -w backend",
+    "dev:citizen": "npm run dev -w frontend/citizen-pwa",
+    "dev:admin": "npm run dev -w frontend/admin-portal",
+    "build": "npm run build -w frontend/shared && npm run build -w backend && npm run build -w frontend/citizen-pwa && npm run build -w frontend/admin-portal",
+    "build:shared": "npm run build -w frontend/shared",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "npm run typecheck --workspaces --if-present",

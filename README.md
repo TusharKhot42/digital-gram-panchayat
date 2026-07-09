@@ -10,13 +10,13 @@ Full plan: [`docs/architecture/blueprint.md`](docs/architecture/blueprint.md) ·
 ## Monorepo layout
 
 ```
-apps/citizen-pwa/    Citizen-facing installable PWA (React + Vite + TS)
-apps/admin-portal/   Officer admin portal (React + Vite + TS)
-server/               Express REST API (TS)
-packages/shared/      Zod schemas, types, enums, constants — imported by all three
-docs/                 Architecture, API specs, manuals, ADRs
-scripts/              DB seed, backup, icon-gen, env-check tooling
-.github/workflows/    CI pipelines
+frontend/citizen-pwa/  Citizen-facing installable PWA (React + Vite + TS)
+frontend/admin-portal/ Officer admin portal (React + Vite + TS)
+frontend/shared/       Zod schemas, types, enums, constants — imported by all three
+backend/                Express REST API (TS)
+docs/                   Architecture, API specs, manuals, ADRs
+scripts/                DB seed, backup, icon-gen, env-check tooling
+.github/workflows/      CI pipelines
 ```
 
 See [`docs/architecture/overview.md`](docs/architecture/overview.md) for the full architecture
@@ -37,9 +37,9 @@ cd digital-gram-panchayat
 npm install                 # installs all workspaces from the root — do not npm install inside a package
 
 # copy env templates and fill in real values
-cp server/.env.example server/.env
-cp apps/citizen-pwa/.env.example apps/citizen-pwa/.env.local
-cp apps/admin-portal/.env.example apps/admin-portal/.env.local
+cp backend/.env.example backend/.env
+cp frontend/citizen-pwa/.env.example frontend/citizen-pwa/.env.local
+cp frontend/admin-portal/.env.example frontend/admin-portal/.env.local
 
 npm run dev                 # runs server + citizen-pwa + admin-portal together
 ```

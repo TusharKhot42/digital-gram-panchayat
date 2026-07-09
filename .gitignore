@@ -28,9 +28,13 @@ coverage/
 .nyc_output/
 
 # PWA generated
-apps/citizen-pwa/dev-dist/
-apps/citizen-pwa/public/sw.js
-apps/citizen-pwa/public/workbox-*.js
+frontend/citizen-pwa/dev-dist/
+frontend/citizen-pwa/public/sw.js
+frontend/citizen-pwa/public/workbox-*.js
+
+# Backend local upload staging (files live in Cloudinary, never commit)
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # Editor / OS
 .vscode/*

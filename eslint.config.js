@@ -9,7 +9,7 @@ import globals from 'globals';
 
 /**
  * Single flat ESLint config for the whole monorepo.
- * Base TS rules apply everywhere; React rules only apply under apps/*.
+ * Base TS rules apply everywhere; React rules only apply under frontend/{citizen-pwa,admin-portal}.
  * Keeps one source of truth instead of a config-per-package that drifts.
  */
 export default [
@@ -55,7 +55,7 @@ export default [
     },
   },
   {
-    files: ['apps/**/*.{ts,tsx}'],
+    files: ['frontend/{citizen-pwa,admin-portal}/**/*.{ts,tsx}'],
     languageOptions: {
       globals: { ...globals.browser },
     },
@@ -74,7 +74,7 @@ export default [
     },
   },
   {
-    files: ['server/**/*.ts'],
+    files: ['backend/**/*.ts'],
     languageOptions: {
       globals: { ...globals.node },
     },
