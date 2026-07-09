@@ -23,5 +23,33 @@
     "loading": "Loading…",
     "online": "Online",
     "offline": "Offline"
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "registerSubtitle": "Register with your mobile number",
+    "fullName": "Full name",
+    "mobile": "Mobile number",
+    "password": "Password",
+    "village": "Village",
+    "address": "Address",
+    "email": "Email (optional)",
+    "login": "Log in",
+    "register": "Register",
+    "logout": "Log out",
+    "profile": "Profile",
+    "saveProfile": "Save changes",
+    "noAccount": "New here?",
+    "haveAccount": "Already registered?",
+    "required": "This field is required",
+    "nameShort": "Name is too short",
+    "passwordShort": "Password must be at least 6 characters",
+    "emailInvalid": "Enter a valid email",
+    "loginSuccess": "Logged in",
+    "loginFailed": "Login failed. Check your details.",
+    "registerSuccess": "Account created",
+    "registerFailed": "Registration failed. Try again.",
+    "profileUpdated": "Profile updated",
+    "profileFailed": "Could not update profile"
   }
 }

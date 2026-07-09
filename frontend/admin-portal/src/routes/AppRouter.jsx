@@ -2,19 +2,22 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { Home } from '@/pages/Home';
 import { NotFound } from '@/pages/NotFound';
+import { Login } from '@/features/auth/Login';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const router = createBrowserRouter([
+  { path: '/login', element: <Login /> },
   {
-    path: '/',
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute />,
     children: [
-      { index: true, element: <Home /> },
-      { path: '*', element: <NotFound /> },
+      {
+        path: '/',
+        element: <DashboardLayout />,
+        children: [
+          { index: true, element: <Home /> },
+          { path: '*', element: <NotFound /> },
+        ],
+      },
     ],
   },
 ]);

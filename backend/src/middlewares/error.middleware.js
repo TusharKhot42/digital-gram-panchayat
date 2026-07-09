@@ -22,13 +22,11 @@ export function errorMiddleware(err, req, res, _next) {
   // Mongo duplicate key (e.g. mobile/email already registered) -> 409, no stack leak.
   if (err && err.code === 11000) {
     const field = Object.keys(err.keyPattern || {})[0] || 'field';
-    res
-      .status(409)
-      .json(
-        errorResponse('DUPLICATE_KEY', `This ${field} is already registered`, {
-          [field]: 'Already in use',
-        }),
-      );
+    res.status(409).json(
+      errorResponse('DUPLICATE_KEY', `This ${field} is already registered`, {
+        [field]: 'Already in use',
+      }),
+    );
     return;
   }
 

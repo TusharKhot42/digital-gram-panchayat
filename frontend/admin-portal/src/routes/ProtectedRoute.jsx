@@ -1,8 +1,16 @@
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { LoadingScreen } from '@/components/LoadingScreen';
+
 /**
- * Route gate placeholder. Milestone 2 wires the real session check (AuthContext + JWT)
- * here; until then it renders children unconditionally so the routing structure — and
- * every later route that needs gating — already exists.
+ * Gates the officer dashboard. Shows a loader while the persisted token is verified,
+ * then redirects unauthenticated officers to /login. Real M2 session check (replaces
+ * the M1 pass-through placeholder).
  */
-export function ProtectedRoute({ children }) {
-  return <>{children}</>;
+export function ProtectedRoute() {
+  const { isAuthenticated, ready } = useAuth();
+
+  if (!ready) return <LoadingScreen />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <Outlet />;
 }

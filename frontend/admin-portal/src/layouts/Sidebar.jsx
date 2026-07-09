@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
@@ -9,8 +9,11 @@ import {
   BookOpen,
   Users,
   BarChart3,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 const items = [
   { to: '/', label: 'nav.dashboard', icon: LayoutDashboard, end: true },
@@ -25,9 +28,16 @@ const items = [
 
 export function Sidebar() {
   const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border bg-card md:flex md:flex-col">
+    <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
       <div className="flex h-16 items-center px-6 text-lg font-semibold text-foreground">
         {t('appName')}
       </div>
@@ -49,6 +59,17 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+      <div className="border-t border-border p-3">
+        {user ? (
+          <p className="mb-2 truncate px-3 text-xs text-muted-foreground" title={user.email}>
+            {user.fullName}
+          </p>
+        ) : null}
+        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleLogout}>
+          <LogOut className="h-4 w-4" />
+          {t('auth.logout')}
+        </Button>
+      </div>
     </aside>
   );
 }

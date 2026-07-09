@@ -23,5 +23,33 @@
     "loading": "लोड होत आहे…",
     "online": "ऑनलाइन",
     "offline": "ऑफलाइन"
+  },
+  "auth": {
+    "welcomeBack": "पुन्हा स्वागत आहे",
+    "createAccount": "तुमचे खाते तयार करा",
+    "registerSubtitle": "तुमच्या मोबाईल क्रमांकाने नोंदणी करा",
+    "fullName": "पूर्ण नाव",
+    "mobile": "मोबाईल क्रमांक",
+    "password": "पासवर्ड",
+    "village": "गाव",
+    "address": "पत्ता",
+    "email": "ईमेल (ऐच्छिक)",
+    "login": "लॉग इन करा",
+    "register": "नोंदणी करा",
+    "logout": "लॉग आउट",
+    "profile": "प्रोफाईल",
+    "saveProfile": "बदल जतन करा",
+    "noAccount": "नवीन आहात?",
+    "haveAccount": "आधीच नोंदणी केली आहे?",
+    "required": "हे क्षेत्र आवश्यक आहे",
+    "nameShort": "नाव खूप लहान आहे",
+    "passwordShort": "पासवर्ड किमान ६ अक्षरांचा असावा",
+    "emailInvalid": "वैध ईमेल प्रविष्ट करा",
+    "loginSuccess": "लॉग इन झाले",
+    "loginFailed": "लॉगिन अयशस्वी. तपशील तपासा.",
+    "registerSuccess": "खाते तयार झाले",
+    "registerFailed": "नोंदणी अयशस्वी. पुन्हा प्रयत्न करा.",
+    "profileUpdated": "प्रोफाईल अद्यतनित झाले",
+    "profileFailed": "प्रोफाईल अद्यतनित करता आले नाही"
   }
 }
