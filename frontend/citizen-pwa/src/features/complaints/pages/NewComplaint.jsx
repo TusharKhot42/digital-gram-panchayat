@@ -1,0 +1,90 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import { useGeolocation } from '@/hooks/useGeolocation';
+import { CategorySelect } from '../components/CategorySelect';
+import { PhotoUploader } from '../components/PhotoUploader';
+import { GpsCapture } from '../components/GpsCapture';
+import { FormRow } from '../components/FormRow';
+import { useCreateComplaint } from '../hooks';
+
+export function NewComplaint() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [images, setImages] = useState([]);
+  const { coords, status, request } = useGeolocation();
+  const createMutation = useCreateComplaint();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (values) => {
+    try {
+      const created = await createMutation.mutateAsync({
+        ...values,
+        images,
+        latitude: coords?.latitude,
+        longitude: coords?.longitude,
+        accuracy: coords?.accuracy,
+      });
+      toast.success(t('complaint.form.submitted', { id: created.complaintId }));
+      navigate(`/complaints/${created.id}`, { replace: true });
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message || t('complaint.form.failed'));
+    }
+  };
+
+  return (
+    <div className="mx-auto w-full max-w-md px-4 py-6">
+      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('complaint.form.title')}</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        <CategorySelect
+          register={register('category', { required: t('complaint.form.required') })}
+          error={errors.category}
+        />
+
+        <FormRow label={t('complaint.form.subject')} error={errors.title}>
+          <input
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            {...register('title', {
+              required: t('complaint.form.required'),
+              minLength: { value: 3, message: t('complaint.form.subjectShort') },
+            })}
+          />
+        </FormRow>
+
+        <FormRow label={t('complaint.form.description')} error={errors.description}>
+          <textarea
+            rows={4}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            {...register('description', {
+              required: t('complaint.form.required'),
+              minLength: { value: 5, message: t('complaint.form.descShort') },
+            })}
+          />
+        </FormRow>
+
+        <FormRow label={t('complaint.form.address')} error={errors.address} optional>
+          <input
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            {...register('address')}
+          />
+        </FormRow>
+
+        <PhotoUploader files={images} onChange={setImages} />
+        <GpsCapture coords={coords} status={status} onRequest={request} />
+
+        <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+          {createMutation.isPending ? t('common.loading') : t('complaint.form.submit')}
+        </Button>
+      </form>
+    </div>
+  );
+}

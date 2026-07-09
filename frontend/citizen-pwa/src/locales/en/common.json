@@ -51,5 +51,57 @@
     "registerFailed": "Registration failed. Try again.",
     "profileUpdated": "Profile updated",
     "profileFailed": "Could not update profile"
+  },
+  "complaint": {
+    "category": {
+      "Road": "Road",
+      "WaterSupply": "Water Supply",
+      "Sanitation": "Sanitation",
+      "Electricity": "Electricity",
+      "Other": "Other"
+    },
+    "status": {
+      "Pending": "Pending",
+      "InProgress": "In Progress",
+      "Resolved": "Resolved"
+    },
+    "form": {
+      "title": "File a complaint",
+      "category": "Category",
+      "chooseCategory": "Select a category",
+      "subject": "Subject",
+      "subjectShort": "Subject is too short",
+      "description": "Description",
+      "descShort": "Please describe the issue",
+      "address": "Address",
+      "optional": "optional",
+      "photos": "Photos",
+      "addPhoto": "Add",
+      "removePhoto": "Remove photo",
+      "maxPhotos": "You can add up to {{count}} photos",
+      "imageOnly": "Only images are allowed",
+      "imageTooLarge": "Each image must be 5MB or smaller",
+      "location": "Location",
+      "captureLocation": "Capture GPS",
+      "updateLocation": "Update GPS",
+      "locationUnavailable": "Location not available — you can still submit",
+      "required": "This field is required",
+      "submit": "Submit complaint",
+      "submitted": "Complaint {{id}} submitted",
+      "failed": "Could not submit complaint"
+    },
+    "history": {
+      "title": "My complaints",
+      "new": "New",
+      "empty": "You haven't filed any complaints yet.",
+      "loadError": "Could not load complaints",
+      "new_button": "New complaint"
+    },
+    "detail": {
+      "back": "Back to complaints",
+      "notFound": "Complaint not found",
+      "timeline": "Status timeline",
+      "remarks": "Officer remarks"
+    }
   }
 }

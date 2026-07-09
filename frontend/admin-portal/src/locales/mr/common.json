@@ -23,6 +23,51 @@
     "subtitle": "आपण शोधत असलेले पान अस्तित्वात नाही.",
     "backHome": "डॅशबोर्डवर परत जा"
   },
+  "common": {
+    "loading": "लोड होत आहे…"
+  },
+  "complaint": {
+    "category": {
+      "Road": "रस्ता",
+      "WaterSupply": "पाणीपुरवठा",
+      "Sanitation": "स्वच्छता",
+      "Electricity": "वीज",
+      "Other": "इतर"
+    },
+    "status": {
+      "Pending": "प्रलंबित",
+      "InProgress": "प्रगतीपथावर",
+      "Resolved": "निराकरण झाले"
+    },
+    "list": {
+      "title": "तक्रारी",
+      "search": "आयडी, विषय शोधा…",
+      "allStatuses": "सर्व स्थिती",
+      "allCategories": "सर्व प्रवर्ग",
+      "id": "आयडी",
+      "subject": "विषय",
+      "category": "प्रवर्ग",
+      "status": "स्थिती",
+      "date": "दिनांक",
+      "total": "{{total}} तक्रारी",
+      "empty": "तुमच्या फिल्टरशी जुळणारी तक्रार नाही.",
+      "loadError": "तक्रारी लोड करता आल्या नाहीत"
+    },
+    "detail": {
+      "back": "तक्रारींकडे परत",
+      "notFound": "तक्रार सापडली नाही",
+      "photos": "छायाचित्रे",
+      "location": "स्थान",
+      "updateStatus": "स्थिती अद्यतनित करा",
+      "remarkPlaceholder": "शेरा जोडा (निराकरणासाठी आवश्यक)…",
+      "remarkRequired": "निराकरण करताना शेरा आवश्यक आहे",
+      "save": "अद्यतनित करा",
+      "updated": "तक्रार अद्यतनित झाली",
+      "updateFailed": "तक्रार अद्यतनित करता आली नाही",
+      "timeline": "स्थिती कालरेखा",
+      "remarks": "शेरे"
+    }
+  },
   "auth": {
     "officerSignIn": "अधिकारी लॉगिन",
     "email": "ईमेल",

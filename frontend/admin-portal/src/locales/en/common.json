@@ -23,6 +23,51 @@
     "subtitle": "The page you're looking for doesn't exist.",
     "backHome": "Back to Dashboard"
   },
+  "common": {
+    "loading": "Loading…"
+  },
+  "complaint": {
+    "category": {
+      "Road": "Road",
+      "WaterSupply": "Water Supply",
+      "Sanitation": "Sanitation",
+      "Electricity": "Electricity",
+      "Other": "Other"
+    },
+    "status": {
+      "Pending": "Pending",
+      "InProgress": "In Progress",
+      "Resolved": "Resolved"
+    },
+    "list": {
+      "title": "Complaints",
+      "search": "Search id, subject…",
+      "allStatuses": "All statuses",
+      "allCategories": "All categories",
+      "id": "ID",
+      "subject": "Subject",
+      "category": "Category",
+      "status": "Status",
+      "date": "Date",
+      "total": "{{total}} complaints",
+      "empty": "No complaints match your filters.",
+      "loadError": "Could not load complaints"
+    },
+    "detail": {
+      "back": "Back to complaints",
+      "notFound": "Complaint not found",
+      "photos": "Photos",
+      "location": "Location",
+      "updateStatus": "Update status",
+      "remarkPlaceholder": "Add a remark (required to resolve)…",
+      "remarkRequired": "A remark is required when resolving",
+      "save": "Update",
+      "updated": "Complaint updated",
+      "updateFailed": "Could not update complaint",
+      "timeline": "Status timeline",
+      "remarks": "Remarks"
+    }
+  },
   "auth": {
     "officerSignIn": "Officer sign in",
     "email": "Email",

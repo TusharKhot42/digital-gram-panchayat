@@ -51,5 +51,57 @@
     "registerFailed": "नोंदणी अयशस्वी. पुन्हा प्रयत्न करा.",
     "profileUpdated": "प्रोफाईल अद्यतनित झाले",
     "profileFailed": "प्रोफाईल अद्यतनित करता आले नाही"
+  },
+  "complaint": {
+    "category": {
+      "Road": "रस्ता",
+      "WaterSupply": "पाणीपुरवठा",
+      "Sanitation": "स्वच्छता",
+      "Electricity": "वीज",
+      "Other": "इतर"
+    },
+    "status": {
+      "Pending": "प्रलंबित",
+      "InProgress": "प्रगतीपथावर",
+      "Resolved": "निराकरण झाले"
+    },
+    "form": {
+      "title": "तक्रार नोंदवा",
+      "category": "प्रवर्ग",
+      "chooseCategory": "प्रवर्ग निवडा",
+      "subject": "विषय",
+      "subjectShort": "विषय खूप लहान आहे",
+      "description": "तपशील",
+      "descShort": "कृपया समस्या वर्णन करा",
+      "address": "पत्ता",
+      "optional": "ऐच्छिक",
+      "photos": "छायाचित्रे",
+      "addPhoto": "जोडा",
+      "removePhoto": "छायाचित्र काढा",
+      "maxPhotos": "तुम्ही जास्तीत जास्त {{count}} छायाचित्रे जोडू शकता",
+      "imageOnly": "फक्त प्रतिमा अनुमत आहेत",
+      "imageTooLarge": "प्रत्येक प्रतिमा ५MB किंवा त्यापेक्षा लहान असावी",
+      "location": "स्थान",
+      "captureLocation": "GPS मिळवा",
+      "updateLocation": "GPS अद्यतनित करा",
+      "locationUnavailable": "स्थान उपलब्ध नाही — तुम्ही तरीही सबमिट करू शकता",
+      "required": "हे क्षेत्र आवश्यक आहे",
+      "submit": "तक्रार सबमिट करा",
+      "submitted": "तक्रार {{id}} सबमिट झाली",
+      "failed": "तक्रार सबमिट करता आली नाही"
+    },
+    "history": {
+      "title": "माझ्या तक्रारी",
+      "new": "नवीन",
+      "empty": "तुम्ही अद्याप कोणतीही तक्रार नोंदवलेली नाही.",
+      "loadError": "तक्रारी लोड करता आल्या नाहीत",
+      "new_button": "नवीन तक्रार"
+    },
+    "detail": {
+      "back": "तक्रारींकडे परत",
+      "notFound": "तक्रार सापडली नाही",
+      "timeline": "स्थिती कालरेखा",
+      "remarks": "अधिकारी शेरे"
+    }
   }
 }
