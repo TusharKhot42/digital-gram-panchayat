@@ -8,6 +8,7 @@ import { citizenAuthRouter, adminAuthRouter } from './features/auth/auth.routes.
 import { complaintRouter, adminComplaintRouter } from './features/complaints/complaint.routes.js';
 import { noticeRouter, adminNoticeRouter } from './features/notices/notice.routes.js';
 import { schemeRouter, adminSchemeRouter } from './features/schemes/scheme.routes.js';
+import { taxRouter, adminTaxRouter } from './features/tax/tax.routes.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
@@ -35,6 +36,8 @@ export function createApp() {
   apiRouter.use('/admin/notices', adminNoticeRouter);
   apiRouter.use('/schemes', schemeRouter);
   apiRouter.use('/admin/schemes', adminSchemeRouter);
+  apiRouter.use('/tax', taxRouter);
+  apiRouter.use('/admin/tax', adminTaxRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);
 
   app.use(notFoundMiddleware);

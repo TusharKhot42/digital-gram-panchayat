@@ -130,6 +130,41 @@
  * @property {string} createdBy
  * @property {string} createdAt
  * @property {string} updatedAt
+ *
+ * @typedef {Object} Payment
+ * @property {number} amount
+ * @property {string} paidAt
+ * @property {string} [receiptNo]
+ * @property {string} [mode]
+ * @property {string} receivedBy
+ *
+ * @typedef {Object} TaxHistoryEntry
+ * @property {string} action
+ * @property {string} [field]
+ * @property {*} [old]
+ * @property {*} [new]
+ * @property {string} by
+ * @property {string} at
+ *
+ * @typedef {Object} TaxRecord
+ * @property {string} id
+ * @property {string} taxRecordId  - human id, e.g. TAX-2026-000001
+ * @property {string} citizenId
+ * @property {string} propertyNumber
+ * @property {'Property'|'Water'} taxType
+ * @property {string} financialYear
+ * @property {number} amount
+ * @property {number} amountPaid
+ * @property {number} balance
+ * @property {'Unpaid'|'Partial'|'Paid'} paymentStatus
+ * @property {string} [dueDate]
+ * @property {Payment[]} payments
+ * @property {TaxHistoryEntry[]} history
+ * @property {boolean} isActive
+ * @property {string} createdBy
+ * @property {string} [updatedBy]
+ * @property {string} createdAt
+ * @property {string} updatedAt
  */
 
 export {};

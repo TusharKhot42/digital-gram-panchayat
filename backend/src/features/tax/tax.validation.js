@@ -1,0 +1,50 @@
+import { body, param, query } from 'express-validator';
+import { TAX_TYPES, PAYMENT_STATUSES } from '@dgp/shared';
+
+export const createTaxValidation = [
+  body('citizenId').isMongoId().withMessage('Valid citizen is required'),
+  body('propertyNumber').trim().notEmpty().withMessage('Property number is required'),
+  body('taxType').isIn(TAX_TYPES).withMessage('Invalid tax type'),
+  body('financialYear')
+    .matches(/^\d{4}-\d{4}$/)
+    .withMessage('Financial year must look like 2025-2026'),
+  body('amount').isFloat({ min: 0 }).withMessage('Amount cannot be negative'),
+  body('dueDate').optional({ values: 'falsy' }).isISO8601().withMessage('Invalid due date'),
+];
+
+export const updateTaxValidation = [
+  param('id').isMongoId().withMessage('Invalid tax record id'),
+  body('propertyNumber').optional({ values: 'falsy' }).trim().notEmpty(),
+  body('amount')
+    .optional({ values: 'falsy' })
+    .isFloat({ min: 0 })
+    .withMessage('Amount cannot be negative'),
+  body('dueDate').optional({ values: 'falsy' }).isISO8601(),
+];
+
+export const paymentValidation = [
+  param('id').isMongoId().withMessage('Invalid tax record id'),
+  body('amount').isFloat({ gt: 0 }).withMessage('Payment must be greater than zero'),
+  body('paidAt').optional({ values: 'falsy' }).isISO8601(),
+  body('receiptNo').optional({ values: 'falsy' }).trim().isLength({ max: 60 }),
+  body('mode').optional({ values: 'falsy' }).trim().isLength({ max: 40 }),
+];
+
+export const taxIdParamValidation = [param('id').isMongoId().withMessage('Invalid tax record id')];
+
+export const listQueryValidation = [
+  query('page').optional().isInt({ min: 1 }).toInt(),
+  query('limit').optional().isInt({ min: 1, max: 100 }).toInt(),
+  query('taxType').optional().isIn(TAX_TYPES),
+  query('paymentStatus').optional().isIn(PAYMENT_STATUSES),
+  query('financialYear')
+    .optional()
+    .matches(/^\d{4}-\d{4}$/),
+];
+
+export const mineQueryValidation = [
+  query('taxType').optional().isIn(TAX_TYPES),
+  query('financialYear')
+    .optional()
+    .matches(/^\d{4}-\d{4}$/),
+];

@@ -81,9 +81,16 @@ export const NotificationPurpose = {
   DakhalaUpdate: 'dakhalaUpdate',
 };
 
+// Property = Gharpatti (घरपट्टी), Water = PaniPatti (पाणीपट्टी) — Marathi labels live in i18n.
 export const TaxType = {
-  Gharpatti: 'Gharpatti',
-  PaniPatti: 'PaniPatti',
+  Property: 'Property',
+  Water: 'Water',
+};
+
+export const PaymentStatus = {
+  Unpaid: 'Unpaid',
+  Partial: 'Partial',
+  Paid: 'Paid',
 };
 
 export const CertType = {

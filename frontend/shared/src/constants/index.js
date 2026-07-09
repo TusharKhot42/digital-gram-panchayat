@@ -48,6 +48,16 @@ export const SCHEME_CATEGORIES = [
   'Other',
 ];
 
+export const TAX_TYPES = ['Property', 'Water'];
+
+export const PAYMENT_STATUSES = ['Unpaid', 'Partial', 'Paid'];
+
+export const PAYMENT_STATUS_COLOR_MAP = {
+  Unpaid: 'red',
+  Partial: 'orange',
+  Paid: 'green',
+};
+
 export const CERT_TYPES = ['Income', 'Residence', 'Caste', 'Birth', 'Death', 'Other'];
 
 export const STATUS_COLOR_MAP = {
