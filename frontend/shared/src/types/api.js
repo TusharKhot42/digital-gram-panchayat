@@ -18,6 +18,29 @@
  * @property {string} timestamp
  * @property {string} environment
  * @property {string} version
+ *
+ * @typedef {Object} User
+ * @property {string} id
+ * @property {string} fullName
+ * @property {string} [mobile]
+ * @property {string} [email]
+ * @property {'citizen'|'officer'} role
+ * @property {string} [village]
+ * @property {string} [address]
+ * @property {string} [avatar]
+ * @property {boolean} isActive
+ * @property {string} createdAt
+ * @property {string} updatedAt
+ *
+ * @typedef {Object} AuthResponse
+ * @property {User} user
+ * @property {string} token
+ *
+ * @typedef {Object} JwtPayload
+ * @property {string} sub  - user id
+ * @property {'citizen'|'officer'} role
+ * @property {number} iat
+ * @property {number} exp
  */
 
 export {};

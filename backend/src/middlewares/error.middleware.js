@@ -19,6 +19,19 @@ export function errorMiddleware(err, req, res, _next) {
     return;
   }
 
+  // Mongo duplicate key (e.g. mobile/email already registered) -> 409, no stack leak.
+  if (err && err.code === 11000) {
+    const field = Object.keys(err.keyPattern || {})[0] || 'field';
+    res
+      .status(409)
+      .json(
+        errorResponse('DUPLICATE_KEY', `This ${field} is already registered`, {
+          [field]: 'Already in use',
+        }),
+      );
+    return;
+  }
+
   const error = err instanceof Error ? err : new Error('Unknown error');
   logger.error('Unhandled error', { path: req.path, method: req.method }, error);
 

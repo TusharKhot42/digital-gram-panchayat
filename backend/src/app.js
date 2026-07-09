@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import { healthRouter } from './features/health/health.routes.js';
+import { citizenAuthRouter, adminAuthRouter } from './features/auth/auth.routes.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
@@ -23,6 +24,8 @@ export function createApp() {
 
   const apiRouter = express.Router();
   apiRouter.use('/health', healthRouter);
+  apiRouter.use('/auth', citizenAuthRouter);
+  apiRouter.use('/admin', adminAuthRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);
 
   app.use(notFoundMiddleware);
