@@ -6,6 +6,7 @@ import { ThemeProvider, LanguageProvider, AuthProvider } from '@/store';
 import { AppRouter } from '@/routes/AppRouter';
 import { Splash } from '@/pages/Splash';
 import { PwaReloadPrompt } from '@/components/PwaReloadPrompt';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Onboarding } from '@/features/onboarding/Onboarding';
 import { useOnboarding } from '@/features/onboarding/useOnboarding';
 
@@ -21,17 +22,19 @@ export default function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            {booting ? <Splash /> : <AppRouter />}
-            {!booting && onboardingOpen && <Onboarding onFinish={finishOnboarding} />}
-            <Toaster position="top-center" />
-            <PwaReloadPrompt />
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              {booting ? <Splash /> : <AppRouter />}
+              {!booting && onboardingOpen && <Onboarding onFinish={finishOnboarding} />}
+              <Toaster position="top-center" />
+              <PwaReloadPrompt />
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

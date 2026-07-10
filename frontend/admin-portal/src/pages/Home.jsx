@@ -1,17 +1,7 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
 import {
   Users,
   ClipboardList,
@@ -22,8 +12,12 @@ import {
   Receipt,
   Plus,
 } from 'lucide-react';
-import { CHART_COLORS, formatCurrency, formatDate } from '@dgp/shared';
+import { formatCurrency, formatDate } from '@dgp/shared';
+import { Skeleton } from '@/components/Skeleton';
 import { useMetrics, useCharts, useActivity } from '@/features/dashboard/hooks';
+
+// Charts (recharts) load on demand — keeps the heavy plotting library out of the app shell.
+const DashboardCharts = lazy(() => import('@/features/dashboard/DashboardCharts'));
 import { complaintService } from '@/features/complaints/complaintService';
 import { certificateService } from '@/features/dakhala/certificateService';
 
@@ -114,43 +108,16 @@ export function Home() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">
-            {t('dashboard.complaintsByCategory')}
-          </h2>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={charts?.complaintsByCategory ?? []}>
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Bar dataKey="value" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">
-            {t('dashboard.complaintsByStatus')}
-          </h2>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={charts?.complaintsByStatus ?? []}
-                dataKey="value"
-                nameKey="label"
-                outerRadius={80}
-                label
-              >
-                {(charts?.complaintsByStatus ?? []).map((entry, i) => (
-                  <Cell key={entry.label} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <Suspense
+        fallback={
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Skeleton className="h-72" />
+            <Skeleton className="h-72" />
+          </div>
+        }
+      >
+        <DashboardCharts charts={charts} />
+      </Suspense>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-5">

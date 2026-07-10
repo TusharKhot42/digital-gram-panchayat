@@ -1,6 +1,6 @@
 import express from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
+import compression from 'compression';
+import mongoSanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import { healthRouter } from './features/health/health.routes.js';
@@ -16,24 +16,42 @@ import {
   notificationRouter,
   adminNotificationRouter,
 } from './features/notifications/notification.routes.js';
+import { securityHeaders, strictCors, noStore } from './middlewares/security.middleware.js';
+import { requestTiming } from './middlewares/request-timing.middleware.js';
+import { generalLimiter } from './middlewares/rate-limit.middleware.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
 export function createApp() {
   const app = express();
 
-  app.use(helmet());
-  app.use(
-    cors({
-      origin: [env.CORS_ORIGIN_CITIZEN, env.CORS_ORIGIN_ADMIN],
-      credentials: true,
-    }),
-  );
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true }));
+  // Behind a reverse proxy in production — trust the first hop so client IPs (for rate
+  // limiting) and protocol (for HSTS) are read correctly.
+  app.set('trust proxy', 1);
+  app.disable('x-powered-by');
+
+  // --- Security & transport ---
+  app.use(securityHeaders());
+  app.use(strictCors());
+  app.use(compression());
+
+  // --- Body parsing with size limits (uploads use multipart via multer, handled per route) ---
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+  // Strip Mongo operator injection ($, .) from request payloads.
+  app.use(mongoSanitize());
+
+  // --- Observability ---
+  app.use(requestTiming);
   app.use(morgan(env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 
   const apiRouter = express.Router();
+  // Sensitive data — never cached by browsers or shared caches.
+  apiRouter.use(noStore);
+  // Standard app-wide rate ceiling (route-specific stricter limits are applied in routers).
+  apiRouter.use(generalLimiter);
+
   apiRouter.use('/health', healthRouter);
   apiRouter.use('/auth', citizenAuthRouter);
   apiRouter.use('/admin', adminAuthRouter);

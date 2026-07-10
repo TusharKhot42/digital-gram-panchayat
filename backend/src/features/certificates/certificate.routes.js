@@ -4,6 +4,7 @@ import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { uploadCertificateDocuments } from '../../middlewares/upload.middleware.js';
+import { certificateLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './certificate.controller.js';
 import {
   applyValidation,
@@ -19,6 +20,7 @@ dakhalaRouter.use(authenticate);
 
 dakhalaRouter.post(
   '/',
+  certificateLimiter,
   authorize(ROLES.CITIZEN),
   uploadCertificateDocuments,
   applyValidation,

@@ -1,7 +1,7 @@
 import { ZodError } from 'zod';
 import { errorResponse } from '@dgp/shared';
 import { AppError } from '../utils/app-error.js';
-import { logger } from '../utils/logger.js';
+import { reportError } from '../utils/error-reporter.js';
 import { env } from '../config/env.js';
 
 export function errorMiddleware(err, req, res, _next) {
@@ -31,7 +31,7 @@ export function errorMiddleware(err, req, res, _next) {
   }
 
   const error = err instanceof Error ? err : new Error('Unknown error');
-  logger.error('Unhandled error', { path: req.path, method: req.method }, error);
+  reportError(error, { path: req.path, method: req.method });
 
   res
     .status(500)

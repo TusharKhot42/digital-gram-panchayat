@@ -5,6 +5,8 @@ import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { COMPLAINT_CATEGORIES, COMPLAINT_STATUSES, formatDate } from '@dgp/shared';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
+import { SkeletonRows } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
 import { useComplaints } from './hooks';
 
 const LIMIT = 20;
@@ -29,7 +31,7 @@ export function ComplaintsList() {
     ...(status ? { status } : {}),
     ...(category ? { category } : {}),
   };
-  const { data, isLoading, isError } = useComplaints(params);
+  const { data, isLoading, isError, refetch, isFetching } = useComplaints(params);
 
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
@@ -61,6 +63,7 @@ export function ComplaintsList() {
             value={q}
             onChange={(e) => resetPageAnd(setQ)(e.target.value)}
             placeholder={t('complaint.list.search')}
+            aria-label={t('complaint.list.search')}
             className="h-9 w-64 rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
@@ -68,6 +71,7 @@ export function ComplaintsList() {
         <select
           value={status}
           onChange={(e) => resetPageAnd(setStatus)(e.target.value)}
+          aria-label={t('complaint.list.allStatuses')}
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
         >
           <option value="">{t('complaint.list.allStatuses')}</option>
@@ -81,6 +85,7 @@ export function ComplaintsList() {
         <select
           value={category}
           onChange={(e) => resetPageAnd(setCategory)(e.target.value)}
+          aria-label={t('complaint.list.allCategories')}
           className="h-9 rounded-md border border-input bg-background px-2 text-sm"
         >
           <option value="">{t('complaint.list.allCategories')}</option>
@@ -130,14 +135,18 @@ export function ComplaintsList() {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
+                <td colSpan={5} className="px-4 py-4">
+                  <SkeletonRows />
                 </td>
               </tr>
             ) : isError ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-destructive">
-                  {t('complaint.list.loadError')}
+                <td colSpan={5} className="px-4 py-4">
+                  <QueryError
+                    message={t('complaint.list.loadError')}
+                    onRetry={() => refetch()}
+                    isFetching={isFetching}
+                  />
                 </td>
               </tr>
             ) : rows.length === 0 ? (

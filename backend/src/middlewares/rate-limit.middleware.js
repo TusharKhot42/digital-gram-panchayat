@@ -1,0 +1,68 @@
+import rateLimit from 'express-rate-limit';
+import { errorResponse } from '@dgp/shared';
+import { env } from '../config/env.js';
+
+/**
+ * Build a rate limiter that returns our uniform error envelope on 429. Limiting is skipped
+ * under NODE_ENV=test so the integration suites aren't throttled; the limiter's behaviour is
+ * covered by a dedicated test that constructs its own instance.
+ *
+ * @param {{ windowMs?: number, max: number, code?: string, message?: string }} opts
+ */
+export function createRateLimiter({ windowMs = env.RATE_LIMIT_WINDOW_MS, max, code, message }) {
+  return rateLimit({
+    windowMs,
+    max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: () => env.NODE_ENV === 'test',
+    handler(_req, res) {
+      res
+        .status(429)
+        .json(
+          errorResponse(
+            code || 'RATE_LIMITED',
+            message || 'Too many requests. Please try again later.',
+          ),
+        );
+    },
+  });
+}
+
+// Authentication (login/register/lookup) — very strict; blunts credential stuffing.
+export const authLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  code: 'AUTH_RATE_LIMITED',
+  message: 'Too many attempts. Please wait a few minutes and try again.',
+});
+
+// Complaint submission — medium.
+export const complaintLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  code: 'COMPLAINT_RATE_LIMITED',
+  message: 'You have filed many complaints recently. Please try again later.',
+});
+
+// Certificate application — medium.
+export const certificateLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  code: 'CERTIFICATE_RATE_LIMITED',
+  message: 'You have submitted many applications recently. Please try again later.',
+});
+
+// Broadcast notification — strict (fans out SMS/voice to many recipients).
+export const broadcastLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  code: 'BROADCAST_RATE_LIMITED',
+  message: 'Too many broadcasts. Please wait before sending another.',
+});
+
+// General API traffic — standard ceiling applied app-wide.
+export const generalLimiter = createRateLimiter({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.RATE_LIMIT_MAX,
+});
