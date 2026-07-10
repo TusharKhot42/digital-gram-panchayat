@@ -194,6 +194,33 @@
  * @property {string} [updatedBy]
  * @property {string} createdAt
  * @property {string} updatedAt
+ *
+ * @typedef {Object} DashboardMetrics
+ * @property {number} totalCitizens
+ * @property {number} totalComplaints
+ * @property {number} pendingComplaints
+ * @property {number} resolvedComplaints
+ * @property {number} totalNotices
+ * @property {number} totalSchemes
+ * @property {number} totalCertificates
+ * @property {number} approvedCertificates
+ * @property {number} totalTaxRecords
+ * @property {number} outstandingTax
+ *
+ * @typedef {Object} ChartDatum
+ * @property {string} label
+ * @property {number} value
+ *
+ * @typedef {Object} DashboardCharts
+ * @property {ChartDatum[]} complaintsByCategory
+ * @property {ChartDatum[]} complaintsByStatus
+ *
+ * @typedef {Object} ActivityItem
+ * @property {string} id
+ * @property {string} action
+ * @property {string} entity
+ * @property {'citizen'|'officer'|'system'} actorRole
+ * @property {string} at
  */
 
 export {};

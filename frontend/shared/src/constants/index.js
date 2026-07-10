@@ -110,6 +110,9 @@ export const CERT_TYPE_FIELDS = {
 
 export const MAX_CERT_DOCUMENTS = 5;
 
+// Chart palette for the officer dashboard (recharts).
+export const CHART_COLORS = ['#15803d', '#f97316', '#ef4444', '#3b82f6', '#a855f7', '#64748b'];
+
 export const STATUS_COLOR_MAP = {
   Pending: 'red',
   Submitted: 'red',
