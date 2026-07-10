@@ -8,7 +8,7 @@ const services = [
   { to: '/notices', label: 'nav.notices', icon: Megaphone, live: true },
   { to: '/schemes', label: 'nav.schemes', icon: Landmark, live: true },
   { to: '/tax', label: 'nav.tax', icon: Receipt, live: true },
-  { to: '/dakhala', label: 'nav.dakhala', icon: FileText, live: false },
+  { to: '/dakhala', label: 'nav.dakhala', icon: FileText, live: true },
   { to: '/profile', label: 'nav.profile', icon: User, live: true },
 ];
 

@@ -300,6 +300,80 @@
       "updateFailed": "Could not update amount"
     }
   },
+  "dakhala": {
+    "type": {
+      "Residence": "Residence Certificate",
+      "Income": "Income Certificate",
+      "Birth": "Birth Certificate",
+      "Death": "Death Certificate",
+      "Character": "Character Certificate",
+      "Other": "Other Certificate"
+    },
+    "status": {
+      "Submitted": "Submitted",
+      "UnderReview": "Under review",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "field": {
+      "fullName": "Full name",
+      "address": "Residential address",
+      "yearsOfResidence": "Years of residence",
+      "purpose": "Purpose",
+      "annualIncome": "Annual income (₹)",
+      "occupation": "Occupation",
+      "childName": "Child name",
+      "dateOfBirth": "Date of birth",
+      "placeOfBirth": "Place of birth",
+      "fatherName": "Father's name",
+      "motherName": "Mother's name",
+      "deceasedName": "Name of deceased",
+      "dateOfDeath": "Date of death",
+      "placeOfDeath": "Place of death",
+      "relationToApplicant": "Relation to applicant",
+      "details": "Details"
+    },
+    "dash": {
+      "title": "Certificate Applications",
+      "search": "Search application id…",
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "application": "Application",
+      "type": "Type",
+      "date": "Applied",
+      "status": "Status",
+      "empty": "No applications match your filters.",
+      "loadError": "Could not load applications",
+      "total": "{{total}} applications",
+      "prev": "Prev",
+      "next": "Next"
+    },
+    "review": {
+      "back": "Back to applications",
+      "notFound": "Application not found",
+      "details": "Application details",
+      "documents": "Supporting documents",
+      "document": "Document",
+      "noDocuments": "No documents were uploaded.",
+      "pdf": "Generated certificate",
+      "openPdf": "Open certificate PDF",
+      "rejectionReason": "Rejection reason",
+      "decision": "Decision",
+      "decided": "This application has already been decided.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approveConfirm": "Generate and issue the {{type}}? The citizen will be notified.",
+      "confirmApprove": "Confirm approve",
+      "approved": "Application approved — certificate generated",
+      "rejectTitle": "Reject application",
+      "reasonPlaceholder": "Reason for rejection (shared with the citizen)…",
+      "confirmReject": "Confirm reject",
+      "rejected": "Application rejected",
+      "cancel": "Cancel",
+      "actionFailed": "Action failed",
+      "timeline": "Status timeline"
+    }
+  },
   "auth": {
     "officerSignIn": "Officer sign in",
     "email": "Email",

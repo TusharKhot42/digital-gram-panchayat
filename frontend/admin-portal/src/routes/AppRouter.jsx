@@ -12,6 +12,8 @@ import { SchemeForm } from '@/features/schemes/SchemeForm';
 import { TaxList } from '@/features/tax/TaxList';
 import { TaxForm } from '@/features/tax/TaxForm';
 import { TaxDetail } from '@/features/tax/TaxDetail';
+import { CertificateList } from '@/features/dakhala/CertificateList';
+import { CertificateReview } from '@/features/dakhala/CertificateReview';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -35,6 +37,8 @@ const router = createBrowserRouter([
           { path: 'tax', element: <TaxList /> },
           { path: 'tax/new', element: <TaxForm /> },
           { path: 'tax/:id', element: <TaxDetail /> },
+          { path: 'dakhala', element: <CertificateList /> },
+          { path: 'dakhala/:id', element: <CertificateReview /> },
           { path: '*', element: <NotFound /> },
         ],
       },

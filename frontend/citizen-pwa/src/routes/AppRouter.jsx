@@ -14,6 +14,9 @@ import { NoticeDetail } from '@/features/notices/pages/NoticeDetail';
 import { SchemeList } from '@/features/schemes/pages/SchemeList';
 import { SchemeDetail } from '@/features/schemes/pages/SchemeDetail';
 import { TaxSummary } from '@/features/tax/pages/TaxSummary';
+import { ApplicationList } from '@/features/dakhala/pages/ApplicationList';
+import { ApplyCertificate } from '@/features/dakhala/pages/ApplyCertificate';
+import { ApplicationDetail } from '@/features/dakhala/pages/ApplicationDetail';
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
@@ -37,6 +40,9 @@ const router = createBrowserRouter([
           { path: 'schemes', element: <SchemeList /> },
           { path: 'schemes/:id', element: <SchemeDetail /> },
           { path: 'tax', element: <TaxSummary /> },
+          { path: 'dakhala', element: <ApplicationList /> },
+          { path: 'dakhala/new', element: <ApplyCertificate /> },
+          { path: 'dakhala/:id', element: <ApplicationDetail /> },
           { path: 'profile', element: <Profile /> },
           { path: '*', element: <NotFound /> },
         ],

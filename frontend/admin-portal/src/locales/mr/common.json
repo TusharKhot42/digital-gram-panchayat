@@ -300,6 +300,80 @@
       "updateFailed": "रक्कम अद्यतनित करता आली नाही"
     }
   },
+  "dakhala": {
+    "type": {
+      "Residence": "रहिवासी दाखला",
+      "Income": "उत्पन्न दाखला",
+      "Birth": "जन्म दाखला",
+      "Death": "मृत्यू दाखला",
+      "Character": "चारित्र्य दाखला",
+      "Other": "इतर दाखला"
+    },
+    "status": {
+      "Submitted": "सादर केले",
+      "UnderReview": "पुनरावलोकनाधीन",
+      "Approved": "मंजूर",
+      "Rejected": "नाकारले"
+    },
+    "field": {
+      "fullName": "पूर्ण नाव",
+      "address": "राहण्याचा पत्ता",
+      "yearsOfResidence": "वास्तव्याची वर्षे",
+      "purpose": "उद्देश",
+      "annualIncome": "वार्षिक उत्पन्न (₹)",
+      "occupation": "व्यवसाय",
+      "childName": "बालकाचे नाव",
+      "dateOfBirth": "जन्मतारीख",
+      "placeOfBirth": "जन्मस्थळ",
+      "fatherName": "वडिलांचे नाव",
+      "motherName": "आईचे नाव",
+      "deceasedName": "मृत व्यक्तीचे नाव",
+      "dateOfDeath": "मृत्यूची तारीख",
+      "placeOfDeath": "मृत्यूचे ठिकाण",
+      "relationToApplicant": "अर्जदाराशी नाते",
+      "details": "तपशील"
+    },
+    "dash": {
+      "title": "दाखला अर्ज",
+      "search": "अर्ज आयडी शोधा…",
+      "allStatuses": "सर्व स्थिती",
+      "allTypes": "सर्व प्रकार",
+      "application": "अर्ज",
+      "type": "प्रकार",
+      "date": "अर्ज दिनांक",
+      "status": "स्थिती",
+      "empty": "तुमच्या फिल्टरशी जुळणारा अर्ज नाही.",
+      "loadError": "अर्ज लोड करता आले नाहीत",
+      "total": "{{total}} अर्ज",
+      "prev": "मागील",
+      "next": "पुढील"
+    },
+    "review": {
+      "back": "अर्जांकडे परत",
+      "notFound": "अर्ज सापडला नाही",
+      "details": "अर्ज तपशील",
+      "documents": "आधारभूत कागदपत्रे",
+      "document": "कागदपत्र",
+      "noDocuments": "कोणतीही कागदपत्रे अपलोड केलेली नाहीत.",
+      "pdf": "तयार केलेला दाखला",
+      "openPdf": "दाखला PDF उघडा",
+      "rejectionReason": "नाकारण्याचे कारण",
+      "decision": "निर्णय",
+      "decided": "या अर्जावर आधीच निर्णय झाला आहे.",
+      "approve": "मंजूर करा",
+      "reject": "नाकारा",
+      "approveConfirm": "{{type}} तयार करून द्यायचा? नागरिकाला सूचित केले जाईल.",
+      "confirmApprove": "मंजुरीची पुष्टी करा",
+      "approved": "अर्ज मंजूर — दाखला तयार झाला",
+      "rejectTitle": "अर्ज नाकारा",
+      "reasonPlaceholder": "नाकारण्याचे कारण (नागरिकाला दिसेल)…",
+      "confirmReject": "नकाराची पुष्टी करा",
+      "rejected": "अर्ज नाकारला",
+      "cancel": "रद्द करा",
+      "actionFailed": "क्रिया अयशस्वी",
+      "timeline": "स्थिती कालरेखा"
+    }
+  },
   "auth": {
     "officerSignIn": "अधिकारी लॉगिन",
     "email": "ईमेल",

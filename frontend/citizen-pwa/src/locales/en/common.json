@@ -189,5 +189,71 @@
       "dueBy": "Due by",
       "history": "Payment history"
     }
+  },
+  "dakhala": {
+    "type": {
+      "Residence": "Residence Certificate",
+      "Income": "Income Certificate",
+      "Birth": "Birth Certificate",
+      "Death": "Death Certificate",
+      "Character": "Character Certificate",
+      "Other": "Other Certificate"
+    },
+    "status": {
+      "Submitted": "Submitted",
+      "UnderReview": "Under review",
+      "Approved": "Approved",
+      "Rejected": "Rejected"
+    },
+    "field": {
+      "fullName": "Full name",
+      "address": "Residential address",
+      "yearsOfResidence": "Years of residence",
+      "purpose": "Purpose",
+      "annualIncome": "Annual income (₹)",
+      "occupation": "Occupation",
+      "childName": "Child name",
+      "dateOfBirth": "Date of birth",
+      "placeOfBirth": "Place of birth",
+      "fatherName": "Father's name",
+      "motherName": "Mother's name",
+      "deceasedName": "Name of deceased",
+      "dateOfDeath": "Date of death",
+      "placeOfDeath": "Place of death",
+      "relationToApplicant": "Relation to applicant",
+      "details": "Details"
+    },
+    "list": {
+      "title": "My Certificates",
+      "apply": "Apply",
+      "empty": "You haven't applied for any certificates yet.",
+      "loadError": "Could not load applications"
+    },
+    "form": {
+      "back": "Back to certificates",
+      "title": "Apply for a certificate",
+      "type": "Certificate type",
+      "documents": "Supporting documents",
+      "addDoc": "Add document",
+      "removeDoc": "Remove document",
+      "maxDocs": "You can add up to {{count}} documents",
+      "docType": "Only PDF or image files are allowed",
+      "docTooLarge": "Each file must be 5MB or smaller",
+      "required": "This field is required",
+      "submit": "Submit application",
+      "submitted": "Application {{id}} submitted",
+      "failed": "Could not submit application"
+    },
+    "detail": {
+      "back": "Back to certificates",
+      "notFound": "Application not found",
+      "details": "Application details",
+      "documents": "Documents",
+      "document": "Document",
+      "timeline": "Status timeline",
+      "download": "Download certificate",
+      "downloadFailed": "Could not download certificate",
+      "rejected": "Rejected"
+    }
   }
 }
