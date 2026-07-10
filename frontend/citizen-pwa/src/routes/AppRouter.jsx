@@ -1,30 +1,75 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AppLayout } from '@/layouts/AppLayout';
-import { Home } from '@/pages/Home';
-import { NotFound } from '@/pages/NotFound';
-import { Login } from '@/features/auth/pages/Login';
-import { Register } from '@/features/auth/pages/Register';
-import { Profile } from '@/features/auth/pages/Profile';
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
-import { ComplaintHistory } from '@/features/complaints/pages/ComplaintHistory';
-import { NewComplaint } from '@/features/complaints/pages/NewComplaint';
-import { ComplaintDetail } from '@/features/complaints/pages/ComplaintDetail';
-import { NoticeList } from '@/features/notices/pages/NoticeList';
-import { NoticeDetail } from '@/features/notices/pages/NoticeDetail';
-import { SchemeList } from '@/features/schemes/pages/SchemeList';
-import { SchemeDetail } from '@/features/schemes/pages/SchemeDetail';
-import { TaxSummary } from '@/features/tax/pages/TaxSummary';
-import { ApplicationList } from '@/features/dakhala/pages/ApplicationList';
-import { ApplyCertificate } from '@/features/dakhala/pages/ApplyCertificate';
-import { ApplicationDetail } from '@/features/dakhala/pages/ApplicationDetail';
-import { NotificationCenter } from '@/features/notifications/pages/NotificationCenter';
-import { NotificationDetail } from '@/features/notifications/pages/NotificationDetail';
-import { NotificationSettings } from '@/features/notifications/pages/NotificationSettings';
+import { LoadingScreen } from '@/components/LoadingScreen';
+
+// Route-level code splitting: each screen (and its heavy deps — Leaflet maps, forms, etc.)
+// loads on demand, keeping the initial app-shell bundle small. Named exports are adapted
+// to the default export that React.lazy expects.
+const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: m[name] })));
+
+const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
+const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
+const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
+const Register = lazyNamed(() => import('@/features/auth/pages/Register'), 'Register');
+const Profile = lazyNamed(() => import('@/features/auth/pages/Profile'), 'Profile');
+const ComplaintHistory = lazyNamed(
+  () => import('@/features/complaints/pages/ComplaintHistory'),
+  'ComplaintHistory',
+);
+const NewComplaint = lazyNamed(
+  () => import('@/features/complaints/pages/NewComplaint'),
+  'NewComplaint',
+);
+const ComplaintDetail = lazyNamed(
+  () => import('@/features/complaints/pages/ComplaintDetail'),
+  'ComplaintDetail',
+);
+const NoticeList = lazyNamed(() => import('@/features/notices/pages/NoticeList'), 'NoticeList');
+const NoticeDetail = lazyNamed(
+  () => import('@/features/notices/pages/NoticeDetail'),
+  'NoticeDetail',
+);
+const SchemeList = lazyNamed(() => import('@/features/schemes/pages/SchemeList'), 'SchemeList');
+const SchemeDetail = lazyNamed(
+  () => import('@/features/schemes/pages/SchemeDetail'),
+  'SchemeDetail',
+);
+const TaxSummary = lazyNamed(() => import('@/features/tax/pages/TaxSummary'), 'TaxSummary');
+const ApplicationList = lazyNamed(
+  () => import('@/features/dakhala/pages/ApplicationList'),
+  'ApplicationList',
+);
+const ApplyCertificate = lazyNamed(
+  () => import('@/features/dakhala/pages/ApplyCertificate'),
+  'ApplyCertificate',
+);
+const ApplicationDetail = lazyNamed(
+  () => import('@/features/dakhala/pages/ApplicationDetail'),
+  'ApplicationDetail',
+);
+const NotificationCenter = lazyNamed(
+  () => import('@/features/notifications/pages/NotificationCenter'),
+  'NotificationCenter',
+);
+const NotificationDetail = lazyNamed(
+  () => import('@/features/notifications/pages/NotificationDetail'),
+  'NotificationDetail',
+);
+const NotificationSettings = lazyNamed(
+  () => import('@/features/notifications/pages/NotificationSettings'),
+  'NotificationSettings',
+);
+const Settings = lazyNamed(() => import('@/features/settings/pages/Settings'), 'Settings');
+
+// Suspense wrapper so a lazily-loaded route shows a spinner while its chunk downloads.
+const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
-  { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> },
+  { path: '/login', element: page(<Login />) },
+  { path: '/register', element: page(<Register />) },
 
   // Everything else requires a session.
   {
@@ -34,23 +79,24 @@ const router = createBrowserRouter([
         path: '/',
         element: <AppLayout />,
         children: [
-          { index: true, element: <Home /> },
-          { path: 'complaints', element: <ComplaintHistory /> },
-          { path: 'complaints/new', element: <NewComplaint /> },
-          { path: 'complaints/:id', element: <ComplaintDetail /> },
-          { path: 'notices', element: <NoticeList /> },
-          { path: 'notices/:id', element: <NoticeDetail /> },
-          { path: 'schemes', element: <SchemeList /> },
-          { path: 'schemes/:id', element: <SchemeDetail /> },
-          { path: 'tax', element: <TaxSummary /> },
-          { path: 'dakhala', element: <ApplicationList /> },
-          { path: 'dakhala/new', element: <ApplyCertificate /> },
-          { path: 'dakhala/:id', element: <ApplicationDetail /> },
-          { path: 'notifications', element: <NotificationCenter /> },
-          { path: 'notifications/:id', element: <NotificationDetail /> },
-          { path: 'settings', element: <NotificationSettings /> },
-          { path: 'profile', element: <Profile /> },
-          { path: '*', element: <NotFound /> },
+          { index: true, element: page(<Home />) },
+          { path: 'complaints', element: page(<ComplaintHistory />) },
+          { path: 'complaints/new', element: page(<NewComplaint />) },
+          { path: 'complaints/:id', element: page(<ComplaintDetail />) },
+          { path: 'notices', element: page(<NoticeList />) },
+          { path: 'notices/:id', element: page(<NoticeDetail />) },
+          { path: 'schemes', element: page(<SchemeList />) },
+          { path: 'schemes/:id', element: page(<SchemeDetail />) },
+          { path: 'tax', element: page(<TaxSummary />) },
+          { path: 'dakhala', element: page(<ApplicationList />) },
+          { path: 'dakhala/new', element: page(<ApplyCertificate />) },
+          { path: 'dakhala/:id', element: page(<ApplicationDetail />) },
+          { path: 'notifications', element: page(<NotificationCenter />) },
+          { path: 'notifications/settings', element: page(<NotificationSettings />) },
+          { path: 'notifications/:id', element: page(<NotificationDetail />) },
+          { path: 'settings', element: page(<Settings />) },
+          { path: 'profile', element: page(<Profile />) },
+          { path: '*', element: page(<NotFound />) },
         ],
       },
     ],

@@ -40,7 +40,7 @@ export function NotificationCenter() {
             {t('notif.markAll')}
           </Button>
           <Button asChild variant="ghost" size="icon" aria-label={t('notif.settings')}>
-            <Link to="/settings">
+            <Link to="/notifications/settings">
               <Settings className="h-5 w-5" />
             </Link>
           </Button>

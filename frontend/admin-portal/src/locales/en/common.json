@@ -1,5 +1,9 @@
 {
   "appName": "DGP Admin Portal",
+  "conn": {
+    "offline": "You're offline — some data may be out of date and changes can't be saved.",
+    "reconnected": "Back online"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "complaints": "Complaints",

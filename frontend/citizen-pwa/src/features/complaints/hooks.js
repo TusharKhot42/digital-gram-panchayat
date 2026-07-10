@@ -24,7 +24,7 @@ export function useComplaint(id) {
 export function useCreateComplaint() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input) => complaintService.create(input),
+    mutationFn: ({ input, idempotencyKey }) => complaintService.create(input, idempotencyKey),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['complaints', 'mine'] });
     },

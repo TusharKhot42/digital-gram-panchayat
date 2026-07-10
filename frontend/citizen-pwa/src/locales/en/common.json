@@ -34,6 +34,70 @@
     "online": "Online",
     "offline": "Offline"
   },
+  "pwa": {
+    "offlineReady": "Ready to work offline",
+    "updateAvailable": "A new version is available",
+    "reload": "Reload",
+    "later": "Later",
+    "offlineBanner": "You're offline — showing saved data. New complaints will be sent when you're back online.",
+    "offlineTitle": "You're offline",
+    "offlineBody": "This page needs the internet and hasn't been saved for offline use. Reconnect and try again.",
+    "retry": "Retry",
+    "install": "Install",
+    "installTitle": "Install the app",
+    "installBody": "Add DGP to your home screen for quick, offline-ready access.",
+    "dismiss": "Dismiss",
+    "syncedComplaints": "{{count}} queued complaint sent",
+    "syncedComplaints_other": "{{count}} queued complaints sent"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "notifications": "Notifications",
+    "help": "Help & FAQ",
+    "helpBody": "Answers to common questions about using the app.",
+    "onboarding": "Getting started",
+    "onboardingBody": "Watch the quick intro again.",
+    "replay": "Replay onboarding",
+    "faq": {
+      "offline": {
+        "q": "Can I use the app without internet?",
+        "a": "Yes. Notices, schemes, tax and your profile are saved for offline reading, and complaints filed offline are sent automatically when you reconnect."
+      },
+      "complaint": {
+        "q": "How do I file a complaint?",
+        "a": "Open Complaints, tap New, choose a category, describe the issue and optionally add photos and your location, then submit."
+      },
+      "language": {
+        "q": "How do I change the language?",
+        "a": "Choose Marathi or English here in Settings, or use the language button in the top bar."
+      },
+      "install": {
+        "q": "How do I install the app?",
+        "a": "When prompted, tap Install to add DGP to your home screen for quick, app-like access."
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "complaints": {
+      "title": "Raise your voice",
+      "body": "File complaints about roads, water, sanitation and more — and track them to resolution."
+    },
+    "services": {
+      "title": "All services in one place",
+      "body": "Notices, government schemes, tax dues and certificate applications, right on your phone."
+    },
+    "offline": {
+      "title": "Works offline",
+      "body": "Read saved information without internet. Complaints filed offline are sent automatically when you're back online."
+    }
+  },
   "notif": {
     "title": "Notifications",
     "markAll": "Mark all read",
@@ -119,6 +183,7 @@
       "required": "This field is required",
       "submit": "Submit complaint",
       "submitted": "Complaint {{id}} submitted",
+      "queuedOffline": "You're offline — complaint saved and will be sent automatically when you reconnect.",
       "failed": "Could not submit complaint"
     },
     "history": {

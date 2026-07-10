@@ -144,6 +144,36 @@ export const STATUS_COLOR_MAP = {
   Rejected: 'grey',
 };
 
+// ---- PWA / Offline (M10) ----
+// Cache bucket names (Workbox runtime caching + app shell). Kept here so the SW config
+// and any in-app cache inspection reference the exact same strings.
+export const PWA_CACHE_NAMES = {
+  appShell: 'dgp-app-shell',
+  static: 'dgp-static-assets',
+  images: 'dgp-images',
+  api: 'dgp-api',
+};
+
+// Background-sync tag registered on the service worker for queued complaint submissions.
+export const SYNC_TAG_COMPLAINTS = 'dgp-sync-complaints';
+
+// IndexedDB database used by the citizen PWA to queue offline complaint submissions.
+export const OFFLINE_DB = {
+  name: 'dgp-offline',
+  version: 1,
+  stores: {
+    // Queue of complaint submissions made while offline. Each record carries its own
+    // Idempotency-Key so a replay on reconnect can never create a duplicate.
+    complaintQueue: 'complaint-queue',
+  },
+};
+
+// API path prefixes and their runtime caching strategy — read offline where the blueprint
+// requires (Notices/Schemes/Tax/Profile via NetworkFirst; static via StaleWhileRevalidate).
+export const API_CACHE_ROUTES = {
+  networkFirst: ['/api/v1/notices', '/api/v1/schemes', '/api/v1/tax', '/api/v1/auth/me'],
+};
+
 export const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024; // 5MB, per SRS 4.2.1
 export const MAX_COMPLAINT_PHOTOS = 3;
 
