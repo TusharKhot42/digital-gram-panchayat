@@ -94,11 +94,11 @@ export const PaymentStatus = {
 };
 
 export const CertType = {
-  Income: 'Income',
   Residence: 'Residence',
-  Caste: 'Caste',
+  Income: 'Income',
   Birth: 'Birth',
   Death: 'Death',
+  Character: 'Character',
   Other: 'Other',
 };
 

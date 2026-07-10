@@ -58,7 +58,57 @@ export const PAYMENT_STATUS_COLOR_MAP = {
   Paid: 'green',
 };
 
-export const CERT_TYPES = ['Income', 'Residence', 'Caste', 'Birth', 'Death', 'Other'];
+export const CERT_TYPES = ['Residence', 'Income', 'Birth', 'Death', 'Character', 'Other'];
+
+export const DAKHALA_STATUSES = ['Submitted', 'UnderReview', 'Approved', 'Rejected'];
+
+export const DAKHALA_STATUS_COLOR_MAP = {
+  Submitted: 'red',
+  UnderReview: 'orange',
+  Approved: 'green',
+  Rejected: 'grey',
+};
+
+// Dynamic per-type application fields. Backend validates required keys against these;
+// the citizen form renders inputs from the same map (single source).
+export const CERT_TYPE_FIELDS = {
+  Residence: [
+    { key: 'fullName', label: 'Full name', type: 'text', required: true },
+    { key: 'address', label: 'Residential address', type: 'textarea', required: true },
+    { key: 'yearsOfResidence', label: 'Years of residence', type: 'number', required: true },
+    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+  ],
+  Income: [
+    { key: 'fullName', label: 'Full name', type: 'text', required: true },
+    { key: 'annualIncome', label: 'Annual income (₹)', type: 'number', required: true },
+    { key: 'occupation', label: 'Occupation', type: 'text', required: true },
+    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+  ],
+  Birth: [
+    { key: 'childName', label: 'Child name', type: 'text', required: true },
+    { key: 'dateOfBirth', label: 'Date of birth', type: 'date', required: true },
+    { key: 'placeOfBirth', label: 'Place of birth', type: 'text', required: true },
+    { key: 'fatherName', label: "Father's name", type: 'text', required: true },
+    { key: 'motherName', label: "Mother's name", type: 'text', required: true },
+  ],
+  Death: [
+    { key: 'deceasedName', label: 'Name of deceased', type: 'text', required: true },
+    { key: 'dateOfDeath', label: 'Date of death', type: 'date', required: true },
+    { key: 'placeOfDeath', label: 'Place of death', type: 'text', required: true },
+    { key: 'relationToApplicant', label: 'Relation to applicant', type: 'text', required: true },
+  ],
+  Character: [
+    { key: 'fullName', label: 'Full name', type: 'text', required: true },
+    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+  ],
+  Other: [
+    { key: 'fullName', label: 'Full name', type: 'text', required: true },
+    { key: 'details', label: 'Details', type: 'textarea', required: true },
+    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+  ],
+};
+
+export const MAX_CERT_DOCUMENTS = 5;
 
 export const STATUS_COLOR_MAP = {
   Pending: 'red',

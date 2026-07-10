@@ -42,6 +42,36 @@ export async function uploadImages(files, folder = 'complaints') {
 }
 
 /**
+ * Upload several attachments (PDF/image) preserving order + original names.
+ * @param {Array<{ buffer: Buffer, mimetype: string, originalname: string }>} files
+ * @param {string} [folder]
+ * @returns {Promise<Array<{ url: string, type: 'pdf'|'image', name: string }>>}
+ */
+export async function uploadAttachments(files, folder = 'certificates') {
+  if (!files || files.length === 0) return [];
+  return Promise.all(
+    files.map(async (file) => {
+      const { url, type } = await uploadAttachment(file, folder);
+      return { url, type, name: file.originalname };
+    }),
+  );
+}
+
+/**
+ * Upload a raw PDF buffer (e.g. a generated certificate).
+ * @param {Buffer} buffer
+ * @param {string} [folder]
+ * @returns {Promise<string>} secure URL
+ */
+export async function uploadPdfBuffer(buffer, folder = 'certificates') {
+  const { url } = await uploadAttachment(
+    { buffer, mimetype: 'application/pdf', originalname: 'certificate.pdf' },
+    folder,
+  );
+  return url;
+}
+
+/**
  * Upload a single attachment that may be a PDF or an image. Uses Cloudinary `auto`
  * resource type so PDFs are stored as raw files; falls back to a mock URL when unconfigured.
  * @param {{ buffer: Buffer, mimetype: string, originalname: string }} file

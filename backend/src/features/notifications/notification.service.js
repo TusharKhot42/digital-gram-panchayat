@@ -67,6 +67,20 @@ export async function notifyComplaintStatus({ mobile, complaintId, status, entit
 }
 
 /**
+ * @param {{ mobile?: string, applicationId: string, status: string, reason?: string, entityId?: string }} params
+ */
+export async function notifyDakhalaStatus({ mobile, applicationId, status, reason, entityId }) {
+  if (!mobile) return { status: 'skipped' };
+  const suffix = status === 'Rejected' && reason ? ` Reason: ${reason}` : '';
+  return sendSms({
+    to: mobile,
+    body: `Your certificate application ${applicationId} is now "${status}".${suffix}`,
+    purpose: NotificationPurpose.DakhalaUpdate,
+    relatedEntity: entityId ? { kind: 'dakhala', id: entityId } : undefined,
+  });
+}
+
+/**
  * Broadcast a notice summary to every active citizen with a mobile, on the chosen
  * channel(s). Returns dispatch stats. Batched async in mock mode (blueprint scale
  * hardening is M9); logs one Notification per recipient per channel.

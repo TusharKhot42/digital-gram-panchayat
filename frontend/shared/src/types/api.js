@@ -165,6 +165,35 @@
  * @property {string} [updatedBy]
  * @property {string} createdAt
  * @property {string} updatedAt
+ *
+ * @typedef {Object} UploadedDocument
+ * @property {string} url
+ * @property {'pdf'|'image'} type
+ * @property {string} [name]
+ *
+ * @typedef {Object} DakhalaStatusEntry
+ * @property {'Submitted'|'UnderReview'|'Approved'|'Rejected'} status
+ * @property {string} by
+ * @property {string} at
+ * @property {string} [note]
+ *
+ * @typedef {Object} CertificateApplication
+ * @property {string} id
+ * @property {string} applicationId  - human id, e.g. DKH-2026-000001
+ * @property {string} citizenId
+ * @property {'Residence'|'Income'|'Birth'|'Death'|'Character'|'Other'} certificateType
+ * @property {Object.<string, any>} applicationData
+ * @property {UploadedDocument[]} uploadedDocuments
+ * @property {'Submitted'|'UnderReview'|'Approved'|'Rejected'} status
+ * @property {string} [rejectionReason]
+ * @property {string} [pdfUrl]
+ * @property {DakhalaStatusEntry[]} history
+ * @property {string} [reviewedBy]
+ * @property {boolean} isActive
+ * @property {string} createdBy
+ * @property {string} [updatedBy]
+ * @property {string} createdAt
+ * @property {string} updatedAt
  */
 
 export {};

@@ -95,6 +95,32 @@ export function uploadNoticeAttachment(req, res, next) {
 }
 
 /**
+ * Accept up to 5 certificate supporting documents (PDF/image, <=5MB each) under `documents`.
+ */
+export function uploadCertificateDocuments(req, res, next) {
+  const handler = attachmentUpload.array('documents', 5);
+  handler(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'Each document must be 5MB or smaller'));
+      return;
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      next(new AppError(400, 'TOO_MANY_FILES', 'You can upload at most 5 documents'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Document upload failed'));
+  });
+}
+
+/**
  * Accept a single optional image (<=5MB) under `image` — reuses the image-only filter.
  */
 export function uploadSingleImage(req, res, next) {
