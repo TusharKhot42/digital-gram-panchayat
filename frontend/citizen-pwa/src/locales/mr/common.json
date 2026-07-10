@@ -16,7 +16,13 @@
     "welcome": "स्वागत आहे",
     "comingSoon": "सेवा उपलब्ध झाल्यावर इथे दिसतील.",
     "pickService": "सेवा निवडा",
-    "soon": "लवकरच"
+    "soon": "लवकरच",
+    "activeComplaints": "सुरू असलेल्या तक्रारी",
+    "pendingCertificates": "प्रलंबित दाखले",
+    "outstandingDues": "थकित कर",
+    "latestNotices": "नवीनतम सूचना",
+    "latestSchemes": "नवीनतम योजना",
+    "seeAll": "सर्व पहा"
   },
   "notFound": {
     "title": "पान सापडले नाही",

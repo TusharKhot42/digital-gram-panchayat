@@ -16,7 +16,13 @@
     "welcome": "Welcome",
     "comingSoon": "Services will appear here as they go live.",
     "pickService": "Choose a service",
-    "soon": "Soon"
+    "soon": "Soon",
+    "activeComplaints": "Active complaints",
+    "pendingCertificates": "Pending certificates",
+    "outstandingDues": "Outstanding tax dues",
+    "latestNotices": "Latest notices",
+    "latestSchemes": "Latest schemes",
+    "seeAll": "See all"
   },
   "notFound": {
     "title": "Page not found",
