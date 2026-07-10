@@ -1,0 +1,38 @@
+On it. First check git state, then push, then set up local run.
+cd "E:\Digital Gram Panchayat" && echo "=BRANCH=" && git branch --show-current && echo "=REMOTES=" && git remote -v && echo "=LOG=" && git log --oneline -14 && echo "=STATUS=" && git status --short | head
+
+Probed local MongoDB port 27017 (plain net)
+cd "E:\Digital Gram Panchayat" && node -e "const net=require('net'); const s=net.connect(27017,'127.0.0.1'); s.setTimeout(1500); s.on('connect',()=>{console.log('MONGO_LOCAL: running');s.destroy();process.exit(0)}); s.on('timeout',()=>{console.log('MONGO_LOCAL: not reachable');process.exit(0)}); s.on('error',()=>{console.log('MONGO_LOCAL: not running');process.exit(0)});"
+
+Seed an officer account for admin portal login
+cd "E:\Digital Gram Panchayat" && SEED_ADMIN_EMAIL=admin@dgp.local SEED_ADMIN_PASSWORD=Admin@123 npm run seed:admin -w backend 2>&1 | tail -8
+Officer seeded. Launch all three apps in the background.
+
+Starting backend + citizen PWA + admin portal concurrently running
+cd "E:\Digital Gram Panchayat" && npm run dev
+
+Verified backend health + both frontend ports respond
+sleep 18 && cd "E:\Digital Gram Panchayat" && echo "=BACKEND HEALTH=" && curl -s http://localhost:5000/api/v1/health && echo "" && echo "=CITIZEN 5173=" && curl -s -o /dev/null -w "%{http_code}" http://localhost:5173 && echo "" && echo "=ADMIN 5174=" && curl -s -o /dev/null -w "%{http_code}" http://localhost:5174 && echo ""
+
+All three live. Quick end-to-end smoke: officer login through the running stack
+Smoke test officer login against running backend
+cd "E:\Digital Gram Panchayat" && echo "=OFFICER LOGIN=" && curl -s -X POST http://localhost:5000/api/v1/admin/login -H "Content-Type: application/json" -d '{"email":"admin@dgp.local","password":"Admin@123"}' | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const j=JSON.parse(d);console.log('success:',j.success,'| role:',j.data?.user?.role,'| token:',j.data?.token?'issued':'none')})"
+
+
+cd "E:\Digital Gram Panchayat"
+
+# 1. one-time: install (already done)
+npm install
+
+# 2. one-time: env files (already created; recreate if cloning fresh)
+#    backend/.env needs MONGODB_URI + JWT_SECRET (>=32 chars)
+#    frontend/citizen-pwa/.env.local, frontend/admin-portal/.env.local
+
+# 3. make sure MongoDB is running (local mongod OR set Atlas URI in backend/.env)
+
+# 4. one-time: seed an officer to log into the admin portal
+$env:SEED_ADMIN_EMAIL="admin@dgp.local"; $env:SEED_ADMIN_PASSWORD="Admin@123"
+npm run seed:admin -w backend
+
+# 5. start everything
+npm run dev

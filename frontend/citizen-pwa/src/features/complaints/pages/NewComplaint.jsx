@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { generateIdempotencyKey } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import { enqueueComplaint } from '@/services/offline-queue';
 import { CategorySelect } from '../components/CategorySelect';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { GpsCapture } from '../components/GpsCapture';
@@ -25,17 +27,47 @@ export function NewComplaint() {
   } = useForm();
 
   const onSubmit = async (values) => {
-    try {
-      const created = await createMutation.mutateAsync({
-        ...values,
-        images,
-        latitude: coords?.latitude,
-        longitude: coords?.longitude,
-        accuracy: coords?.accuracy,
+    const payload = {
+      ...values,
+      images,
+      latitude: coords?.latitude,
+      longitude: coords?.longitude,
+      accuracy: coords?.accuracy,
+    };
+    // One key minted per submission attempt, reused on every replay so the backend
+    // idempotency middleware collapses retries into a single complaint.
+    const idempotencyKey = generateIdempotencyKey('cmp');
+
+    // Offline: park it in IndexedDB; the background sync hook delivers it on reconnect.
+    if (!navigator.onLine) {
+      await enqueueComplaint({
+        id: idempotencyKey,
+        idempotencyKey,
+        payload,
+        createdAt: Date.now(),
       });
+      toast.success(t('complaint.form.queuedOffline'));
+      navigate('/complaints', { replace: true });
+      return;
+    }
+
+    try {
+      const created = await createMutation.mutateAsync({ input: payload, idempotencyKey });
       toast.success(t('complaint.form.submitted', { id: created.complaintId }));
       navigate(`/complaints/${created.id}`, { replace: true });
     } catch (err) {
+      // Lost connectivity mid-request (no server response) → queue instead of failing.
+      if (!err.response) {
+        await enqueueComplaint({
+          id: idempotencyKey,
+          idempotencyKey,
+          payload,
+          createdAt: Date.now(),
+        });
+        toast.success(t('complaint.form.queuedOffline'));
+        navigate('/complaints', { replace: true });
+        return;
+      }
       toast.error(err.response?.data?.error?.message || t('complaint.form.failed'));
     }
   };

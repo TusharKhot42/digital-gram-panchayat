@@ -220,6 +220,7 @@ export async function approve(id, officerId) {
 
   await audit(officerId, ROLES.OFFICER, 'dakhala.approve', app, before, { status: 'Approved' });
   await notifyDakhalaStatus({
+    recipientId: app.citizenId,
     mobile: citizen?.mobile,
     applicationId: app.applicationId,
     status: 'Approved',
@@ -259,6 +260,7 @@ export async function reject(id, officerId, reason) {
 
   const citizen = await User.findById(app.citizenId).select('mobile');
   await notifyDakhalaStatus({
+    recipientId: app.citizenId,
     mobile: citizen?.mobile,
     applicationId: app.applicationId,
     status: 'Rejected',

@@ -12,6 +12,10 @@ import { taxRouter, adminTaxRouter } from './features/tax/tax.routes.js';
 import { dakhalaRouter, adminDakhalaRouter } from './features/certificates/certificate.routes.js';
 import { adminDashboardRouter } from './features/dashboard/dashboard.routes.js';
 import { adminUserRouter } from './features/users/user.routes.js';
+import {
+  notificationRouter,
+  adminNotificationRouter,
+} from './features/notifications/notification.routes.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
@@ -45,6 +49,8 @@ export function createApp() {
   apiRouter.use('/admin/dakhala', adminDakhalaRouter);
   apiRouter.use('/admin/dashboard', adminDashboardRouter);
   apiRouter.use('/admin/users', adminUserRouter);
+  apiRouter.use('/notifications', notificationRouter);
+  apiRouter.use('/admin/notifications', adminNotificationRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);
 
   app.use(notFoundMiddleware);

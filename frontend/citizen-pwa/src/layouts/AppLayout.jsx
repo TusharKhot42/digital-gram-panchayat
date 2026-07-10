@@ -2,6 +2,9 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
+import { OfflineBanner } from '@/components/OfflineBanner';
+import { InstallPrompt } from '@/components/InstallPrompt';
+import { BackgroundSync } from '@/components/BackgroundSync';
 
 export function AppLayout() {
   const location = useLocation();
@@ -9,6 +12,7 @@ export function AppLayout() {
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <Header />
+      <OfflineBanner />
 
       <main className="flex-1 pb-20">
         <AnimatePresence mode="wait">
@@ -25,6 +29,8 @@ export function AppLayout() {
       </main>
 
       <BottomNav />
+      <InstallPrompt />
+      <BackgroundSync />
     </div>
   );
 }

@@ -5,3 +5,4 @@ export * from './notice.schema.js';
 export * from './scheme.schema.js';
 export * from './tax.schema.js';
 export * from './certificate.schema.js';
+export * from './notification.schema.js';

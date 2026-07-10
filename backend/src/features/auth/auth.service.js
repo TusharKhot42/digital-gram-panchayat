@@ -3,6 +3,7 @@ import { User } from './user.model.js';
 import { hashPassword, comparePassword } from '../../utils/password.js';
 import { signToken } from '../../utils/jwt.js';
 import { AppError } from '../../utils/app-error.js';
+import { notifyWelcome } from '../notifications/notification.service.js';
 
 /**
  * Register a citizen. Mobile must be unique. Returns sanitized user + JWT.
@@ -24,6 +25,9 @@ export async function registerCitizen(input) {
     address: input.address,
     passwordHash,
   });
+
+  // Fire a welcome in-app notification. Never let it break registration.
+  await notifyWelcome({ recipientId: user.id, fullName: user.fullName }).catch(() => {});
 
   const token = signToken({ id: user.id, role: user.role });
   return { user: user.toJSON(), token };

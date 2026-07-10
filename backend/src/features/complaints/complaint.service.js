@@ -166,9 +166,11 @@ export async function updateStatus(id, officer, payload) {
 
   const citizen = await User.findById(complaint.citizenId).select('mobile');
   await notifyComplaintStatus({
+    recipientId: complaint.citizenId,
     mobile: citizen?.mobile,
     complaintId: complaint.complaintId,
     status: complaint.status,
+    entityId: complaint.id,
   });
 
   return complaint.toJSON();

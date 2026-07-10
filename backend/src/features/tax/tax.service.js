@@ -4,6 +4,7 @@ import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { writeAudit } from '../audit/audit.service.js';
+import { notifyTaxUpdate } from '../notifications/notification.service.js';
 
 function buildTaxRecordId(year, seq) {
   return `TAX-${year}-${String(seq).padStart(6, '0')}`;
@@ -176,6 +177,17 @@ export async function addPayment(id, officerId, payload) {
   await record.save();
 
   await audit(officerId, 'tax.payment', record, null, { amount, amountPaid: record.amountPaid });
+
+  // Notify the citizen a payment was recorded (in-app + SMS). Non-blocking.
+  const citizen = await User.findById(record.citizenId).select('mobile');
+  await notifyTaxUpdate({
+    recipientId: record.citizenId,
+    mobile: citizen?.mobile,
+    taxRecordId: record.taxRecordId,
+    message: `A payment of ₹${amount} was recorded for ${record.taxRecordId}. Balance: ₹${record.balance}.`,
+    entityId: record.id,
+  }).catch(() => {});
+
   return record.toJSON();
 }
 
