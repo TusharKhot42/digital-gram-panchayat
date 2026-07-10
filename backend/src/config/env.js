@@ -31,6 +31,9 @@ const envSchema = z.object({
   MSG91_API_KEY: z.string().optional(),
   MSG91_SENDER_ID: z.string().optional(),
 
+  // Optional, pluggable email provider (none by default).
+  EMAIL_PROVIDER: z.string().optional(),
+
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
 

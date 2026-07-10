@@ -71,14 +71,44 @@ export const SchemeCategory = {
 export const NotificationStatus = {
   Queued: 'queued',
   Sent: 'sent',
+  Delivered: 'delivered',
   Failed: 'failed',
 };
 
 export const NotificationPurpose = {
   Otp: 'otp',
+  Welcome: 'welcome',
   ComplaintUpdate: 'complaintUpdate',
   NoticeBroadcast: 'noticeBroadcast',
   DakhalaUpdate: 'dakhalaUpdate',
+  TaxUpdate: 'taxUpdate',
+  Broadcast: 'broadcast',
+};
+
+// Delivery channels. inApp is always stored (the notification centre); the rest are
+// external dispatches routed through the provider abstraction.
+export const NotificationChannel = {
+  InApp: 'inApp',
+  Sms: 'sms',
+  Voice: 'voice',
+  Email: 'email',
+};
+
+export const NotificationType = {
+  Info: 'info',
+  Success: 'success',
+  Warning: 'warning',
+  Error: 'error',
+};
+
+export const NotificationModule = {
+  Auth: 'auth',
+  Complaint: 'complaint',
+  Notice: 'notice',
+  Scheme: 'scheme',
+  Tax: 'tax',
+  Certificate: 'certificate',
+  System: 'system',
 };
 
 // Property = Gharpatti (घरपट्टी), Water = PaniPatti (पाणीपट्टी) — Marathi labels live in i18n.

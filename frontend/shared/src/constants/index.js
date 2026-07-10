@@ -113,6 +113,27 @@ export const MAX_CERT_DOCUMENTS = 5;
 // Chart palette for the officer dashboard (recharts).
 export const CHART_COLORS = ['#15803d', '#f97316', '#ef4444', '#3b82f6', '#a855f7', '#64748b'];
 
+// ---- Notifications ----
+export const NOTIFICATION_CHANNELS = ['inApp', 'sms', 'voice', 'email'];
+export const NOTIFICATION_TYPES = ['info', 'success', 'warning', 'error'];
+export const NOTIFICATION_STATUSES = ['queued', 'sent', 'delivered', 'failed'];
+export const NOTIFICATION_MODULES = [
+  'auth',
+  'complaint',
+  'notice',
+  'scheme',
+  'tax',
+  'certificate',
+  'system',
+];
+export const NOTIFICATION_MAX_RETRIES = 3;
+export const NOTIFICATION_TYPE_COLOR_MAP = {
+  info: 'blue',
+  success: 'green',
+  warning: 'orange',
+  error: 'red',
+};
+
 export const STATUS_COLOR_MAP = {
   Pending: 'red',
   Submitted: 'red',

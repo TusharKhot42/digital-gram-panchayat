@@ -102,13 +102,26 @@
  *
  * @typedef {Object} Notification
  * @property {string} id
- * @property {string} to
- * @property {'sms'|'voice'} channel
- * @property {'otp'|'complaintUpdate'|'noticeBroadcast'|'dakhalaUpdate'} purpose
- * @property {string} body
- * @property {'queued'|'sent'|'failed'} status
+ * @property {string} notificationId
+ * @property {string} recipientId
+ * @property {'citizen'|'officer'} recipientRole
+ * @property {string} title
+ * @property {string} message
+ * @property {'info'|'success'|'warning'|'error'} type
+ * @property {'auth'|'complaint'|'notice'|'scheme'|'tax'|'certificate'|'system'} module
+ * @property {'inApp'|'sms'|'voice'|'email'} channel
+ * @property {string[]} channels
+ * @property {string} purpose
+ * @property {string} [entityId]
+ * @property {string} [to]
+ * @property {'queued'|'sent'|'delivered'|'failed'} status
+ * @property {number} retryCount
+ * @property {string} [providerMessageId]
  * @property {string} [error]
- * @property {string} at
+ * @property {string} [deliveredAt]
+ * @property {string} [readAt]
+ * @property {Object.<string, any>} [metadata]
+ * @property {string} createdAt
  *
  * @typedef {Object} Scheme
  * @property {string} id
