@@ -26,6 +26,11 @@ pnpm-debug.log*
 # Testing / coverage
 coverage/
 .nyc_output/
+e2e/report/
+e2e/test-results/
+test-results/
+playwright-report/
+.playwright/
 
 # PWA generated
 frontend/citizen-pwa/dev-dist/

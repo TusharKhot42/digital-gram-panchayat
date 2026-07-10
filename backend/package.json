@@ -9,6 +9,7 @@
     "start": "node src/server.js",
     "build": "echo \"backend is plain ES-module JS — no build step\" && exit 0",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
+    "test:coverage": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage",
     "seed:admin": "node scripts/seed-admin.js",
     "clean": "echo \"nothing to clean\" && exit 0"
   },

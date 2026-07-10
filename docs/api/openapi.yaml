@@ -1,0 +1,801 @@
+openapi: 3.1.0
+info:
+  title: Digital Gram Panchayat API
+  version: 1.0.0
+  description: >
+    REST API for the Digital Gram Panchayat platform — citizen services (complaints,
+    notices, schemes, tax, certificates, notifications) and the officer portal.
+    All responses use a uniform envelope: `{ "success": true, "data": ... }` on success,
+    `{ "success": false, "error": { "code", "message", "fields"? } }` on failure.
+  license:
+    name: Proprietary
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local development
+  - url: https://api.dgp.example.gov.in/api/v1
+    description: Production (placeholder)
+
+tags:
+  - name: Health
+  - name: Auth (Citizen)
+  - name: Auth (Officer)
+  - name: Complaints (Citizen)
+  - name: Complaints (Officer)
+  - name: Notices (Public)
+  - name: Notices (Officer)
+  - name: Schemes (Public)
+  - name: Schemes (Officer)
+  - name: Tax (Citizen)
+  - name: Tax (Officer)
+  - name: Certificates (Citizen)
+  - name: Certificates (Officer)
+  - name: Dashboard (Officer)
+  - name: Users (Officer)
+  - name: Notifications (Citizen)
+  - name: Notifications (Officer)
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Liveness probe
+      security: []
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              example: { success: true, data: { status: ok, uptime: 1234.5 } }
+
+  # ---------------- Auth (Citizen) ----------------
+  /auth/register:
+    post:
+      tags: [Auth (Citizen)]
+      summary: Register a citizen (rate-limited)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterInput' }
+            example:
+              fullName: Ramesh Patil
+              mobile: '9876543210'
+              password: Secret@123
+              village: Sakharale
+              address: Main Road
+      responses:
+        '201':
+          description: Registered; returns user + JWT
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  user:
+                    { id: '665f...', fullName: Ramesh Patil, mobile: '9876543210', role: citizen }
+                  token: eyJhbGciOi...
+        '409': { $ref: '#/components/responses/Conflict' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/login:
+    post:
+      tags: [Auth (Citizen)]
+      summary: Citizen login (rate-limited)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginInput' }
+            example: { mobile: '9876543210', password: Secret@123 }
+      responses:
+        '200':
+          description: Authenticated; returns user + JWT
+          content:
+            application/json:
+              example:
+                { success: true, data: { user: { id: '665f...', role: citizen }, token: eyJ... } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /auth/profile:
+    get:
+      tags: [Auth (Citizen)]
+      summary: Current citizen profile
+      responses:
+        '200': { $ref: '#/components/responses/UserOk' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [Auth (Citizen)]
+      summary: Update citizen profile
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileUpdate' }
+      responses:
+        '200': { $ref: '#/components/responses/UserOk' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/logout:
+    post:
+      tags: [Auth (Citizen)]
+      summary: Logout (client clears token)
+      responses:
+        '200': { description: Acknowledged }
+
+  # ---------------- Auth (Officer) ----------------
+  /admin/login:
+    post:
+      tags: [Auth (Officer)]
+      summary: Officer login (rate-limited)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: { email: admin@dgp.local, password: Admin@123 }
+      responses:
+        '200':
+          description: Authenticated officer + JWT
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/profile:
+    get:
+      tags: [Auth (Officer)]
+      summary: Current officer profile
+      responses:
+        '200': { $ref: '#/components/responses/UserOk' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Complaints ----------------
+  /complaints:
+    post:
+      tags: [Complaints (Citizen)]
+      summary: File a complaint (rate-limited, supports Idempotency-Key, multipart)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                category:
+                  { type: string, enum: [Road, WaterSupply, Sanitation, Electricity, Other] }
+                title: { type: string }
+                description: { type: string }
+                address: { type: string }
+                latitude: { type: number }
+                longitude: { type: number }
+                images:
+                  type: array
+                  items: { type: string, format: binary }
+              required: [category, title, description]
+      responses:
+        '201': { description: Complaint created, returns complaintId }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /complaints/mine:
+    get:
+      tags: [Complaints (Citizen)]
+      summary: List my complaints (paginated)
+      parameters:
+        [{ $ref: '#/components/parameters/Page' }, { $ref: '#/components/parameters/Limit' }]
+      responses:
+        '200': { $ref: '#/components/responses/PaginatedOk' }
+  /complaints/{id}:
+    get:
+      tags: [Complaints (Citizen)]
+      summary: Complaint detail (owner or officer)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Complaint }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/complaints:
+    get:
+      tags: [Complaints (Officer)]
+      summary: List all complaints (filter/sort/paginate)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/PaginatedOk' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/complaints/{id}:
+    get:
+      tags: [Complaints (Officer)]
+      summary: Complaint detail (officer)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Complaint }
+  /admin/complaints/{id}/status:
+    patch:
+      tags: [Complaints (Officer)]
+      summary: Update complaint status (audited, notifies citizen)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            example: { status: Resolved, remarks: Fixed by ward team }
+      responses:
+        '200': { description: Updated complaint }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Notices ----------------
+  /notices:
+    get:
+      tags: [Notices (Public)]
+      summary: Published notices (public, paginated)
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/PaginatedOk' }
+  /notices/{id}:
+    get:
+      tags: [Notices (Public)]
+      summary: Notice detail (public)
+      security: []
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Notice }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/notices:
+    get:
+      tags: [Notices (Officer)]
+      summary: List notices incl. drafts
+      responses: { '200': { $ref: '#/components/responses/PaginatedOk' } }
+    post:
+      tags: [Notices (Officer)]
+      summary: Create a notice (multipart, optional attachment)
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                content: { type: string }
+                category: { type: string }
+                isPublished: { type: boolean }
+                attachment: { type: string, format: binary }
+              required: [title, content]
+      responses: { '201': { description: Created notice } }
+  /admin/notices/{id}:
+    get:
+      tags: [Notices (Officer)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Notice } }
+    put:
+      tags: [Notices (Officer)]
+      summary: Update a notice
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Updated } }
+    delete:
+      tags: [Notices (Officer)]
+      summary: Soft-delete a notice
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Deleted } }
+  /admin/notices/{id}/publish:
+    patch:
+      tags: [Notices (Officer)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Published } }
+  /admin/notices/{id}/archive:
+    patch:
+      tags: [Notices (Officer)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Archived } }
+  /admin/notices/{id}/broadcast:
+    post:
+      tags: [Notices (Officer)]
+      summary: Broadcast a notice via SMS/voice (rate-limited)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            example: { sms: true, voice: false, summary: Water supply cut on Monday }
+      responses:
+        '200': { description: Dispatch stats }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  # ---------------- Schemes ----------------
+  /schemes:
+    get:
+      tags: [Schemes (Public)]
+      security: []
+      summary: Published schemes (public, paginated)
+      responses: { '200': { $ref: '#/components/responses/PaginatedOk' } }
+  /schemes/{id}:
+    get:
+      tags: [Schemes (Public)]
+      security: []
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        { '200': { description: Scheme }, '404': { $ref: '#/components/responses/NotFound' } }
+  /admin/schemes:
+    get:
+      {
+        tags: [Schemes (Officer)],
+        responses: { '200': { $ref: '#/components/responses/PaginatedOk' } },
+      }
+    post:
+      tags: [Schemes (Officer)]
+      summary: Create a scheme (multipart, optional image)
+      responses: { '201': { description: Created } }
+  /admin/schemes/{id}:
+    get:
+      {
+        tags: [Schemes (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Scheme } },
+      }
+    put:
+      {
+        tags: [Schemes (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Updated } },
+      }
+    delete:
+      {
+        tags: [Schemes (Officer)],
+        summary: Soft-delete a scheme,
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Deleted } },
+      }
+  /admin/schemes/{id}/publish:
+    patch:
+      {
+        tags: [Schemes (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Published } },
+      }
+  /admin/schemes/{id}/unpublish:
+    patch:
+      {
+        tags: [Schemes (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Unpublished } },
+      }
+
+  # ---------------- Tax ----------------
+  /tax/mine:
+    get:
+      tags: [Tax (Citizen)]
+      summary: My tax records (filterable)
+      parameters:
+        - { name: financialYear, in: query, schema: { type: string } }
+        - { name: taxType, in: query, schema: { type: string, enum: [Property, Water] } }
+      responses: { '200': { $ref: '#/components/responses/PaginatedOk' } }
+  /admin/tax/lookup:
+    get:
+      tags: [Tax (Officer)]
+      summary: Look up a citizen by mobile
+      parameters: [{ name: mobile, in: query, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: Citizen summary }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/tax:
+    get:
+      {
+        tags: [Tax (Officer)],
+        responses: { '200': { $ref: '#/components/responses/PaginatedOk' } },
+      }
+    post:
+      tags: [Tax (Officer)]
+      summary: Create a tax record
+      requestBody:
+        content:
+          application/json:
+            example:
+              {
+                citizenId: '665f...',
+                taxType: Property,
+                financialYear: '2024-2025',
+                amount: 5000,
+                propertyNumber: PROP-1,
+              }
+      responses: { '201': { description: Created; balance = amount, status Unpaid } }
+  /admin/tax/{id}:
+    get:
+      {
+        tags: [Tax (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Tax record } },
+      }
+    patch:
+      {
+        tags: [Tax (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Updated (history appended) } },
+      }
+  /admin/tax/{id}/history:
+    get:
+      {
+        tags: [Tax (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Payments + change log } },
+      }
+  /admin/tax/{id}/payment:
+    post:
+      tags: [Tax (Officer)]
+      summary: Record a payment (recomputes balance + status)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        content:
+          application/json:
+            example: { amount: 2000, mode: cash, receiptNo: RCPT-9 }
+      responses:
+        '200': { description: Updated record }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  # ---------------- Certificates (Dakhala) ----------------
+  /dakhala:
+    post:
+      tags: [Certificates (Citizen)]
+      summary: Apply for a certificate (rate-limited, multipart documents)
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                certificateType:
+                  { type: string, enum: [Residence, Income, Birth, Death, Character, Other] }
+                applicationData: { type: string, description: JSON string of type-specific fields }
+                documents: { type: array, items: { type: string, format: binary } }
+              required: [certificateType, applicationData]
+      responses:
+        '201': { description: Application created (DKH id, status Submitted) }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /dakhala/mine:
+    get:
+      {
+        tags: [Certificates (Citizen)],
+        responses: { '200': { $ref: '#/components/responses/PaginatedOk' } },
+      }
+  /dakhala/{id}:
+    get:
+      tags: [Certificates (Citizen)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        { '200': { description: Application }, '403': { $ref: '#/components/responses/Forbidden' } }
+  /dakhala/{id}/certificate:
+    get:
+      tags: [Certificates (Citizen)]
+      summary: Download the approved certificate PDF URL
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Certificate URL }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/dakhala:
+    get:
+      {
+        tags: [Certificates (Officer)],
+        responses: { '200': { $ref: '#/components/responses/PaginatedOk' } },
+      }
+  /admin/dakhala/{id}:
+    get:
+      {
+        tags: [Certificates (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Application } },
+      }
+    delete:
+      {
+        tags: [Certificates (Officer)],
+        summary: Soft-delete an application,
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Soft-deleted } },
+      }
+  /admin/dakhala/{id}/review:
+    patch:
+      {
+        tags: [Certificates (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: UnderReview } },
+      }
+  /admin/dakhala/{id}/approve:
+    patch:
+      tags: [Certificates (Officer)]
+      summary: Approve (generates PDF, notifies, audits)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Approved } }
+  /admin/dakhala/{id}/reject:
+    patch:
+      tags: [Certificates (Officer)]
+      summary: Reject (reason required)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { content: { application/json: { example: { reason: Incomplete documents } } } }
+      responses:
+        {
+          '200': { description: Rejected },
+          '400': { $ref: '#/components/responses/ValidationError' },
+        }
+
+  # ---------------- Dashboard ----------------
+  /admin/dashboard/metrics:
+    get:
+      {
+        tags: [Dashboard (Officer)],
+        summary: Aggregated counts,
+        responses: { '200': { description: Metrics } },
+      }
+  /admin/dashboard/charts:
+    get:
+      {
+        tags: [Dashboard (Officer)],
+        summary: Complaint distributions,
+        responses: { '200': { description: Charts } },
+      }
+  /admin/dashboard/activity:
+    get:
+      {
+        tags: [Dashboard (Officer)],
+        summary: Recent audit activity,
+        responses: { '200': { description: Activity feed } },
+      }
+
+  # ---------------- Users ----------------
+  /admin/users:
+    get:
+      tags: [Users (Officer)]
+      summary: List users (role/status/search/paginate)
+      parameters:
+        - { name: role, in: query, schema: { type: string, enum: [citizen, officer] } }
+        - { name: status, in: query, schema: { type: string, enum: [active, inactive] } }
+        - { name: q, in: query, schema: { type: string } }
+      responses: { '200': { $ref: '#/components/responses/PaginatedOk' } }
+  /admin/users/{id}:
+    get:
+      tags: [Users (Officer)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        { '200': { description: User }, '404': { $ref: '#/components/responses/NotFound' } }
+  /admin/users/{id}/status:
+    patch:
+      tags: [Users (Officer)]
+      summary: Activate/deactivate a user (cannot self-deactivate)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { content: { application/json: { example: { status: inactive } } } }
+      responses:
+        '200': { description: Updated }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  # ---------------- Notifications ----------------
+  /notifications:
+    get:
+      tags: [Notifications (Citizen)]
+      summary: My notifications (paginated, unreadOnly filter)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { name: unreadOnly, in: query, schema: { type: boolean } }
+      responses: { '200': { $ref: '#/components/responses/PaginatedOk' } }
+  /notifications/unread-count:
+    get:
+      {
+        tags: [Notifications (Citizen)],
+        responses: { '200': { description: '{ unread: number }' } },
+      }
+  /notifications/read-all:
+    patch:
+      {
+        tags: [Notifications (Citizen)],
+        summary: Mark all read,
+        responses: { '200': { description: OK } },
+      }
+  /notifications/{id}:
+    get:
+      tags: [Notifications (Citizen)]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        {
+          '200': { description: Notification },
+          '403': { $ref: '#/components/responses/Forbidden' },
+          '404': { $ref: '#/components/responses/NotFound' },
+        }
+  /notifications/{id}/read:
+    patch:
+      {
+        tags: [Notifications (Citizen)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Marked read } },
+      }
+  /admin/notifications:
+    get:
+      {
+        tags: [Notifications (Officer)],
+        summary: List all (filters),
+        responses: { '200': { $ref: '#/components/responses/PaginatedOk' } },
+      }
+  /admin/notifications/stats:
+    get: { tags: [Notifications (Officer)], responses: { '200': { description: Delivery stats } } }
+  /admin/notifications/broadcast:
+    post:
+      tags: [Notifications (Officer)]
+      summary: Broadcast to all citizens (rate-limited)
+      requestBody:
+        {
+          content:
+            {
+              application/json:
+                {
+                  example:
+                    { title: Update, message: Office closed tomorrow, channels: [inApp, sms] },
+                },
+            },
+        }
+      responses:
+        '200': { description: Recipient count }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/notifications/{id}:
+    get:
+      {
+        tags: [Notifications (Officer)],
+        parameters: [{ $ref: '#/components/parameters/Id' }],
+        responses: { '200': { description: Notification } },
+      }
+  /admin/notifications/{id}/retry:
+    post:
+      tags: [Notifications (Officer)]
+      summary: Retry a failed notification
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        {
+          '200': { description: Re-queued },
+          '400': { $ref: '#/components/responses/ValidationError' },
+        }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string }
+      description: Reused across retries so a duplicate submission returns the original result.
+  schemas:
+    RegisterInput:
+      type: object
+      required: [fullName, mobile, password, village, address]
+      properties:
+        fullName: { type: string, minLength: 2 }
+        mobile: { type: string, pattern: '^[6-9]\d{9}$' }
+        password: { type: string, minLength: 6 }
+        village: { type: string }
+        address: { type: string }
+        email: { type: string, format: email }
+    LoginInput:
+      type: object
+      required: [mobile, password]
+      properties:
+        mobile: { type: string }
+        password: { type: string }
+    ProfileUpdate:
+      type: object
+      properties:
+        fullName: { type: string }
+        village: { type: string }
+        address: { type: string }
+        email: { type: string }
+    SuccessEnvelope:
+      type: object
+      properties:
+        success: { type: boolean, const: true }
+        data: {}
+    ErrorEnvelope:
+      type: object
+      properties:
+        success: { type: boolean, const: false }
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+            fields: { type: object, additionalProperties: { type: string } }
+    Pagination:
+      type: object
+      properties:
+        data: { type: array, items: {} }
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+  responses:
+    UserOk:
+      description: User payload
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+    PaginatedOk:
+      description: Paginated list
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/SuccessEnvelope'
+              - type: object
+                properties: { data: { $ref: '#/components/schemas/Pagination' } }
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example:
+            {
+              success: false,
+              error:
+                {
+                  code: VALIDATION_ERROR,
+                  message: Invalid request,
+                  fields: { mobile: Enter a valid 10-digit Indian mobile number },
+                },
+            }
+    Unauthorized:
+      description: Missing/invalid token or bad credentials
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example:
+            { success: false, error: { code: UNAUTHORIZED, message: Authentication required } }
+    Forbidden:
+      description: Authenticated but not allowed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example: { success: false, error: { code: FORBIDDEN, message: You do not have access } }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example: { success: false, error: { code: NOT_FOUND, message: Not found } }
+    Conflict:
+      description: Duplicate resource
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example:
+            {
+              success: false,
+              error: { code: DUPLICATE_KEY, message: This mobile is already registered },
+            }
+    RateLimited:
+      description: Too many requests
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+          example:
+            {
+              success: false,
+              error: { code: RATE_LIMITED, message: Too many requests. Please try again later. },
+            }
