@@ -16,6 +16,9 @@ import { CertificateList } from '@/features/dakhala/CertificateList';
 import { CertificateReview } from '@/features/dakhala/CertificateReview';
 import { UsersList } from '@/features/users/UsersList';
 import { UserProfile } from '@/features/users/UserProfile';
+import { NotificationsList } from '@/features/notifications/NotificationsList';
+import { NotificationDetail } from '@/features/notifications/NotificationDetail';
+import { BroadcastForm } from '@/features/notifications/BroadcastForm';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
           { path: 'dakhala/:id', element: <CertificateReview /> },
           { path: 'users', element: <UsersList /> },
           { path: 'users/:id', element: <UserProfile /> },
+          { path: 'notifications', element: <NotificationsList /> },
+          { path: 'notifications/broadcast', element: <BroadcastForm /> },
+          { path: 'notifications/:id', element: <NotificationDetail /> },
           { path: '*', element: <NotFound /> },
         ],
       },

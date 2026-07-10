@@ -34,6 +34,27 @@
     "online": "ऑनलाइन",
     "offline": "ऑफलाइन"
   },
+  "notif": {
+    "title": "सूचना",
+    "markAll": "सर्व वाचले म्हणून चिन्हांकित करा",
+    "settings": "सेटिंग्ज",
+    "search": "सूचना शोधा…",
+    "unreadOnly": "फक्त न वाचलेल्या दाखवा",
+    "empty": "तुमच्याकडे अद्याप कोणतीही सूचना नाही.",
+    "loadError": "सूचना लोड करता आल्या नाहीत",
+    "notFound": "सूचना सापडली नाही",
+    "back": "सूचनांकडे परत",
+    "viewComplaint": "तक्रार पहा →",
+    "viewCertificate": "दाखला पहा →",
+    "settings.title": "सूचना सेटिंग्ज",
+    "settings.subtitle": "तुम्हाला कशा प्रकारे सूचित करावे ते निवडा.",
+    "settings.inApp": "अ‍ॅपमधील सूचना",
+    "settings.sms": "SMS",
+    "settings.voice": "व्हॉइस कॉल",
+    "settings.email": "ईमेल",
+    "settings.save": "प्राधान्ये जतन करा",
+    "settings.saved": "प्राधान्ये जतन झाली"
+  },
   "auth": {
     "welcomeBack": "पुन्हा स्वागत आहे",
     "createAccount": "तुमचे खाते तयार करा",

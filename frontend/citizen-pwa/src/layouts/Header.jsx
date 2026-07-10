@@ -1,14 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { Moon, Sun, Wifi, WifiOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Moon, Sun, Wifi, WifiOff, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme, useLanguage } from '@/store';
 import { useOnline } from '@/hooks/useOnline';
+import { useUnreadCount } from '@/features/notifications/hooks';
 
 export function Header() {
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage } = useLanguage();
   const isOnline = useOnline();
+  const { data: unread = 0 } = useUnreadCount();
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -22,6 +25,17 @@ export function Header() {
         >
           {isOnline ? <Wifi className="h-4 w-4" /> : <WifiOff className="h-4 w-4" />}
         </span>
+
+        <Button asChild variant="ghost" size="icon" aria-label={t('notif.title')}>
+          <Link to="/notifications" className="relative">
+            <Bell className="h-5 w-5" />
+            {unread > 0 ? (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-destructive-foreground">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            ) : null}
+          </Link>
+        </Button>
 
         <Button variant="ghost" size="sm" onClick={toggleLanguage} aria-label="Toggle language">
           {language === 'mr' ? 'EN' : 'मर'}

@@ -34,6 +34,27 @@
     "online": "Online",
     "offline": "Offline"
   },
+  "notif": {
+    "title": "Notifications",
+    "markAll": "Mark all read",
+    "settings": "Settings",
+    "search": "Search notifications…",
+    "unreadOnly": "Show unread only",
+    "empty": "You have no notifications yet.",
+    "loadError": "Could not load notifications",
+    "notFound": "Notification not found",
+    "back": "Back to notifications",
+    "viewComplaint": "View complaint →",
+    "viewCertificate": "View certificate →",
+    "settings.title": "Notification settings",
+    "settings.subtitle": "Choose how you'd like to be notified.",
+    "settings.inApp": "In-app notifications",
+    "settings.sms": "SMS",
+    "settings.voice": "Voice call",
+    "settings.email": "Email",
+    "settings.save": "Save preferences",
+    "settings.saved": "Preferences saved"
+  },
   "auth": {
     "welcomeBack": "Welcome back",
     "createAccount": "Create your account",

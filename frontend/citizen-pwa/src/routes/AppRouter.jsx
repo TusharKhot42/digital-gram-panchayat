@@ -17,6 +17,9 @@ import { TaxSummary } from '@/features/tax/pages/TaxSummary';
 import { ApplicationList } from '@/features/dakhala/pages/ApplicationList';
 import { ApplyCertificate } from '@/features/dakhala/pages/ApplyCertificate';
 import { ApplicationDetail } from '@/features/dakhala/pages/ApplicationDetail';
+import { NotificationCenter } from '@/features/notifications/pages/NotificationCenter';
+import { NotificationDetail } from '@/features/notifications/pages/NotificationDetail';
+import { NotificationSettings } from '@/features/notifications/pages/NotificationSettings';
 
 const router = createBrowserRouter([
   // Public auth screens (no app shell / bottom nav).
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
           { path: 'dakhala', element: <ApplicationList /> },
           { path: 'dakhala/new', element: <ApplyCertificate /> },
           { path: 'dakhala/:id', element: <ApplicationDetail /> },
+          { path: 'notifications', element: <NotificationCenter /> },
+          { path: 'notifications/:id', element: <NotificationDetail /> },
+          { path: 'settings', element: <NotificationSettings /> },
           { path: 'profile', element: <Profile /> },
           { path: '*', element: <NotFound /> },
         ],

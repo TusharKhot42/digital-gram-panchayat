@@ -9,6 +9,7 @@ import {
   BookOpen,
   Users,
   BarChart3,
+  Bell,
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -23,6 +24,7 @@ const items = [
   { to: '/tax', label: 'nav.tax', icon: Landmark },
   { to: '/schemes', label: 'nav.schemes', icon: BookOpen },
   { to: '/users', label: 'nav.users', icon: Users },
+  { to: '/notifications', label: 'nav.notifications', icon: Bell },
   { to: '/reports', label: 'nav.reports', icon: BarChart3 },
 ];
 
