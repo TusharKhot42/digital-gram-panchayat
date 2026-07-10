@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Receipt } from 'lucide-react';
 import { formatCurrency } from '@dgp/shared';
+import { SkeletonList } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
 import { TaxCard } from '../components/TaxCard';
 import { useMyTax } from '../hooks';
 
@@ -11,7 +13,7 @@ export function TaxSummary() {
   const [financialYear, setFinancialYear] = useState('');
 
   // Unfiltered fetch to build the year list; filter client-side for a snappy toggle.
-  const { data, isLoading, isError } = useMyTax();
+  const { data, isLoading, isError, refetch, isFetching } = useMyTax();
 
   const records = useMemo(() => data?.data ?? [], [data]);
   const years = useMemo(
@@ -29,9 +31,13 @@ export function TaxSummary() {
       <h1 className="mb-4 text-lg font-semibold text-foreground">{t('tax.summary.title')}</h1>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+        <SkeletonList />
       ) : isError ? (
-        <p className="text-sm text-destructive">{t('tax.summary.loadError')}</p>
+        <QueryError
+          message={t('tax.summary.loadError')}
+          onRetry={() => refetch()}
+          isFetching={isFetching}
+        />
       ) : records.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <Receipt className="h-10 w-10 text-muted-foreground/50" />

@@ -34,6 +34,14 @@
     "online": "Online",
     "offline": "Offline"
   },
+  "error": {
+    "boundaryTitle": "Something went wrong",
+    "boundaryBody": "The app hit an unexpected error. Reloading usually fixes it.",
+    "reload": "Reload app",
+    "generic": "Couldn't load this. Please try again.",
+    "offline": "You're offline. Reconnect to load the latest.",
+    "retry": "Retry"
+  },
   "pwa": {
     "offlineReady": "Ready to work offline",
     "updateAvailable": "A new version is available",

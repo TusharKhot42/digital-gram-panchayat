@@ -3,6 +3,7 @@ import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
+import { broadcastLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './notification.controller.js';
 import {
   idParamValidation,
@@ -29,6 +30,12 @@ adminNotificationRouter.use(authenticate, authorize(ROLES.OFFICER));
 
 adminNotificationRouter.get('/', adminListValidation, validate, controller.adminList);
 adminNotificationRouter.get('/stats', controller.stats);
-adminNotificationRouter.post('/broadcast', broadcastValidation, validate, controller.broadcast);
+adminNotificationRouter.post(
+  '/broadcast',
+  broadcastLimiter,
+  broadcastValidation,
+  validate,
+  controller.broadcast,
+);
 adminNotificationRouter.get('/:id', idParamValidation, validate, controller.adminGetOne);
 adminNotificationRouter.post('/:id/retry', idParamValidation, validate, controller.retry);

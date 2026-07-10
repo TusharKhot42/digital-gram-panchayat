@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Megaphone } from 'lucide-react';
 import { NOTICE_CATEGORIES } from '@dgp/shared';
+import { SkeletonList } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
 import { NoticeCard } from '../components/NoticeCard';
 import { useNotices } from '../hooks';
 
@@ -11,7 +13,7 @@ export function NoticeList() {
   const [category, setCategory] = useState('');
 
   const params = { ...(q ? { q } : {}), ...(category ? { category } : {}) };
-  const { data, isLoading, isError } = useNotices(params);
+  const { data, isLoading, isError, refetch, isFetching } = useNotices(params);
   const notices = data?.data ?? [];
 
   return (
@@ -25,12 +27,14 @@ export function NoticeList() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t('notice.list.search')}
+            aria-label={t('notice.list.search')}
             className="h-11 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          aria-label={t('notice.list.allCategories')}
           className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
         >
           <option value="">{t('notice.list.allCategories')}</option>
@@ -43,9 +47,13 @@ export function NoticeList() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+        <SkeletonList />
       ) : isError ? (
-        <p className="text-sm text-destructive">{t('notice.list.loadError')}</p>
+        <QueryError
+          message={t('notice.list.loadError')}
+          onRetry={() => refetch()}
+          isFetching={isFetching}
+        />
       ) : notices.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <Megaphone className="h-10 w-10 text-muted-foreground/50" />

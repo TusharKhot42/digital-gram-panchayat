@@ -4,6 +4,13 @@
     "offline": "You're offline — some data may be out of date and changes can't be saved.",
     "reconnected": "Back online"
   },
+  "error": {
+    "boundaryTitle": "Something went wrong",
+    "boundaryBody": "The portal hit an unexpected error. Reloading usually fixes it.",
+    "reload": "Reload portal",
+    "generic": "Couldn't load this. Please try again.",
+    "retry": "Retry"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "complaints": "Complaints",

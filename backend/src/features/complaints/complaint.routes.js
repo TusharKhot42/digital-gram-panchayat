@@ -5,6 +5,7 @@ import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { uploadComplaintImages } from '../../middlewares/upload.middleware.js';
 import { idempotency } from '../../middlewares/idempotency.middleware.js';
+import { complaintLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './complaint.controller.js';
 import {
   createComplaintValidation,
@@ -18,6 +19,7 @@ export const complaintRouter = Router();
 
 complaintRouter.post(
   '/',
+  complaintLimiter,
   authenticate,
   authorize(ROLES.CITIZEN),
   // Idempotency runs after auth (so the key is scoped to an authenticated request) and

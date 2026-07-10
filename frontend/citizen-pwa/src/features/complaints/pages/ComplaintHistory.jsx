@@ -4,12 +4,14 @@ import { Plus, Inbox } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/StatusBadge';
+import { SkeletonList } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
 import { useMyComplaints } from '../hooks';
 
 export function ComplaintHistory() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data, isLoading, isError } = useMyComplaints();
+  const { data, isLoading, isError, refetch, isFetching } = useMyComplaints();
 
   const complaints = data?.data ?? [];
 
@@ -26,9 +28,13 @@ export function ComplaintHistory() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+        <SkeletonList />
       ) : isError ? (
-        <p className="text-sm text-destructive">{t('complaint.history.loadError')}</p>
+        <QueryError
+          message={t('complaint.history.loadError')}
+          onRetry={() => refetch()}
+          isFetching={isFetching}
+        />
       ) : complaints.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <Inbox className="h-10 w-10 text-muted-foreground/50" />

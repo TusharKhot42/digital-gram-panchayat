@@ -1,28 +1,57 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
-import { Home } from '@/pages/Home';
-import { NotFound } from '@/pages/NotFound';
-import { Login } from '@/features/auth/Login';
-import { ComplaintsList } from '@/features/complaints/ComplaintsList';
-import { ComplaintDetail } from '@/features/complaints/ComplaintDetail';
-import { NoticesList } from '@/features/notices/NoticesList';
-import { NoticeForm } from '@/features/notices/NoticeForm';
-import { SchemesList } from '@/features/schemes/SchemesList';
-import { SchemeForm } from '@/features/schemes/SchemeForm';
-import { TaxList } from '@/features/tax/TaxList';
-import { TaxForm } from '@/features/tax/TaxForm';
-import { TaxDetail } from '@/features/tax/TaxDetail';
-import { CertificateList } from '@/features/dakhala/CertificateList';
-import { CertificateReview } from '@/features/dakhala/CertificateReview';
-import { UsersList } from '@/features/users/UsersList';
-import { UserProfile } from '@/features/users/UserProfile';
-import { NotificationsList } from '@/features/notifications/NotificationsList';
-import { NotificationDetail } from '@/features/notifications/NotificationDetail';
-import { BroadcastForm } from '@/features/notifications/BroadcastForm';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { ProtectedRoute } from './ProtectedRoute';
 
+// Route-level code splitting: each screen loads on demand, keeping the initial bundle lean.
+const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: m[name] })));
+
+const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
+const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
+const Login = lazyNamed(() => import('@/features/auth/Login'), 'Login');
+const ComplaintsList = lazyNamed(
+  () => import('@/features/complaints/ComplaintsList'),
+  'ComplaintsList',
+);
+const ComplaintDetail = lazyNamed(
+  () => import('@/features/complaints/ComplaintDetail'),
+  'ComplaintDetail',
+);
+const NoticesList = lazyNamed(() => import('@/features/notices/NoticesList'), 'NoticesList');
+const NoticeForm = lazyNamed(() => import('@/features/notices/NoticeForm'), 'NoticeForm');
+const SchemesList = lazyNamed(() => import('@/features/schemes/SchemesList'), 'SchemesList');
+const SchemeForm = lazyNamed(() => import('@/features/schemes/SchemeForm'), 'SchemeForm');
+const TaxList = lazyNamed(() => import('@/features/tax/TaxList'), 'TaxList');
+const TaxForm = lazyNamed(() => import('@/features/tax/TaxForm'), 'TaxForm');
+const TaxDetail = lazyNamed(() => import('@/features/tax/TaxDetail'), 'TaxDetail');
+const CertificateList = lazyNamed(
+  () => import('@/features/dakhala/CertificateList'),
+  'CertificateList',
+);
+const CertificateReview = lazyNamed(
+  () => import('@/features/dakhala/CertificateReview'),
+  'CertificateReview',
+);
+const UsersList = lazyNamed(() => import('@/features/users/UsersList'), 'UsersList');
+const UserProfile = lazyNamed(() => import('@/features/users/UserProfile'), 'UserProfile');
+const NotificationsList = lazyNamed(
+  () => import('@/features/notifications/NotificationsList'),
+  'NotificationsList',
+);
+const NotificationDetail = lazyNamed(
+  () => import('@/features/notifications/NotificationDetail'),
+  'NotificationDetail',
+);
+const BroadcastForm = lazyNamed(
+  () => import('@/features/notifications/BroadcastForm'),
+  'BroadcastForm',
+);
+
+const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
+
 const router = createBrowserRouter([
-  { path: '/login', element: <Login /> },
+  { path: '/login', element: page(<Login />) },
   {
     element: <ProtectedRoute />,
     children: [
@@ -30,26 +59,26 @@ const router = createBrowserRouter([
         path: '/',
         element: <DashboardLayout />,
         children: [
-          { index: true, element: <Home /> },
-          { path: 'complaints', element: <ComplaintsList /> },
-          { path: 'complaints/:id', element: <ComplaintDetail /> },
-          { path: 'notices', element: <NoticesList /> },
-          { path: 'notices/new', element: <NoticeForm /> },
-          { path: 'notices/:id/edit', element: <NoticeForm /> },
-          { path: 'schemes', element: <SchemesList /> },
-          { path: 'schemes/new', element: <SchemeForm /> },
-          { path: 'schemes/:id/edit', element: <SchemeForm /> },
-          { path: 'tax', element: <TaxList /> },
-          { path: 'tax/new', element: <TaxForm /> },
-          { path: 'tax/:id', element: <TaxDetail /> },
-          { path: 'dakhala', element: <CertificateList /> },
-          { path: 'dakhala/:id', element: <CertificateReview /> },
-          { path: 'users', element: <UsersList /> },
-          { path: 'users/:id', element: <UserProfile /> },
-          { path: 'notifications', element: <NotificationsList /> },
-          { path: 'notifications/broadcast', element: <BroadcastForm /> },
-          { path: 'notifications/:id', element: <NotificationDetail /> },
-          { path: '*', element: <NotFound /> },
+          { index: true, element: page(<Home />) },
+          { path: 'complaints', element: page(<ComplaintsList />) },
+          { path: 'complaints/:id', element: page(<ComplaintDetail />) },
+          { path: 'notices', element: page(<NoticesList />) },
+          { path: 'notices/new', element: page(<NoticeForm />) },
+          { path: 'notices/:id/edit', element: page(<NoticeForm />) },
+          { path: 'schemes', element: page(<SchemesList />) },
+          { path: 'schemes/new', element: page(<SchemeForm />) },
+          { path: 'schemes/:id/edit', element: page(<SchemeForm />) },
+          { path: 'tax', element: page(<TaxList />) },
+          { path: 'tax/new', element: page(<TaxForm />) },
+          { path: 'tax/:id', element: page(<TaxDetail />) },
+          { path: 'dakhala', element: page(<CertificateList />) },
+          { path: 'dakhala/:id', element: page(<CertificateReview />) },
+          { path: 'users', element: page(<UsersList />) },
+          { path: 'users/:id', element: page(<UserProfile />) },
+          { path: 'notifications', element: page(<NotificationsList />) },
+          { path: 'notifications/broadcast', element: page(<BroadcastForm />) },
+          { path: 'notifications/:id', element: page(<NotificationDetail />) },
+          { path: '*', element: page(<NotFound />) },
         ],
       },
     ],
