@@ -71,5 +71,27 @@ export default [
       globals: { ...globals.jest, ...globals.node },
     },
   },
+  {
+    // Vitest setup + config files (browser + node + vitest globals).
+    files: ['frontend/*/src/test/**/*.{js,jsx}', '**/vitest.config.js'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node, ...globals.jest, vi: 'readonly' },
+    },
+  },
+  {
+    // Playwright E2E specs: browser callbacks run in the page, node runs the test.
+    files: ['e2e/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  {
+    // Node build/tooling scripts (ES module .mjs + scripts/ dirs).
+    files: ['**/*.mjs', '**/scripts/**/*.js'],
+    languageOptions: {
+      sourceType: 'module',
+      globals: { ...globals.node },
+    },
+  },
   prettierConfig,
 ];

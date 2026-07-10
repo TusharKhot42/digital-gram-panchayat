@@ -1,0 +1,72 @@
+import { logger } from '../../src/utils/logger.js';
+import {
+  uploadImages,
+  uploadAttachment,
+  uploadAttachments,
+  uploadPdfBuffer,
+} from '../../src/utils/upload.js';
+import * as configBarrel from '../../src/config/index.js';
+
+const imageFile = {
+  buffer: Buffer.from('fake-image'),
+  mimetype: 'image/png',
+  originalname: 'photo.png',
+};
+const pdfFile = {
+  buffer: Buffer.from('%PDF-1.4 fake'),
+  mimetype: 'application/pdf',
+  originalname: 'doc.pdf',
+};
+
+describe('logger', () => {
+  test('every level is callable without throwing', () => {
+    expect(() => {
+      logger.fatal('fatal');
+      logger.error('error', { a: 1 });
+      logger.warn('warn');
+      logger.info('info');
+      logger.debug('debug');
+      logger.trace('trace');
+    }).not.toThrow();
+  });
+});
+
+describe('upload (Cloudinary unconfigured -> deterministic mock URLs)', () => {
+  test('uploadImages returns one mock URL per file, preserving order', async () => {
+    const urls = await uploadImages([imageFile, imageFile], 'complaints');
+    expect(urls).toHaveLength(2);
+    urls.forEach((u) => expect(u).toMatch(/^https:\/\/mock\.cloudinary\.local\/complaints\//));
+  });
+
+  test('uploadImages on empty input returns []', async () => {
+    expect(await uploadImages([])).toEqual([]);
+    expect(await uploadImages(undefined)).toEqual([]);
+  });
+
+  test('uploadAttachment classifies pdf vs image', async () => {
+    const pdf = await uploadAttachment(pdfFile, 'certificates');
+    expect(pdf.type).toBe('pdf');
+    expect(pdf.url).toMatch(/\.pdf$/);
+    const img = await uploadAttachment(imageFile, 'notices');
+    expect(img.type).toBe('image');
+    expect(img.url).toMatch(/\.jpg$/);
+  });
+
+  test('uploadAttachments preserves original names', async () => {
+    const out = await uploadAttachments([pdfFile], 'certificates');
+    expect(out[0]).toMatchObject({ type: 'pdf', name: 'doc.pdf' });
+  });
+
+  test('uploadPdfBuffer returns a mock URL', async () => {
+    const url = await uploadPdfBuffer(Buffer.from('%PDF'), 'certificates');
+    expect(url).toMatch(/^https:\/\/mock\.cloudinary\.local\/certificates\//);
+  });
+});
+
+describe('config barrel', () => {
+  test('re-exports env and db helpers', () => {
+    expect(configBarrel.env).toBeDefined();
+    expect(typeof configBarrel.connectDatabase).toBe('function');
+    expect(typeof configBarrel.disconnectDatabase).toBe('function');
+  });
+});
