@@ -1,12 +1,14 @@
 import { startTimer } from '../utils/performance.js';
 import { logger } from '../utils/logger.js';
+import { incrementCounter, observeRequestDuration } from '../utils/metrics.js';
 
 // Requests slower than this are logged at warn level so slow endpoints surface in prod logs.
 const SLOW_REQUEST_MS = 1000;
 
 /**
- * Times every request, sets an `X-Response-Time` header, and logs method/path/status/duration.
- * Complements morgan (which logs the HTTP line) with a structured, threshold-aware record.
+ * Times every request, sets an `X-Response-Time` header, logs method/path/status/duration, and
+ * feeds the metrics registry. Complements morgan (which logs the HTTP line) with a structured,
+ * threshold-aware record plus Prometheus-scrapable counters/histogram.
  */
 export function requestTiming(req, res, next) {
   const elapsed = startTimer();
@@ -18,6 +20,9 @@ export function requestTiming(req, res, next) {
       status: res.statusCode,
       ms: Math.round(ms),
     };
+    observeRequestDuration(ms);
+    incrementCounter('http_requests_total');
+    incrementCounter(`http_responses_${Math.floor(res.statusCode / 100)}xx_total`);
     if (ms >= SLOW_REQUEST_MS) logger.warn('Slow request', line);
     else logger.debug('Request', line);
   });
