@@ -49,6 +49,23 @@ function loadEnv() {
     }
     process.exit(1);
   }
+
+  // Production hard guards — fail fast on unsafe config before accepting traffic.
+  if (parsed.data.NODE_ENV === 'production') {
+    const problems = [];
+    if (/localhost|127\.0\.0\.1/.test(parsed.data.CORS_ORIGIN_CITIZEN))
+      problems.push('CORS_ORIGIN_CITIZEN must be a public HTTPS origin, not localhost');
+    if (/localhost|127\.0\.0\.1/.test(parsed.data.CORS_ORIGIN_ADMIN))
+      problems.push('CORS_ORIGIN_ADMIN must be a public HTTPS origin, not localhost');
+    if (/^mongodb:\/\/(localhost|127\.0\.0\.1)/.test(parsed.data.MONGODB_URI))
+      problems.push('MONGODB_URI points at localhost in production');
+    if (problems.length) {
+      console.error('Unsafe production configuration:');
+      problems.forEach((p) => console.error(`  ${p}`));
+      process.exit(1);
+    }
+  }
+
   return parsed.data;
 }
 

@@ -1,4 +1,5 @@
 import { logger } from '../../src/utils/logger.js';
+import { env } from '../../src/config/env.js';
 import {
   uploadImages,
   uploadAttachment,
@@ -28,6 +29,27 @@ describe('logger', () => {
       logger.debug('debug');
       logger.trace('trace');
     }).not.toThrow();
+  });
+
+  test('production mode emits structured single-line JSON with merged context + error', () => {
+    const prev = env.NODE_ENV;
+    const prevLevel = env.LOG_LEVEL;
+    env.NODE_ENV = 'production';
+    const seen = [];
+    const original = console.error;
+    console.error = (line) => seen.push(line);
+    try {
+      logger.error('boom happened', { requestId: 'r1' }, new Error('kaboom'), 'extra');
+      expect(seen).toHaveLength(1);
+      const parsed = JSON.parse(seen[0]);
+      expect(parsed).toMatchObject({ level: 'error', msg: 'boom happened', requestId: 'r1' });
+      expect(parsed.error.message).toBe('kaboom');
+      expect(parsed.detail).toBe('extra');
+    } finally {
+      console.error = original;
+      env.NODE_ENV = prev;
+      env.LOG_LEVEL = prevLevel;
+    }
   });
 });
 

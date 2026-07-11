@@ -13,9 +13,27 @@ function shouldLog(level) {
 
 function emit(level, args) {
   if (!shouldLog(level)) return;
-  const prefix = `[${new Date().toISOString()}] ${level.toUpperCase()}`;
   // eslint-disable-next-line no-console -- this IS the console logging utility
   const sink = level === 'error' || level === 'fatal' ? console.error : console.log;
+
+  if (env.NODE_ENV === 'production') {
+    // Structured single-line JSON for log aggregators (Grafana Loki, CloudWatch, etc.).
+    const [message, ...rest] = args;
+    const entry = { level, time: new Date().toISOString(), msg: String(message ?? '') };
+    for (const part of rest) {
+      if (part instanceof Error) {
+        entry.error = { message: part.message, stack: part.stack };
+      } else if (part && typeof part === 'object') {
+        Object.assign(entry, part);
+      } else {
+        entry.detail = part;
+      }
+    }
+    sink(JSON.stringify(entry));
+    return;
+  }
+
+  const prefix = `[${new Date().toISOString()}] ${level.toUpperCase()}`;
   sink(prefix, ...args);
 }
 

@@ -1,0 +1,44 @@
+# Render blueprint for the Digital Gram Panchayat backend API.
+# Docs: https://render.com/docs/blueprint-spec
+# The two frontends deploy to Vercel (see frontend/*/vercel.json).
+services:
+  - type: web
+    name: dgp-api
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    # Root install brings in all npm workspaces (incl. @dgp/shared).
+    buildCommand: npm ci
+    startCommand: node backend/src/server.js
+    healthCheckPath: /api/v1/health/ready
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000 # Render injects PORT; keep in sync with the platform
+      - key: API_VERSION
+        value: v1
+      - key: MONGODB_URI
+        sync: false # set in the Render dashboard (secret)
+      - key: JWT_SECRET
+        sync: false # >= 32 chars, set as a secret
+      - key: JWT_EXPIRY_CITIZEN
+        value: 24h
+      - key: JWT_EXPIRY_OFFICER
+        value: 8h
+      - key: CORS_ORIGIN_CITIZEN
+        sync: false # https://<citizen>.vercel.app
+      - key: CORS_ORIGIN_ADMIN
+        sync: false # https://<admin>.vercel.app
+      - key: SMS_PROVIDER
+        value: mock
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: LOG_LEVEL
+        value: info

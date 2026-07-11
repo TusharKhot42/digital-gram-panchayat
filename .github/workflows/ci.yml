@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Deployment itself is handled by the Render + Vercel Git integrations on push to `main`
+# (see render.yaml and frontend/*/vercel.json). This pipeline is the quality gate that must
+# pass before those deploys are trusted.
+jobs:
+  verify:
+    name: Lint · Test · Coverage · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install (all workspaces)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test (all workspaces)
+        run: npm test
+
+      - name: Backend coverage
+        run: npm run test:coverage -w backend
+
+      - name: Build frontends
+        run: npm run build
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          if-no-files-found: ignore
+
+      - name: Upload frontend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: |
+            frontend/citizen-pwa/dist/
+            frontend/admin-portal/dist/
+          if-no-files-found: ignore
