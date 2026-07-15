@@ -64,10 +64,10 @@ export function PhotoUploader({ files, onChange }) {
               <button
                 type="button"
                 onClick={() => removeAt(idx)}
-                className="absolute right-0.5 top-0.5 rounded-full bg-black/60 p-0.5 text-white"
+                className="absolute right-0.5 top-0.5 rounded-full bg-card p-1 text-foreground shadow-sm transition-colors duration-150 hover:bg-accent"
                 aria-label={t('complaint.form.removePhoto')}
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           ))}

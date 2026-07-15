@@ -177,8 +177,22 @@ export const CERT_DOC_REQUIREMENTS = {
 
 export const MAX_CERT_DOCUMENTS = 5;
 
-// Chart palette for the officer dashboard (recharts).
-export const CHART_COLORS = ['#15803d', '#f97316', '#ef4444', '#3b82f6', '#a855f7', '#64748b'];
+/**
+ * Chart palette for the officer dashboard (recharts).
+ *
+ * Recharts wants literal colours, not CSS variables, so this is the one place the design
+ * tokens are repeated as hex. Keep it in step with the semantic colours in the apps'
+ * `styles/index.css`: primary, warning, danger, info, then two neutral extensions for
+ * series beyond the semantic four.
+ */
+export const CHART_COLORS = [
+  '#166534', // primary
+  '#F59E0B', // warning
+  '#DC2626', // danger
+  '#2563EB', // info
+  '#334155', // secondary (slate)
+  '#64748B', // muted
+];
 
 // ---- Notifications ----
 export const NOTIFICATION_CHANNELS = ['inApp', 'sms', 'voice', 'email'];

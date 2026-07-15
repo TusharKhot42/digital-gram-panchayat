@@ -32,8 +32,8 @@ export function ConnectivityBanner() {
 
   if (!isOnline) {
     return (
-      <div className="flex items-center justify-center gap-2 bg-destructive px-4 py-1.5 text-center text-xs font-medium text-destructive-foreground">
-        <WifiOff className="h-3.5 w-3.5 shrink-0" />
+      <div className="flex items-center justify-center gap-2 bg-destructive px-4 py-1.5 text-center text-caption font-medium text-destructive-foreground">
+        <WifiOff className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         <span>{t('conn.offline')}</span>
       </div>
     );
@@ -41,8 +41,8 @@ export function ConnectivityBanner() {
 
   if (reconnected) {
     return (
-      <div className="flex items-center justify-center gap-2 bg-emerald-600 px-4 py-1.5 text-center text-xs font-medium text-white">
-        <Wifi className="h-3.5 w-3.5 shrink-0" />
+      <div className="flex items-center justify-center gap-2 bg-success px-4 py-1.5 text-center text-caption font-medium text-success-foreground">
+        <Wifi className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         <span>{t('conn.reconnected')}</span>
       </div>
     );

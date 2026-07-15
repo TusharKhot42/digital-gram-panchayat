@@ -18,16 +18,18 @@ export default {
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
+          hover: 'hsl(var(--primary-hover))',
           foreground: 'hsl(var(--primary-foreground))',
+          subtle: 'hsl(var(--primary-subtle))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
+        slate: { DEFAULT: 'hsl(var(--slate))' },
+        // Body copy sits a step darker than muted for long-form readability.
+        body: { foreground: 'hsl(var(--body-foreground))' },
+        pending: { DEFAULT: 'hsl(var(--pending))' },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
@@ -45,22 +47,32 @@ export default {
           DEFAULT: 'hsl(var(--success))',
           foreground: 'hsl(var(--success-foreground))',
           subtle: 'hsl(var(--success-subtle))',
+          strong: 'hsl(var(--success-strong))',
         },
         warning: {
           DEFAULT: 'hsl(var(--warning))',
           foreground: 'hsl(var(--warning-foreground))',
           subtle: 'hsl(var(--warning-subtle))',
+          strong: 'hsl(var(--warning-strong))',
         },
         info: {
           DEFAULT: 'hsl(var(--info))',
           foreground: 'hsl(var(--info-foreground))',
           subtle: 'hsl(var(--info-subtle))',
+          strong: 'hsl(var(--info-strong))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+          subtle: 'hsl(var(--destructive-subtle))',
+          strong: 'hsl(var(--destructive-strong))',
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        xl: 'calc(var(--radius) + 4px)', // 16px — hero/media surfaces
+        lg: 'var(--radius)', // 12px — cards
+        md: 'calc(var(--radius) - 2px)', // 10px — controls
+        sm: 'calc(var(--radius) - 4px)', // 8px — chips, inner elements
       },
       // Type scale — one ramp, used by every screen.
       fontSize: {

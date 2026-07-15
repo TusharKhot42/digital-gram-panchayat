@@ -6,6 +6,8 @@ import { ArrowLeft, ImagePlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { SCHEME_CATEGORIES } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { controlClass } from '@/components/ui/input';
+import { cn } from '@/utils/cn';
 import { useScheme, useSchemeMutations } from './hooks';
 
 export function SchemeForm() {
@@ -57,43 +59,36 @@ export function SchemeForm() {
     }
   };
 
-  const input =
-    'h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
-  const area =
-    'w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
-
   return (
     <div className="max-w-2xl">
       <Link
         to="/schemes"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
+        className="mb-3 -ml-1 inline-flex min-h-9 items-center gap-1 rounded-md px-1 text-body text-muted-foreground transition-colors duration-150 hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
         {t('scheme.form.back')}
       </Link>
 
-      <h1 className="mb-4 text-lg font-semibold text-foreground">
+      <h1 className="mb-4 text-title text-foreground">
         {isEdit ? t('scheme.form.editTitle') : t('scheme.form.createTitle')}
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.title')}
-          </label>
+          <label className="block text-label text-foreground">{t('scheme.form.title')}</label>
           <input
-            className={input}
+            className={controlClass}
             {...register('title', { required: t('scheme.form.required') })}
           />
-          {errors.title ? <p className="text-xs text-destructive">{errors.title.message}</p> : null}
+          {errors.title ? (
+            <p className="text-caption text-destructive-strong">{errors.title.message}</p>
+          ) : null}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('scheme.form.category')}
-            </label>
-            <select className={input} {...register('category')}>
+            <label className="block text-label text-foreground">{t('scheme.form.category')}</label>
+            <select className={controlClass} {...register('category')}>
               {SCHEME_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
                   {t(`scheme.category.${c}`, c)}
@@ -102,71 +97,75 @@ export function SchemeForm() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('scheme.form.website')}
-            </label>
-            <input className={input} placeholder="https://…" {...register('officialWebsite')} />
+            <label className="block text-label text-foreground">{t('scheme.form.website')}</label>
+            <input
+              className={controlClass}
+              placeholder="https://…"
+              {...register('officialWebsite')}
+            />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.summary')}
-          </label>
-          <input className={input} maxLength={300} {...register('summary')} />
+          <label className="block text-label text-foreground">{t('scheme.form.summary')}</label>
+          <input className={controlClass} maxLength={300} {...register('summary')} />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.description')}
-          </label>
+          <label className="block text-label text-foreground">{t('scheme.form.description')}</label>
           <textarea
             rows={5}
-            className={area}
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('description', { required: t('scheme.form.required') })}
           />
           {errors.description ? (
-            <p className="text-xs text-destructive">{errors.description.message}</p>
+            <p className="text-caption text-destructive-strong">{errors.description.message}</p>
           ) : null}
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.eligibility')}
-          </label>
-          <textarea rows={3} className={area} {...register('eligibility')} />
+          <label className="block text-label text-foreground">{t('scheme.form.eligibility')}</label>
+          <textarea
+            rows={3}
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
+            {...register('eligibility')}
+          />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
+          <label className="block text-label text-foreground">
             {t('scheme.form.requiredDocuments')}
           </label>
           <textarea
             rows={3}
-            className={area}
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             placeholder={t('scheme.form.docsHint')}
             {...register('requiredDocuments')}
           />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.benefits')}
-          </label>
-          <textarea rows={3} className={area} {...register('benefits')} />
+          <label className="block text-label text-foreground">{t('scheme.form.benefits')}</label>
+          <textarea
+            rows={3}
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
+            {...register('benefits')}
+          />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
+          <label className="block text-label text-foreground">
             {t('scheme.form.applicationProcess')}
           </label>
-          <textarea rows={3} className={area} {...register('applicationProcess')} />
+          <textarea
+            rows={3}
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
+            {...register('applicationProcess')}
+          />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('scheme.form.image')}
-          </label>
+          <label className="block text-label text-foreground">{t('scheme.form.image')}</label>
           <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-input px-3 py-2 text-sm text-muted-foreground">
             <ImagePlus className="h-4 w-4" />
             {file

@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
 import { Skeleton } from '@/components/Skeleton';
+import { StatusBadge } from '@/components/StatusBadge';
+import { DakhalaStatusBadge } from '@/features/dakhala/DakhalaStatusBadge';
 import { useMetrics, useCharts, useActivity } from '@/features/dashboard/hooks';
 
 // Charts (recharts) load on demand — keeps the heavy plotting library out of the app shell.
@@ -29,11 +31,25 @@ function MetricCard({ icon: Icon, label, value }) {
       </div>
       <div className="min-w-0">
         {/* The number leads; the label supports it. */}
-        <p className="truncate text-2xl font-semibold tabular-nums text-foreground">{value}</p>
+        <p className="truncate text-display tabular-nums text-foreground">{value}</p>
         <p className="truncate text-body text-muted-foreground">{label}</p>
       </div>
     </div>
   );
+}
+
+/** One of the three "what happened lately" columns. */
+function PanelCard({ title, children }) {
+  return (
+    <section className="rounded-lg border border-border bg-card shadow-xs">
+      <h2 className="border-b border-border px-4 py-3 text-section text-foreground">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function PanelEmpty({ label }) {
+  return <p className="px-4 py-6 text-center text-body text-muted-foreground">{label}</p>;
 }
 
 export function Home() {
@@ -88,6 +104,10 @@ export function Home() {
     { to: '/tax/new', label: t('dashboard.qaTax') },
   ];
 
+  const complaints = recentComplaints?.data ?? [];
+  const certs = recentCerts?.data ?? [];
+  const events = activity ?? [];
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -101,9 +121,9 @@ export function Home() {
           <Link
             key={qa.to}
             to={qa.to}
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground hover:bg-accent"
+            className="inline-flex min-h-9 items-center gap-1 rounded-md border border-border bg-card px-3 text-body font-medium text-foreground shadow-xs transition-[background-color,box-shadow] duration-150 hover:bg-accent hover:shadow-sm"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
             {qa.label}
           </Link>
         ))}
@@ -121,60 +141,68 @@ export function Home() {
       </Suspense>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">
-            {t('dashboard.recentComplaints')}
-          </h2>
-          <ul className="space-y-2 text-sm">
-            {(recentComplaints?.data ?? []).map((c) => (
-              <li key={c.id}>
-                <Link to={`/complaints/${c.id}`} className="flex justify-between gap-2">
-                  <span className="truncate text-foreground">{c.title}</span>
-                  <span className="shrink-0 text-muted-foreground">{c.status}</span>
-                </Link>
-              </li>
-            ))}
-            {recentComplaints?.data?.length === 0 ? (
-              <li className="text-muted-foreground">{t('dashboard.none')}</li>
-            ) : null}
-          </ul>
-        </div>
+        <PanelCard title={t('dashboard.recentComplaints')}>
+          {complaints.length ? (
+            <ul className="divide-y divide-border">
+              {complaints.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    to={`/complaints/${c.id}`}
+                    className="flex items-center gap-2 px-4 py-2.5 transition-colors duration-150 hover:bg-muted/40"
+                  >
+                    <span className="min-w-0 flex-1 truncate text-body text-foreground">
+                      {c.title}
+                    </span>
+                    <StatusBadge status={c.status} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <PanelEmpty label={t('dashboard.none')} />
+          )}
+        </PanelCard>
 
-        <div className="rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">
-            {t('dashboard.recentCertificates')}
-          </h2>
-          <ul className="space-y-2 text-sm">
-            {(recentCerts?.data ?? []).map((a) => (
-              <li key={a.id}>
-                <Link to={`/dakhala/${a.id}`} className="flex justify-between gap-2">
-                  <span className="truncate text-foreground">
-                    {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
+        <PanelCard title={t('dashboard.recentCertificates')}>
+          {certs.length ? (
+            <ul className="divide-y divide-border">
+              {certs.map((a) => (
+                <li key={a.id}>
+                  <Link
+                    to={`/dakhala/${a.id}`}
+                    className="flex items-center gap-2 px-4 py-2.5 transition-colors duration-150 hover:bg-muted/40"
+                  >
+                    <span className="min-w-0 flex-1 truncate text-body text-foreground">
+                      {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
+                    </span>
+                    <DakhalaStatusBadge status={a.status} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <PanelEmpty label={t('dashboard.none')} />
+          )}
+        </PanelCard>
+
+        <PanelCard title={t('dashboard.activity')}>
+          {events.length ? (
+            <ul className="divide-y divide-border">
+              {events.slice(0, 8).map((a) => (
+                <li key={a.id} className="flex items-baseline gap-2 px-4 py-2.5">
+                  <span className="min-w-0 flex-1 truncate text-body text-foreground">
+                    {a.action}
                   </span>
-                  <span className="shrink-0 text-muted-foreground">{a.status}</span>
-                </Link>
-              </li>
-            ))}
-            {recentCerts?.data?.length === 0 ? (
-              <li className="text-muted-foreground">{t('dashboard.none')}</li>
-            ) : null}
-          </ul>
-        </div>
-
-        <div className="rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">{t('dashboard.activity')}</h2>
-          <ul className="space-y-2 text-sm">
-            {(activity ?? []).slice(0, 8).map((a) => (
-              <li key={a.id} className="flex justify-between gap-2">
-                <span className="truncate text-foreground">{a.action}</span>
-                <span className="shrink-0 text-muted-foreground">{formatDate(a.at, locale)}</span>
-              </li>
-            ))}
-            {activity?.length === 0 ? (
-              <li className="text-muted-foreground">{t('dashboard.none')}</li>
-            ) : null}
-          </ul>
-        </div>
+                  <span className="shrink-0 text-caption text-muted-foreground">
+                    {formatDate(a.at, locale)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <PanelEmpty label={t('dashboard.none')} />
+          )}
+        </PanelCard>
       </div>
     </div>
   );

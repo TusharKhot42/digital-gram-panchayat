@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { VALIDATION } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { controlClass } from '@/components/ui/input';
+import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
 import { FormField } from './FormField';
 
@@ -34,12 +36,16 @@ export function ProfileForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-foreground">{t('auth.mobile')}</label>
+      {/* Mobile is the account identity and can't be edited here — shown for confirmation only. */}
+      <div className="space-y-1.5">
+        <label htmlFor="profile-mobile" className="block text-label text-foreground">
+          {t('auth.mobile')}
+        </label>
         <input
+          id="profile-mobile"
           value={user?.mobile ?? ''}
           disabled
-          className="h-11 w-full rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground"
+          className={cn(controlClass, 'bg-muted text-muted-foreground')}
         />
       </div>
 
@@ -70,8 +76,8 @@ export function ProfileForm() {
         })}
       />
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? t('common.loading') : t('auth.saveProfile')}
+      <Button type="submit" loading={isSubmitting}>
+        {t('auth.saveProfile')}
       </Button>
     </form>
   );

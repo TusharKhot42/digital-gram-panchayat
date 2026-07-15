@@ -162,7 +162,11 @@
     "backHome": "डॅशबोर्डवर परत जा"
   },
   "common": {
-    "loading": "लोड होत आहे…"
+    "loading": "लोड होत आहे…",
+    "prevPage": "मागील पृष्ठ",
+    "nextPage": "पुढील पृष्ठ",
+    "clear": "साफ करा",
+    "close": "बंद करा"
   },
   "complaint": {
     "category": {

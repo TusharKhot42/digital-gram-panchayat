@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Megaphone } from 'lucide-react';
+import { Search, Megaphone, X } from 'lucide-react';
 import { NOTICE_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { Button } from '@/components/ui/button';
+import { Input, Select } from '@/components/ui/input';
 import { NoticeCard } from '../components/NoticeCard';
 import { useNotices } from '../hooks';
 
@@ -16,27 +18,45 @@ export function NoticeList() {
   const params = { ...(q ? { q } : {}), ...(category ? { category } : {}) };
   const { data, isLoading, isError, refetch, isFetching } = useNotices(params);
   const notices = data?.data ?? [];
+  const filtered = Boolean(q || category);
+
+  const clear = () => {
+    setQ('');
+    setCategory('');
+  };
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('notice.list.title')}</h1>
+    <div className="dgp-page">
+      <h1 className="mb-5 text-title text-foreground">{t('notice.list.title')}</h1>
 
-      <div className="mb-4 space-y-2">
+      <div className="mb-5 space-y-2.5">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
-          <input
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t('notice.list.search')}
             aria-label={t('notice.list.search')}
-            className="h-11 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="pl-9 pr-9"
           />
+          {q ? (
+            <button
+              type="button"
+              onClick={() => setQ('')}
+              aria-label={t('notice.list.clearFilters')}
+              className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors duration-150 hover:text-foreground"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          ) : null}
         </div>
-        <select
+        <Select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t('notice.list.allCategories')}
-          className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
         >
           <option value="">{t('notice.list.allCategories')}</option>
           {NOTICE_CATEGORIES.map((c) => (
@@ -44,7 +64,7 @@ export function NoticeList() {
               {t(`notice.category.${c}`, c)}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {isLoading ? (
@@ -56,7 +76,17 @@ export function NoticeList() {
           isFetching={isFetching}
         />
       ) : notices.length === 0 ? (
-        <EmptyState icon={Megaphone} title={t('notice.list.empty')} />
+        <EmptyState
+          icon={Megaphone}
+          title={filtered ? t('notice.list.emptyFiltered') : t('notice.list.empty')}
+          action={
+            filtered ? (
+              <Button variant="outline" size="sm" onClick={clear}>
+                {t('notice.list.clearFilters')}
+              </Button>
+            ) : null
+          }
+        />
       ) : (
         <ul className="space-y-3">
           {notices.map((n) => (

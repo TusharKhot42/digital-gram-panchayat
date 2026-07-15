@@ -11,43 +11,51 @@
  */
 @layer base {
   :root {
-    /* Surfaces — the page sits on light grey, content cards are white. */
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    /* Surfaces — page #F8FAFC, cards #FFFFFF, secondary surface #F1F5F9. */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%; /* #0F172A */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
 
-    /* Brand */
-    --primary: 142 72% 29%; /* #15803d — 4.6:1 with white text */
+    /* Brand — #166534 base, #15803D hover, #DCFCE7 light. */
+    --primary: 142 64% 24%;
+    --primary-hover: 142 72% 29%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 142 72% 96%;
+    --primary-subtle: 141 84% 93%;
 
-    /* Neutrals */
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 42%; /* 4.6:1 on white */
-    --accent: 210 20% 96%;
+    /* Neutrals — #334155 slate, #F1F5F9 surface-secondary, #475569/#64748B text. */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --slate: 215 25% 27%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%; /* #64748B — 4.8:1 on white */
+    --body-foreground: 215 19% 35%; /* #475569 — 7.4:1, for body copy */
+    --accent: 210 40% 96%;
     --accent-foreground: 222 47% 11%;
 
-    /* Semantic */
-    --destructive: 0 72% 42%;
+    /* Semantic. `*-subtle` = chip/callout background, `*-strong` = AA-safe text on it. */
+    --destructive: 0 72% 51%; /* #DC2626 */
     --destructive-foreground: 0 0% 100%;
     --destructive-subtle: 0 86% 97%;
-    --success: 142 72% 29%;
+    --destructive-strong: 0 74% 42%;
+    --success: 142 76% 36%; /* #16A34A */
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142 72% 96%;
-    --warning: 32 81% 33%;
-    --warning-foreground: 0 0% 100%;
-    --warning-subtle: 43 96% 95%;
-    --info: 217 79% 38%;
+    --success-subtle: 141 84% 93%;
+    --success-strong: 142 72% 29%;
+    --warning: 38 92% 50%; /* #F59E0B — fills/icons only, 2.1:1 as text */
+    --warning-foreground: 222 47% 11%;
+    --warning-subtle: 48 96% 89%;
+    --warning-strong: 26 90% 37%; /* #B45309 — 4.7:1, used for warning text */
+    --info: 221 83% 53%; /* #2563EB */
     --info-foreground: 0 0% 100%;
-    --info-subtle: 214 95% 96%;
+    --info-subtle: 214 95% 93%;
+    --info-strong: 224 76% 42%;
+    --pending: 32 95% 44%; /* #D97706 */
 
-    --border: 220 13% 91%;
-    --input: 220 13% 88%;
-    --ring: 142 72% 29%;
-    --radius: 0.625rem; /* 10px */
+    --border: 214 32% 91%; /* #E2E8F0 */
+    --input: 214 32% 88%;
+    --ring: 142 64% 24%;
+    --radius: 0.75rem; /* 12px — sm 8, md 10, lg 12, xl 16 */
   }
 
   :root[data-theme='dark'] {
@@ -56,33 +64,41 @@
     --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
 
-    --primary: 142 60% 48%;
+    --primary: 142 60% 45%;
+    --primary-hover: 142 60% 52%;
     --primary-foreground: 222 47% 8%;
     --primary-subtle: 142 40% 16%;
 
     --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 210 40% 90%;
+    --slate: 215 20% 75%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 70%;
+    --body-foreground: 213 27% 84%;
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 72% 58%;
     --destructive-foreground: 222 47% 8%;
     --destructive-subtle: 0 50% 16%;
-    --success: 142 60% 48%;
+    --destructive-strong: 0 84% 72%;
+    --success: 142 60% 45%;
     --success-foreground: 222 47% 8%;
     --success-subtle: 142 40% 16%;
+    --success-strong: 142 60% 60%;
     --warning: 38 92% 60%;
     --warning-foreground: 222 47% 8%;
     --warning-subtle: 38 50% 16%;
+    --warning-strong: 43 96% 70%;
     --info: 213 90% 65%;
     --info-foreground: 222 47% 8%;
     --info-subtle: 213 50% 18%;
+    --info-strong: 213 94% 75%;
+    --pending: 38 92% 60%;
 
     --border: 217 33% 20%;
     --input: 217 33% 24%;
-    --ring: 142 60% 48%;
+    --ring: 142 60% 45%;
   }
 
   * {

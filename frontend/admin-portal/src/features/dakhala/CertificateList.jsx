@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { CERT_TYPES, DAKHALA_STATUSES, formatDate } from '@dgp/shared';
-import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/input';
+import { SkeletonRows } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
+import { FilterBar, SearchInput } from '@/components/FilterBar';
+import { Pagination } from '@/components/Pagination';
+import {
+  TableShell,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  TableMessageRow,
+} from '@/components/ui/table';
+import { DakhalaStatusBadge } from './DakhalaStatusBadge';
 import { useApplications } from './hooks';
 
 const LIMIT = 20;
-
-const STATUS_CLASS = {
-  Submitted: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  UnderReview: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  Approved: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  Rejected: 'bg-gray-200 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300',
-};
+const COLS = 4;
 
 export function CertificateList() {
   const { t, i18n } = useTranslation();
@@ -42,22 +51,15 @@ export function CertificateList() {
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('dakhala.dash.title')}</h1>
+      <h1 className="mb-4 text-title text-foreground">{t('dakhala.dash.title')}</h1>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => onFilter(setQ)(e.target.value)}
-            placeholder={t('dakhala.dash.search')}
-            className="h-9 w-56 rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <select
+      <FilterBar>
+        <SearchInput value={q} onChange={onFilter(setQ)} placeholder={t('dakhala.dash.search')} />
+        <Select
           value={status}
           onChange={(e) => onFilter(setStatus)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          aria-label={t('dakhala.dash.allStatuses')}
+          className="w-auto"
         >
           <option value="">{t('dakhala.dash.allStatuses')}</option>
           {DAKHALA_STATUSES.map((s) => (
@@ -65,11 +67,12 @@ export function CertificateList() {
               {t(`dakhala.status.${s}`, s)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={certificateType}
           onChange={(e) => onFilter(setCertificateType)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          aria-label={t('dakhala.dash.allTypes')}
+          className="w-auto"
         >
           <option value="">{t('dakhala.dash.allTypes')}</option>
           {CERT_TYPES.map((c) => (
@@ -77,90 +80,67 @@ export function CertificateList() {
               {t(`dakhala.type.${c}`, c)}
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </FilterBar>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('dakhala.dash.application')}</th>
-              <th className="px-4 py-2 font-medium">{t('dakhala.dash.type')}</th>
-              <th className="px-4 py-2 font-medium">{t('dakhala.dash.date')}</th>
-              <th className="px-4 py-2 font-medium">{t('dakhala.dash.status')}</th>
+              <TH>{t('dakhala.dash.application')}</TH>
+              <TH>{t('dakhala.dash.type')}</TH>
+              <TH>{t('dakhala.dash.date')}</TH>
+              <TH>{t('dakhala.dash.status')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <SkeletonRows />
+              </TableMessageRow>
             ) : isError ? (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-destructive">
-                  {t('dakhala.dash.loadError')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="text-destructive-strong">
+                {t('dakhala.dash.loadError')}
+              </TableMessageRow>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('dakhala.dash.empty')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="p-0">
+                <EmptyState
+                  icon={FileText}
+                  title={t('dakhala.dash.empty')}
+                  className="border-0 shadow-none"
+                />
+              </TableMessageRow>
             ) : (
               rows.map((a) => (
-                <tr key={a.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2">
-                    <Link to={`/dakhala/${a.id}`} className="font-medium text-primary">
+                <TR key={a.id}>
+                  <TD>
+                    <Link
+                      to={`/dakhala/${a.id}`}
+                      className="font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                    >
                       {a.applicationId}
                     </Link>
-                  </td>
-                  <td className="px-4 py-2">
-                    {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground">
+                  </TD>
+                  <TD>{t(`dakhala.type.${a.certificateType}`, a.certificateType)}</TD>
+                  <TD className="whitespace-nowrap text-muted-foreground">
                     {formatDate(a.createdAt, locale)}
-                  </td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[a.status]}`}
-                    >
-                      {t(`dakhala.status.${a.status}`, a.status)}
-                    </span>
-                  </td>
-                </tr>
+                  </TD>
+                  <TD>
+                    <DakhalaStatusBadge status={a.status} />
+                  </TD>
+                </TR>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{t('dakhala.dash.total', { total })}</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            {t('dakhala.dash.prev')}
-          </Button>
-          <span>
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {t('dakhala.dash.next')}
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPage={setPage}
+        totalLabel={t('dakhala.dash.total', { total })}
+      />
     </div>
   );
 }

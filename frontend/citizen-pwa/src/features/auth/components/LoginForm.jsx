@@ -49,8 +49,8 @@ export function LoginForm() {
         register={register('password', { required: t('auth.required') })}
       />
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t('common.loading') : t('auth.login')}
+      <Button type="submit" className="w-full" loading={isSubmitting}>
+        {t('auth.login')}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">

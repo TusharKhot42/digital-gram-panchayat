@@ -68,8 +68,8 @@ export function RegisterForm() {
         register={register('address', { required: t('auth.required') })}
       />
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t('common.loading') : t('auth.register')}
+      <Button type="submit" className="w-full" loading={isSubmitting}>
+        {t('auth.register')}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">

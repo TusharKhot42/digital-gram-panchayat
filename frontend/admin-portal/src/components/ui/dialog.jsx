@@ -1,0 +1,91 @@
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@/utils/cn';
+
+/**
+ * Modal shell for the admin portal.
+ *
+ * Four dialogs each hand-rolled `fixed inset-0 … bg-black/50` with a card inside, and none
+ * of them closed on Escape, moved focus, or announced themselves as a dialog. This adds the
+ * behaviour once: Escape and backdrop-click close, focus lands inside on open and returns to
+ * the trigger on close, and the scrim uses the foreground token so it tracks the theme
+ * rather than being pure black in both.
+ */
+export function Dialog({ open, onClose, title, description, children, footer, className }) {
+  const { t } = useTranslation();
+  const panelRef = useRef(null);
+  const restoreRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    restoreRef.current = document.activeElement;
+    // Focus the panel so the next Tab lands inside the dialog, not behind it.
+    panelRef.current?.focus();
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    document.addEventListener('keydown', onKeyDown);
+
+    // The page behind must not scroll while a modal owns the screen.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = prevOverflow;
+      restoreRef.current?.focus?.();
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4 backdrop-blur-[2px]"
+      onMouseDown={(e) => {
+        // Only a click that both starts and ends on the scrim should dismiss.
+        if (e.target === e.currentTarget) onClose?.();
+      }}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        tabIndex={-1}
+        className={cn(
+          'w-full max-w-md rounded-lg border border-border bg-card shadow-overlay outline-none',
+          className,
+        )}
+      >
+        <div className="flex items-start justify-between gap-3 p-5 pb-0">
+          <div className="min-w-0">
+            <h2 className="text-section text-foreground">{title}</h2>
+            {description ? (
+              <p className="mt-1 text-body text-muted-foreground">{description}</p>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t('common.close')}
+            className="-mr-1 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground"
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+
+        {children ? <div className="p-5">{children}</div> : null}
+
+        {footer ? (
+          <div className="flex justify-end gap-2 border-t border-border p-4">{footer}</div>
+        ) : null}
+      </div>
+    </div>,
+    document.body,
+  );
+}

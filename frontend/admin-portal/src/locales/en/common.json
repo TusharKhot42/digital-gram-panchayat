@@ -162,7 +162,11 @@
     "backHome": "Back to Dashboard"
   },
   "common": {
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "clear": "Clear",
+    "close": "Close"
   },
   "complaint": {
     "category": {

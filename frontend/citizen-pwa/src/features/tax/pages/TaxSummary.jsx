@@ -5,6 +5,7 @@ import { formatCurrency } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { Select } from '@/components/ui/input';
 import { TaxCard } from '../components/TaxCard';
 import { useMyTax } from '../hooks';
 
@@ -26,10 +27,11 @@ export function TaxSummary() {
     ? records.filter((r) => r.financialYear === financialYear)
     : records;
   const totalDues = filtered.reduce((sum, r) => sum + r.balance, 0);
+  const settled = totalDues <= 0;
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('tax.summary.title')}</h1>
+    <div className="dgp-page">
+      <h1 className="mb-5 text-title text-foreground">{t('tax.summary.title')}</h1>
 
       {isLoading ? (
         <SkeletonList />
@@ -43,16 +45,28 @@ export function TaxSummary() {
         <EmptyState icon={Receipt} title={t('tax.summary.empty')} />
       ) : (
         <>
-          <div className="mb-4 rounded-lg bg-primary/10 p-4 text-center">
-            <p className="text-xs text-muted-foreground">{t('tax.summary.totalDues')}</p>
-            <p className="text-2xl font-bold text-primary">{formatCurrency(totalDues, locale)}</p>
+          {/* The one number this page exists to answer. */}
+          <div
+            className={`mb-4 rounded-lg border p-5 text-center ${
+              settled
+                ? 'border-success/20 bg-success-subtle'
+                : 'border-primary/20 bg-primary-subtle'
+            }`}
+          >
+            <p className="text-label text-muted-foreground">{t('tax.summary.totalDues')}</p>
+            <p
+              className={`mt-1 text-display tabular-nums ${settled ? 'text-success-strong' : 'text-primary'}`}
+            >
+              {formatCurrency(totalDues, locale)}
+            </p>
           </div>
 
           {years.length > 1 ? (
-            <select
+            <Select
               value={financialYear}
               onChange={(e) => setFinancialYear(e.target.value)}
-              className="mb-4 h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+              aria-label={t('tax.summary.allYears')}
+              className="mb-4"
             >
               <option value="">{t('tax.summary.allYears')}</option>
               {years.map((y) => (
@@ -60,10 +74,10 @@ export function TaxSummary() {
                   {y}
                 </option>
               ))}
-            </select>
+            </Select>
           ) : null}
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filtered.map((r) => (
               <TaxCard key={r.id} record={r} />
             ))}

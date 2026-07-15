@@ -22,7 +22,8 @@
     "outstandingDues": "Outstanding tax dues",
     "latestNotices": "Latest notices",
     "latestSchemes": "Latest schemes",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "services": "Services"
   },
   "notFound": {
     "title": "Page not found",
@@ -32,7 +33,8 @@
   "common": {
     "loading": "Loading…",
     "online": "Online",
-    "offline": "Offline"
+    "offline": "Offline",
+    "close": "Close"
   },
   "error": {
     "boundaryTitle": "Something went wrong",
@@ -116,8 +118,8 @@
     "loadError": "Could not load notifications",
     "notFound": "Notification not found",
     "back": "Back to notifications",
-    "viewComplaint": "View complaint →",
-    "viewCertificate": "View certificate →",
+    "viewComplaint": "View complaint",
+    "viewCertificate": "View certificate",
     "settings.title": "Notification settings",
     "settings.subtitle": "Choose how you'd like to be notified.",
     "settings.inApp": "In-app notifications",
@@ -125,7 +127,17 @@
     "settings.voice": "Voice call",
     "settings.email": "Email",
     "settings.save": "Save preferences",
-    "settings.saved": "Preferences saved"
+    "settings.saved": "Preferences saved",
+    "group": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older"
+    },
+    "unreadSection": "Unread",
+    "readSection": "Earlier",
+    "unreadCount": "{{count}} unread",
+    "emptyFiltered": "No notifications match your search.",
+    "clearSearch": "Clear search"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -153,7 +165,15 @@
     "registerSuccess": "Account created",
     "registerFailed": "Registration failed. Try again.",
     "profileUpdated": "Profile updated",
-    "profileFailed": "Could not update profile"
+    "profileFailed": "Could not update profile",
+    "stats": "Your activity",
+    "statComplaints": "Complaints",
+    "statCertificates": "Certificates",
+    "statDues": "Tax dues",
+    "recentActivity": "Recent activity",
+    "noActivity": "Nothing here yet.",
+    "editProfile": "Edit details",
+    "memberSince": "Member since"
   },
   "complaint": {
     "category": {
@@ -215,7 +235,10 @@
       "back": "Back to complaints",
       "notFound": "Complaint not found",
       "timeline": "Status timeline",
-      "remarks": "Officer remarks"
+      "remarks": "Officer remarks",
+      "photos": "Photos",
+      "photo": "Photo",
+      "location": "Location"
     }
   },
   "notice": {
@@ -234,7 +257,9 @@
       "search": "Search notices…",
       "allCategories": "All categories",
       "empty": "No notices to show yet.",
-      "loadError": "Could not load notices"
+      "loadError": "Could not load notices",
+      "clearFilters": "Clear filters",
+      "emptyFiltered": "No notices match your filters."
     },
     "detail": {
       "back": "Back to notices",
@@ -243,7 +268,8 @@
       "pdfAttachment": "PDF document",
       "download": "Download",
       "open": "Open"
-    }
+    },
+    "broadcast": "Broadcast"
   },
   "scheme": {
     "category": {
@@ -262,7 +288,9 @@
       "search": "Search schemes…",
       "allCategories": "All categories",
       "empty": "No schemes to show yet.",
-      "loadError": "Could not load schemes"
+      "loadError": "Could not load schemes",
+      "clearFilters": "Clear filters",
+      "emptyFiltered": "No schemes match your filters."
     },
     "detail": {
       "back": "Back to schemes",
@@ -298,7 +326,12 @@
       "dues": "Dues",
       "dueBy": "Due by",
       "history": "Payment history",
-      "bills": "Tax bills"
+      "bills": "Tax bills",
+      "billNo": "Bill no.",
+      "receipt": "Receipt",
+      "viewBill": "View bill",
+      "noPayments": "No payments recorded yet.",
+      "paidInFull": "Paid in full"
     }
   },
   "dakhala": {
@@ -369,7 +402,8 @@
       "timeline": "Status timeline",
       "download": "Download certificate",
       "downloadFailed": "Could not download certificate",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "progress": "Application progress"
     },
     "doc": {
       "Aadhaar": "Aadhaar Card",
@@ -404,6 +438,12 @@
       "applicantIdentity": "Applicant identity",
       "landProof": "Land proof",
       "supporting": "Supporting documents"
+    },
+    "stage": {
+      "Submitted": "Submitted",
+      "UnderReview": "Under Review",
+      "Approved": "Approved",
+      "Download": "Download"
     }
   }
 }

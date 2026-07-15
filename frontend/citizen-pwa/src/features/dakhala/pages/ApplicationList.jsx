@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, ChevronRight } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { SkeletonList } from '@/components/Skeleton';
@@ -16,12 +16,12 @@ export function ApplicationList() {
   const apps = data?.data ?? [];
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">{t('dakhala.list.title')}</h1>
+    <div className="dgp-page">
+      <div className="mb-5 flex items-center justify-between gap-2">
+        <h1 className="text-title text-foreground">{t('dakhala.list.title')}</h1>
         <Button asChild size="sm">
           <Link to="/dakhala/new">
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
             {t('dakhala.list.apply')}
           </Link>
         </Button>
@@ -51,25 +51,41 @@ export function ApplicationList() {
             <li key={a.id}>
               <Link
                 to={`/dakhala/${a.id}`}
-                className="block rounded-lg border border-border bg-card p-4"
+                className="group block rounded-lg border border-border bg-card p-4 shadow-xs transition-[box-shadow,transform] duration-150 hover:shadow-sm active:translate-y-px"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
+                  <div className="min-w-0">
+                    <p className="truncate text-body font-medium text-foreground">
                       {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{a.applicationId}</p>
+                    <p className="mt-0.5 text-caption text-muted-foreground">{a.applicationId}</p>
                   </div>
                   <DakhalaStatusBadge status={a.status} />
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {formatDate(a.createdAt, locale)}
-                </p>
+                <div className="mt-2.5 flex items-center justify-between gap-2">
+                  <p className="text-caption text-muted-foreground">
+                    {formatDate(a.createdAt, locale)}
+                  </p>
+                  <ChevronRight
+                    className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </div>
               </Link>
             </li>
           ))}
         </ul>
       )}
+
+      {apps.length ? (
+        <Link
+          to="/dakhala/new"
+          aria-label={t('dakhala.list.apply')}
+          className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-[background-color,transform] duration-150 hover:bg-primary-hover active:translate-y-px md:hidden"
+        >
+          <Plus className="h-6 w-6" aria-hidden="true" />
+        </Link>
+      ) : null}
     </div>
   );
 }

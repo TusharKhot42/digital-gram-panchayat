@@ -1,18 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Receipt } from 'lucide-react';
 import { TAX_TYPES, PAYMENT_STATUSES, formatCurrency } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/input';
+import { SkeletonRows } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
+import { FilterBar, SearchInput } from '@/components/FilterBar';
+import { Pagination } from '@/components/Pagination';
+import {
+  TableShell,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  TableMessageRow,
+} from '@/components/ui/table';
+import { PaymentStatusBadge } from './PaymentStatusBadge';
 import { useTaxRecords } from './hooks';
 
 const LIMIT = 20;
-
-const STATUS_CLASS = {
-  Unpaid: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  Partial: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  Paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-};
+const COLS = 6;
 
 export function TaxList() {
   const { t, i18n } = useTranslation();
@@ -41,30 +52,23 @@ export function TaxList() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">{t('tax.dash.title')}</h1>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h1 className="text-title text-foreground">{t('tax.dash.title')}</h1>
         <Button asChild size="sm">
           <Link to="/tax/new">
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
             {t('tax.dash.new')}
           </Link>
         </Button>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => onFilter(setQ)(e.target.value)}
-            placeholder={t('tax.dash.search')}
-            className="h-9 w-60 rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <select
+      <FilterBar>
+        <SearchInput value={q} onChange={onFilter(setQ)} placeholder={t('tax.dash.search')} />
+        <Select
           value={taxType}
           onChange={(e) => onFilter(setTaxType)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          aria-label={t('tax.dash.allTypes')}
+          className="w-auto"
         >
           <option value="">{t('tax.dash.allTypes')}</option>
           {TAX_TYPES.map((tp) => (
@@ -72,11 +76,12 @@ export function TaxList() {
               {t(`tax.type.${tp}`, tp)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           value={paymentStatus}
           onChange={(e) => onFilter(setPaymentStatus)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          aria-label={t('tax.dash.allStatuses')}
+          className="w-auto"
         >
           <option value="">{t('tax.dash.allStatuses')}</option>
           {PAYMENT_STATUSES.map((s) => (
@@ -84,91 +89,76 @@ export function TaxList() {
               {t(`tax.status.${s}`, s)}
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </FilterBar>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.record')}</th>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.type')}</th>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.year')}</th>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.amount')}</th>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.dues')}</th>
-              <th className="px-4 py-2 font-medium">{t('tax.dash.status')}</th>
+              <TH>{t('tax.dash.record')}</TH>
+              <TH>{t('tax.dash.type')}</TH>
+              <TH>{t('tax.dash.year')}</TH>
+              <TH className="text-right">{t('tax.dash.amount')}</TH>
+              <TH className="text-right">{t('tax.dash.dues')}</TH>
+              <TH>{t('tax.dash.status')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <SkeletonRows />
+              </TableMessageRow>
             ) : isError ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-destructive">
-                  {t('tax.dash.loadError')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="text-destructive-strong">
+                {t('tax.dash.loadError')}
+              </TableMessageRow>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('tax.dash.empty')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="p-0">
+                <EmptyState
+                  icon={Receipt}
+                  title={t('tax.dash.empty')}
+                  className="border-0 shadow-none"
+                />
+              </TableMessageRow>
             ) : (
               rows.map((r) => (
-                <tr key={r.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2">
-                    <Link to={`/tax/${r.id}`} className="font-medium text-primary">
+                <TR key={r.id}>
+                  <TD>
+                    <Link
+                      to={`/tax/${r.id}`}
+                      className="font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                    >
                       {r.taxRecordId}
                     </Link>
-                    <p className="text-xs text-muted-foreground">{r.propertyNumber}</p>
-                  </td>
-                  <td className="px-4 py-2">{t(`tax.type.${r.taxType}`, r.taxType)}</td>
-                  <td className="px-4 py-2 text-muted-foreground">{r.financialYear}</td>
-                  <td className="px-4 py-2">{formatCurrency(r.amount, locale)}</td>
-                  <td className="px-4 py-2 font-medium">{formatCurrency(r.balance, locale)}</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[r.paymentStatus]}`}
-                    >
-                      {t(`tax.status.${r.paymentStatus}`, r.paymentStatus)}
-                    </span>
-                  </td>
-                </tr>
+                    <p className="text-caption text-muted-foreground">{r.propertyNumber}</p>
+                  </TD>
+                  <TD>{t(`tax.type.${r.taxType}`, r.taxType)}</TD>
+                  <TD className="whitespace-nowrap text-muted-foreground">{r.financialYear}</TD>
+                  <TD className="text-right tabular-nums">{formatCurrency(r.amount, locale)}</TD>
+                  <TD
+                    className={`text-right font-medium tabular-nums ${
+                      r.balance > 0 ? 'text-destructive-strong' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {formatCurrency(r.balance, locale)}
+                  </TD>
+                  <TD>
+                    <PaymentStatusBadge status={r.paymentStatus} />
+                  </TD>
+                </TR>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{t('tax.dash.total', { total })}</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            {t('tax.dash.prev')}
-          </Button>
-          <span>
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {t('tax.dash.next')}
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPage={setPage}
+        totalLabel={t('tax.dash.total', { total })}
+      />
     </div>
   );
 }

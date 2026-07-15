@@ -4,8 +4,25 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { VALIDATION } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/utils/cn';
+
+/** Label + control + error, wired so the error is announced rather than only shown in red. */
+function Row({ id, label, error, children }) {
+  return (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="block text-label text-foreground">
+        {label}
+      </label>
+      {children}
+      {error ? (
+        <p id={`${id}-error`} role="alert" className="text-caption text-destructive-strong">
+          {error.message}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
 export function LoginForm() {
   const { t } = useTranslation();
@@ -28,41 +45,35 @@ export function LoginForm() {
     }
   };
 
-  const inputClass = (hasError) =>
-    cn(
-      'h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
-      hasError && 'border-destructive focus-visible:ring-destructive',
-    );
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-foreground">{t('auth.email')}</label>
-        <input
+      <Row id="login-email" label={t('auth.email')} error={errors.email}>
+        <Input
+          id="login-email"
           type="email"
-          className={inputClass(errors.email)}
+          autoComplete="email"
+          invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? 'login-email-error' : undefined}
           {...register('email', {
             required: t('auth.required'),
             pattern: { value: VALIDATION.EMAIL_REGEX, message: t('auth.emailInvalid') },
           })}
         />
-        {errors.email ? <p className="text-xs text-destructive">{errors.email.message}</p> : null}
-      </div>
+      </Row>
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-foreground">{t('auth.password')}</label>
-        <input
+      <Row id="login-password" label={t('auth.password')} error={errors.password}>
+        <Input
+          id="login-password"
           type="password"
-          className={inputClass(errors.password)}
+          autoComplete="current-password"
+          invalid={Boolean(errors.password)}
+          aria-describedby={errors.password ? 'login-password-error' : undefined}
           {...register('password', { required: t('auth.required') })}
         />
-        {errors.password ? (
-          <p className="text-xs text-destructive">{errors.password.message}</p>
-        ) : null}
-      </div>
+      </Row>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? t('auth.signingIn') : t('auth.login')}
+      <Button type="submit" className="w-full" loading={isSubmitting}>
+        {t('auth.login')}
       </Button>
     </form>
   );

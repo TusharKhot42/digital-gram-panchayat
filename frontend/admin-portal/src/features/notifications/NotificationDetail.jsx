@@ -1,14 +1,17 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
 import { formatDateTime } from '@dgp/shared';
+import { Card, CardContent } from '@/components/ui/card';
+import { Chip } from '@/components/ui/chip';
+import { PageHeader } from '@/components/PageHeader';
+import { TableShell, Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
 import { useBroadcastRecipients } from './hooks';
 
-const STATUS_CLASS = {
-  queued: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300',
-  sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300',
-  delivered: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  failed: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
+const STATUS_COLOR = {
+  queued: 'blue',
+  sent: 'blue',
+  delivered: 'green',
+  failed: 'red',
 };
 
 /** Recipient-level breakdown for one broadcast (drill-in from the rollup dashboard). */
@@ -18,60 +21,54 @@ export function NotificationDetail() {
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const { data, isLoading, isError } = useBroadcastRecipients(id);
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">{t('common.loading')}</p>;
-  if (isError || !data) return <p className="text-sm text-destructive">{t('ntf.notFound')}</p>;
+  if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
+  if (isError || !data)
+    return <p className="text-body text-destructive-strong">{t('ntf.notFound')}</p>;
 
   const { broadcast: b, recipients, total } = data;
 
   return (
-    <div className="max-w-2xl">
-      <Link
-        to="/notifications"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('ntf.back')}
-      </Link>
+    <div className="max-w-3xl">
+      <PageHeader backTo="/notifications" backLabel={t('ntf.back')} title={b.title} />
 
-      <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-lg font-semibold text-foreground">{b.title}</h1>
-        <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">{b.message}</p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {(b.channels || []).join(', ')} · {formatDateTime(b.createdAt, locale)} ·{' '}
-          {t('ntf.recipientsCount', { count: total })}
-        </p>
-      </div>
+      <Card className="mb-4">
+        <CardContent className="p-5">
+          <p className="whitespace-pre-wrap text-body text-body-foreground">{b.message}</p>
+          <p className="mt-3 text-caption text-muted-foreground">
+            {(b.channels || []).join(', ')} · {formatDateTime(b.createdAt, locale)} ·{' '}
+            {t('ntf.recipientsCount', { count: total })}
+          </p>
+        </CardContent>
+      </Card>
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-22rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('ntf.detail.recipient')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.mobile')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.status')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.read')}</th>
+              <TH>{t('ntf.detail.recipient')}</TH>
+              <TH>{t('ntf.col.mobile')}</TH>
+              <TH>{t('ntf.col.status')}</TH>
+              <TH>{t('ntf.col.read')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {recipients.map((r) => (
-              <tr key={r.id} className="border-t border-border">
-                <td className="px-4 py-2 text-foreground">{r.name || '—'}</td>
-                <td className="px-4 py-2 text-muted-foreground">{r.mobile || '—'}</td>
-                <td className="px-4 py-2">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[r.status]}`}
-                  >
+              <TR key={r.id}>
+                <TD>{r.name || '—'}</TD>
+                <TD className="tabular-nums text-muted-foreground">{r.mobile || '—'}</TD>
+                <TD>
+                  <Chip color={STATUS_COLOR[r.status] ?? 'grey'}>
                     {t(`ntf.status.${r.status}`, r.status)}
-                  </span>
-                </td>
-                <td className="px-4 py-2 text-muted-foreground">
+                  </Chip>
+                </TD>
+                <TD className="text-muted-foreground">
                   {r.read ? t('ntf.readYes') : t('ntf.readNo')}
-                </td>
-              </tr>
+                </TD>
+              </TR>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
     </div>
   );
 }
