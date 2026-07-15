@@ -4,6 +4,7 @@ import { Receipt } from 'lucide-react';
 import { formatCurrency } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
 import { TaxCard } from '../components/TaxCard';
 import { useMyTax } from '../hooks';
 
@@ -39,10 +40,7 @@ export function TaxSummary() {
           isFetching={isFetching}
         />
       ) : records.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Receipt className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">{t('tax.summary.empty')}</p>
-        </div>
+        <EmptyState icon={Receipt} title={t('tax.summary.empty')} />
       ) : (
         <>
           <div className="mb-4 rounded-lg bg-primary/10 p-4 text-center">

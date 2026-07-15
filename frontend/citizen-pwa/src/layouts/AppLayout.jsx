@@ -14,7 +14,8 @@ export function AppLayout() {
       <Header />
       <OfflineBanner />
 
-      <main className="flex-1 pb-20">
+      {/* Bottom padding clears the fixed nav plus the device's home indicator. */}
+      <main className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))]">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

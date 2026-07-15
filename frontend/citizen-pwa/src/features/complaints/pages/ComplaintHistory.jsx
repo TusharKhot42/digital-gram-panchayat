@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
 import { useMyComplaints } from '../hooks';
 
 export function ComplaintHistory() {
@@ -36,13 +37,15 @@ export function ComplaintHistory() {
           isFetching={isFetching}
         />
       ) : complaints.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Inbox className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">{t('complaint.history.empty')}</p>
-          <Button asChild size="sm">
-            <Link to="/complaints/new">{t('complaint.history.new')}</Link>
-          </Button>
-        </div>
+        <EmptyState
+          icon={Inbox}
+          title={t('complaint.history.empty')}
+          action={
+            <Button asChild size="sm">
+              <Link to="/complaints/new">{t('complaint.history.new')}</Link>
+            </Button>
+          }
+        />
       ) : (
         <ul className="space-y-3">
           {complaints.map((c) => (

@@ -15,7 +15,11 @@ export function BottomNav() {
   const { t } = useTranslation();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+    <nav
+      aria-label={t('nav.home')}
+      // pb-safe keeps the bar clear of the iOS/Android home indicator when installed.
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-card/80"
+    >
       <ul className="mx-auto flex max-w-md items-stretch justify-between px-1">
         {items.map(({ to, label, icon: Icon, end }) => (
           <li key={to} className="flex-1">
@@ -24,13 +28,27 @@ export function BottomNav() {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'flex min-h-[56px] flex-col items-center justify-center gap-1 py-1 text-xs font-medium text-muted-foreground transition-colors',
+                  'group flex min-h-[56px] flex-col items-center justify-center gap-1 py-1.5',
+                  'text-caption font-medium text-muted-foreground transition-colors duration-150',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
                   isActive && 'text-primary',
                 )
               }
             >
-              <Icon className="h-5 w-5" aria-hidden="true" />
-              <span>{t(label)}</span>
+              {({ isActive }) => (
+                <>
+                  {/* Material-style active pill behind the icon — the only "selected" affordance. */}
+                  <span
+                    className={cn(
+                      'flex h-7 w-14 items-center justify-center rounded-full transition-colors duration-150',
+                      isActive ? 'bg-primary-subtle' : 'group-hover:bg-accent',
+                    )}
+                  >
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span>{t(label)}</span>
+                </>
+              )}
             </NavLink>
           </li>
         ))}

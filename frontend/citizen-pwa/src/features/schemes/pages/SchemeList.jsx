@@ -4,6 +4,7 @@ import { Search, Landmark } from 'lucide-react';
 import { SCHEME_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
 import { SchemeCard } from '../components/SchemeCard';
 import { useSchemes } from '../hooks';
 
@@ -55,10 +56,7 @@ export function SchemeList() {
           isFetching={isFetching}
         />
       ) : schemes.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Landmark className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">{t('scheme.list.empty')}</p>
-        </div>
+        <EmptyState icon={Landmark} title={t('scheme.list.empty')} />
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {schemes.map((s) => (

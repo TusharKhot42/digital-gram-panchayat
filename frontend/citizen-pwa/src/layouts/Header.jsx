@@ -14,8 +14,8 @@ export function Header() {
   const { data: unread = 0 } = useUnreadCount();
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <span className="text-base font-semibold text-foreground">{t('appName')}</span>
+    <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <span className="truncate text-section text-foreground">{t('appName')}</span>
 
       <div className="flex items-center gap-1">
         <span

@@ -9,8 +9,8 @@ export function Header() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
-      <h1 className="text-base font-semibold text-foreground">{t('dashboard.title')}</h1>
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-card/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-card/80 md:px-6">
+      <h1 className="text-section text-foreground">{t('dashboard.title')}</h1>
 
       <div className="flex items-center gap-2">
         <Button

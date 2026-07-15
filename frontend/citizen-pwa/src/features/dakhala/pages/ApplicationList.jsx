@@ -3,13 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Plus, FileText } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { SkeletonList } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
 import { DakhalaStatusBadge } from '../components/DakhalaStatusBadge';
 import { useMyApplications } from '../hooks';
 
 export function ApplicationList() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data, isLoading, isError } = useMyApplications();
+  const { data, isLoading, isError, refetch, isFetching } = useMyApplications();
   const apps = data?.data ?? [];
 
   return (
@@ -25,17 +28,23 @@ export function ApplicationList() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+        <SkeletonList />
       ) : isError ? (
-        <p className="text-sm text-destructive">{t('dakhala.list.loadError')}</p>
+        <QueryError
+          message={t('dakhala.list.loadError')}
+          onRetry={() => refetch()}
+          isFetching={isFetching}
+        />
       ) : apps.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <FileText className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">{t('dakhala.list.empty')}</p>
-          <Button asChild size="sm">
-            <Link to="/dakhala/new">{t('dakhala.list.apply')}</Link>
-          </Button>
-        </div>
+        <EmptyState
+          icon={FileText}
+          title={t('dakhala.list.empty')}
+          action={
+            <Button asChild size="sm">
+              <Link to="/dakhala/new">{t('dakhala.list.apply')}</Link>
+            </Button>
+          }
+        />
       ) : (
         <ul className="space-y-3">
           {apps.map((a) => (

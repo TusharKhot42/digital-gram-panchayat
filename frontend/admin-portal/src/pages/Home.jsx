@@ -23,13 +23,14 @@ import { certificateService } from '@/features/dakhala/certificateService';
 
 function MetricCard({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-border bg-card p-4">
-      <div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary">
-        <Icon className="h-5 w-5" />
+    <div className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-xs transition-shadow duration-150 hover:shadow-sm">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-subtle text-primary">
+        <Icon className="h-5 w-5" aria-hidden="true" />
       </div>
       <div className="min-w-0">
-        <p className="truncate text-2xl font-semibold text-foreground">{value}</p>
-        <p className="text-sm text-muted-foreground">{label}</p>
+        {/* The number leads; the label supports it. */}
+        <p className="truncate text-2xl font-semibold tabular-nums text-foreground">{value}</p>
+        <p className="truncate text-body text-muted-foreground">{label}</p>
       </div>
     </div>
   );

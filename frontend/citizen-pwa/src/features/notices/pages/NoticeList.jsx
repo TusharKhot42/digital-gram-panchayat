@@ -4,6 +4,7 @@ import { Search, Megaphone } from 'lucide-react';
 import { NOTICE_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
 import { NoticeCard } from '../components/NoticeCard';
 import { useNotices } from '../hooks';
 
@@ -55,10 +56,7 @@ export function NoticeList() {
           isFetching={isFetching}
         />
       ) : notices.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <Megaphone className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">{t('notice.list.empty')}</p>
-        </div>
+        <EmptyState icon={Megaphone} title={t('notice.list.empty')} />
       ) : (
         <ul className="space-y-3">
           {notices.map((n) => (

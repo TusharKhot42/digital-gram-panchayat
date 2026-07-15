@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { PAYMENT_STATUS_COLOR_MAP } from '@dgp/shared';
 import { cn } from '@/utils/cn';
 
+// Same chip language as StatusBadge — semantic tokens, subtle tint, hairline ring.
 const COLOR_CLASSES = {
-  red: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  orange: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  green: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
+  red: 'bg-destructive-subtle text-destructive ring-destructive/20',
+  orange: 'bg-warning-subtle text-warning ring-warning/20',
+  green: 'bg-success-subtle text-success ring-success/20',
 };
 
 export function PaymentStatusBadge({ status, className }) {
@@ -14,7 +15,7 @@ export function PaymentStatusBadge({ status, className }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+        'inline-flex items-center rounded-full px-2.5 py-0.5 text-caption font-medium ring-1 ring-inset',
         COLOR_CLASSES[color],
         className,
       )}

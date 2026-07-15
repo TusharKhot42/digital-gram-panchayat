@@ -2,12 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { STATUS_COLOR_MAP } from '@dgp/shared';
 import { cn } from '@/utils/cn';
 
-// Blueprint 3.1.1 colour map: Red Pending, Orange InProgress, Green Resolved.
+// Blueprint 3.1.1 colour map (Red Pending, Orange InProgress, Green Resolved) rendered with
+// the design-system semantic tokens: a subtle tint, readable text, and a hairline ring so the
+// chip stays legible on white cards and in dark mode alike.
 const COLOR_CLASSES = {
-  red: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  orange: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  green: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  grey: 'bg-gray-200 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300',
+  red: 'bg-destructive-subtle text-destructive ring-destructive/20',
+  orange: 'bg-warning-subtle text-warning ring-warning/20',
+  green: 'bg-success-subtle text-success ring-success/20',
+  grey: 'bg-muted text-muted-foreground ring-border',
 };
 
 export function StatusBadge({ status, className }) {
@@ -16,7 +18,7 @@ export function StatusBadge({ status, className }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+        'inline-flex items-center rounded-full px-2.5 py-0.5 text-caption font-medium ring-1 ring-inset',
         COLOR_CLASSES[color],
         className,
       )}

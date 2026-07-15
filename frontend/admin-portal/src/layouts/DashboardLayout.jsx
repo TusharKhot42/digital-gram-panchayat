@@ -10,8 +10,11 @@ export function DashboardLayout() {
       <div className="flex flex-1 flex-col">
         <Header />
         <ConnectivityBanner />
-        <main className="flex-1 p-6">
-          <Outlet />
+        {/* Content is capped and centred so tables stay readable on ultrawide displays. */}
+        <main className="flex-1 p-4 md:p-6">
+          <div className="dgp-page">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
