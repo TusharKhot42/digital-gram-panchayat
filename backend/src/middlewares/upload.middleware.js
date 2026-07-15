@@ -121,6 +121,33 @@ export function uploadCertificateDocuments(req, res, next) {
 }
 
 /**
+ * Accept up to 5 tax-bill scans (PDF/image, <=5MB each) under `bills`. Reuses the shared
+ * attachment upload — no duplicate upload logic. No-ops on JSON requests (backward compatible).
+ */
+export function uploadTaxBills(req, res, next) {
+  const handler = attachmentUpload.array('bills', 5);
+  handler(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'Each bill must be 5MB or smaller'));
+      return;
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      next(new AppError(400, 'TOO_MANY_FILES', 'You can upload at most 5 bills'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Bill upload failed'));
+  });
+}
+
+/**
  * Accept a single optional image (<=5MB) under `image` — reuses the image-only filter.
  */
 export function uploadSingleImage(req, res, next) {

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Home, Droplets } from 'lucide-react';
+import { Home, Droplets, FileText } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
 import { PaymentStatusBadge } from './PaymentStatusBadge';
 
@@ -73,6 +73,36 @@ export function TaxCard({ record }) {
               </li>
             ))}
           </ul>
+        </div>
+      ) : null}
+
+      {record.bills?.length ? (
+        <div className="mt-3 border-t border-border pt-3">
+          <p className="mb-2 text-xs font-semibold text-foreground">{t('tax.card.bills')}</p>
+          <div className="flex flex-wrap gap-2">
+            {record.bills.map((b) =>
+              b.type === 'image' ? (
+                <a key={b.url} href={b.url} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={b.url}
+                    alt={b.name || 'bill'}
+                    className="h-16 w-16 rounded-md border border-border object-cover"
+                  />
+                </a>
+              ) : (
+                <a
+                  key={b.url}
+                  href={b.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-primary"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  {b.name || 'PDF'}
+                </a>
+              ),
+            )}
+          </div>
         </div>
       ) : null}
     </div>

@@ -20,6 +20,10 @@ const envSchema = z.object({
   CORS_ORIGIN_CITIZEN: z.string().url().default('http://localhost:5173'),
   CORS_ORIGIN_ADMIN: z.string().url().default('http://localhost:5174'),
 
+  // Public base URL of this API — used to build absolute URLs for mock-mode uploads so the
+  // served bytes resolve from the browser. In production, Cloudinary URLs are used instead.
+  SELF_URL: z.string().url().default('http://localhost:5000'),
+
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
@@ -33,6 +37,9 @@ const envSchema = z.object({
 
   // Optional, pluggable email provider (none by default).
   EMAIL_PROVIDER: z.string().optional(),
+
+  // Translation provider for automatic bilingual content. 'mock' (default) needs no API key.
+  TRANSLATION_PROVIDER: z.string().default('mock'),
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Bell, Search, CheckCheck, Settings } from 'lucide-react';
-import { formatDateTime } from '@dgp/shared';
+import { formatDateTime, pickLocale } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 import { useNotifications, useMarkAllRead } from '../hooks';
@@ -101,9 +101,11 @@ export function NotificationCenter() {
                         n.readAt ? 'font-medium text-foreground' : 'font-semibold text-foreground',
                       )}
                     >
-                      {n.title}
+                      {pickLocale(n.i18n, 'title', locale, n.title)}
                     </p>
-                    <p className="line-clamp-2 text-xs text-muted-foreground">{n.message}</p>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                      {pickLocale(n.i18n, 'message', locale, n.message)}
+                    </p>
                     <p className="mt-1 text-[11px] text-muted-foreground">
                       {formatDateTime(n.createdAt, locale)}
                     </p>

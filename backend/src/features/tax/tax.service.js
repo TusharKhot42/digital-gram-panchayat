@@ -3,6 +3,7 @@ import { TaxRecord } from './tax.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
+import { uploadAttachments } from '../../utils/upload.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { notifyTaxUpdate } from '../notifications/notification.service.js';
 
@@ -53,7 +54,7 @@ export async function lookupCitizen(mobile) {
 }
 
 /** @param {{ officerId: string, body: object }} params */
-export async function createRecord({ officerId, body }) {
+export async function createRecord({ officerId, body, files }) {
   const citizen = await User.findOne({ _id: body.citizenId, role: ROLES.CITIZEN }).catch(
     () => null,
   );
@@ -62,6 +63,9 @@ export async function createRecord({ officerId, body }) {
   const year = new Date().getFullYear();
   const seq = await getNextSequence(`tax-${year}`);
   const amount = Number(body.amount);
+
+  // Reuse the shared upload abstraction (Cloudinary or mock) — no duplicate logic.
+  const bills = await uploadAttachments(files, 'tax');
 
   const record = await TaxRecord.create({
     taxRecordId: buildTaxRecordId(year, seq),
@@ -74,6 +78,7 @@ export async function createRecord({ officerId, body }) {
     balance: amount,
     paymentStatus: amount > 0 ? 'Unpaid' : 'Paid',
     dueDate: body.dueDate || undefined,
+    bills,
     createdBy: officerId,
     history: [
       { action: 'create', field: 'amount', old: null, new: amount, by: officerId, at: new Date() },

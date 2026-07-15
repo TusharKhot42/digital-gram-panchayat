@@ -5,6 +5,7 @@ import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadAttachments, uploadPdfBuffer } from '../../utils/upload.js';
+import { translateToBoth } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { notifyDakhalaStatus } from '../notifications/notification.service.js';
 
@@ -248,6 +249,8 @@ export async function reject(id, officerId, reason) {
   const before = { status: app.status };
   app.status = 'Rejected';
   app.rejectionReason = reason.trim();
+  const both = await translateToBoth(reason.trim());
+  app.rejectionReasonI18n = { en: both.en, mr: both.mr };
   app.reviewedBy = officerId;
   app.updatedBy = officerId;
   app.history.push({ status: 'Rejected', by: officerId, note: reason.trim(), at: new Date() });

@@ -39,16 +39,34 @@
     "retry": "पुन्हा प्रयत्न",
     "retried": "सूचना पुन्हा रांगेत",
     "actionFailed": "क्रिया अयशस्वी",
-    "status": { "queued": "रांगेत", "sent": "पाठवले", "delivered": "वितरित", "failed": "अयशस्वी" },
-    "type": { "info": "माहिती", "success": "यशस्वी", "warning": "इशारा", "error": "त्रुटी" },
-    "stat": { "total": "एकूण" },
+    "status": {
+      "queued": "रांगेत",
+      "sent": "पाठवले",
+      "delivered": "वितरित",
+      "failed": "अयशस्वी"
+    },
+    "type": {
+      "info": "माहिती",
+      "success": "यशस्वी",
+      "warning": "इशारा",
+      "error": "त्रुटी"
+    },
+    "stat": {
+      "total": "एकूण",
+      "broadcasts": "प्रसारणे"
+    },
     "col": {
       "title": "शीर्षक",
       "module": "मॉड्यूल",
       "channel": "माध्यम",
       "date": "तयार केले",
       "status": "स्थिती",
-      "actions": "क्रिया"
+      "actions": "क्रिया",
+      "recipients": "प्राप्तकर्ते",
+      "delivered": "वितरित",
+      "failed": "अयशस्वी",
+      "mobile": "मोबाईल",
+      "read": "वाचले"
     },
     "detail": {
       "recipient": "प्राप्तकर्ता",
@@ -73,6 +91,17 @@
       "send": "प्रसारण पाठवा",
       "sent": "{{count}} प्राप्तकर्त्यांना प्रसारण पाठवले",
       "failed": "प्रसारण पाठवता आले नाही"
+    },
+    "broadcastHint": "प्रत्येक प्रसारण एकदाच वितरण एकूणासह दाखवले जाते. प्राप्तकर्ते पाहण्यासाठी प्रसारणावर क्लिक करा.",
+    "totalBroadcasts": "{{total}} प्रसारणे",
+    "recipientsCount": "{{count}} प्राप्तकर्ते",
+    "readYes": "वाचले",
+    "readNo": "न वाचलेले",
+    "bstatus": {
+      "queued": "रांगेत",
+      "delivered": "वितरित",
+      "partial": "अंशतः",
+      "failed": "अयशस्वी"
     }
   },
   "dashboard": {
@@ -386,7 +415,10 @@
       "required": "हे क्षेत्र आवश्यक आहे",
       "save": "नोंद तयार करा",
       "created": "कर नोंद तयार झाली",
-      "failed": "नोंद तयार करता आली नाही"
+      "failed": "नोंद तयार करता आली नाही",
+      "bills": "कर बिल स्कॅन (प्रतिमा/PDF)",
+      "billsHint": "ऐच्छिक. नागरिक पाहू शकतील अशी स्कॅन केलेली बिले जोडा.",
+      "billsSelected": "{{count}} फाइल निवडल्या"
     },
     "detail": {
       "back": "कर नोंदींकडे परत",
@@ -412,10 +444,9 @@
   "dakhala": {
     "type": {
       "Residence": "रहिवासी दाखला",
-      "Income": "उत्पन्न दाखला",
       "Birth": "जन्म दाखला",
       "Death": "मृत्यू दाखला",
-      "Character": "चारित्र्य दाखला",
+      "SevenTwelve": "७/१२ उतारा",
       "Other": "इतर दाखला"
     },
     "status": {
@@ -440,7 +471,9 @@
       "dateOfDeath": "मृत्यूची तारीख",
       "placeOfDeath": "मृत्यूचे ठिकाण",
       "relationToApplicant": "अर्जदाराशी नाते",
-      "details": "तपशील"
+      "details": "तपशील",
+      "surveyNumber": "सर्वे / गट क्रमांक",
+      "village": "गाव"
     },
     "dash": {
       "title": "दाखला अर्ज",

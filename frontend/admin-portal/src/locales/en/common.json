@@ -39,16 +39,34 @@
     "retry": "Retry",
     "retried": "Notification re-queued",
     "actionFailed": "Action failed",
-    "status": { "queued": "Queued", "sent": "Sent", "delivered": "Delivered", "failed": "Failed" },
-    "type": { "info": "Info", "success": "Success", "warning": "Warning", "error": "Error" },
-    "stat": { "total": "Total" },
+    "status": {
+      "queued": "Queued",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "failed": "Failed"
+    },
+    "type": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "stat": {
+      "total": "Total",
+      "broadcasts": "Broadcasts"
+    },
     "col": {
       "title": "Title",
       "module": "Module",
       "channel": "Channel",
       "date": "Created",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "recipients": "Recipients",
+      "delivered": "Delivered",
+      "failed": "Failed",
+      "mobile": "Mobile",
+      "read": "Read"
     },
     "detail": {
       "recipient": "Recipient",
@@ -73,6 +91,17 @@
       "send": "Send broadcast",
       "sent": "Broadcast sent to {{count}} recipients",
       "failed": "Could not send broadcast"
+    },
+    "broadcastHint": "Each broadcast is shown once with delivery totals. Click a broadcast to see recipients.",
+    "totalBroadcasts": "{{total}} broadcasts",
+    "recipientsCount": "{{count}} recipients",
+    "readYes": "Read",
+    "readNo": "Unread",
+    "bstatus": {
+      "queued": "Queued",
+      "delivered": "Delivered",
+      "partial": "Partial",
+      "failed": "Failed"
     }
   },
   "dashboard": {
@@ -386,7 +415,10 @@
       "required": "This field is required",
       "save": "Create record",
       "created": "Tax record created",
-      "failed": "Could not create record"
+      "failed": "Could not create record",
+      "bills": "Tax bill scans (image/PDF)",
+      "billsHint": "Optional. Attach scanned bills the citizen can view.",
+      "billsSelected": "{{count}} file(s) selected"
     },
     "detail": {
       "back": "Back to tax records",
@@ -412,10 +444,9 @@
   "dakhala": {
     "type": {
       "Residence": "Residence Certificate",
-      "Income": "Income Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
-      "Character": "Character Certificate",
+      "SevenTwelve": "7/12 Certificate",
       "Other": "Other Certificate"
     },
     "status": {
@@ -440,7 +471,9 @@
       "dateOfDeath": "Date of death",
       "placeOfDeath": "Place of death",
       "relationToApplicant": "Relation to applicant",
-      "details": "Details"
+      "details": "Details",
+      "surveyNumber": "Survey / Gat number",
+      "village": "Village"
     },
     "dash": {
       "title": "Certificate Applications",

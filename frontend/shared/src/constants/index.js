@@ -58,7 +58,7 @@ export const PAYMENT_STATUS_COLOR_MAP = {
   Paid: 'green',
 };
 
-export const CERT_TYPES = ['Residence', 'Income', 'Birth', 'Death', 'Character', 'Other'];
+export const CERT_TYPES = ['Residence', 'Birth', 'Death', 'SevenTwelve', 'Other'];
 
 export const DAKHALA_STATUSES = ['Submitted', 'UnderReview', 'Approved', 'Rejected'];
 
@@ -78,12 +78,6 @@ export const CERT_TYPE_FIELDS = {
     { key: 'yearsOfResidence', label: 'Years of residence', type: 'number', required: true },
     { key: 'purpose', label: 'Purpose', type: 'text', required: true },
   ],
-  Income: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'annualIncome', label: 'Annual income (₹)', type: 'number', required: true },
-    { key: 'occupation', label: 'Occupation', type: 'text', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
-  ],
   Birth: [
     { key: 'childName', label: 'Child name', type: 'text', required: true },
     { key: 'dateOfBirth', label: 'Date of birth', type: 'date', required: true },
@@ -97,8 +91,10 @@ export const CERT_TYPE_FIELDS = {
     { key: 'placeOfDeath', label: 'Place of death', type: 'text', required: true },
     { key: 'relationToApplicant', label: 'Relation to applicant', type: 'text', required: true },
   ],
-  Character: [
+  SevenTwelve: [
     { key: 'fullName', label: 'Full name', type: 'text', required: true },
+    { key: 'surveyNumber', label: 'Survey / Gat number', type: 'text', required: true },
+    { key: 'village', label: 'Village', type: 'text', required: true },
     { key: 'purpose', label: 'Purpose', type: 'text', required: true },
   ],
   Other: [

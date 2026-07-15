@@ -53,11 +53,11 @@ describe('logger', () => {
   });
 });
 
-describe('upload (Cloudinary unconfigured -> deterministic mock URLs)', () => {
-  test('uploadImages returns one mock URL per file, preserving order', async () => {
+describe('upload (Cloudinary unconfigured -> served mock URLs)', () => {
+  test('uploadImages returns one served URL per file, preserving order', async () => {
     const urls = await uploadImages([imageFile, imageFile], 'complaints');
     expect(urls).toHaveLength(2);
-    urls.forEach((u) => expect(u).toMatch(/^https:\/\/mock\.cloudinary\.local\/complaints\//));
+    urls.forEach((u) => expect(u).toMatch(/\/api\/v1\/uploads\//));
   });
 
   test('uploadImages on empty input returns []', async () => {
@@ -68,10 +68,10 @@ describe('upload (Cloudinary unconfigured -> deterministic mock URLs)', () => {
   test('uploadAttachment classifies pdf vs image', async () => {
     const pdf = await uploadAttachment(pdfFile, 'certificates');
     expect(pdf.type).toBe('pdf');
-    expect(pdf.url).toMatch(/\.pdf$/);
+    expect(pdf.url).toMatch(/\/api\/v1\/uploads\//);
     const img = await uploadAttachment(imageFile, 'notices');
     expect(img.type).toBe('image');
-    expect(img.url).toMatch(/\.jpg$/);
+    expect(img.url).toMatch(/\/api\/v1\/uploads\//);
   });
 
   test('uploadAttachments preserves original names', async () => {
@@ -79,9 +79,9 @@ describe('upload (Cloudinary unconfigured -> deterministic mock URLs)', () => {
     expect(out[0]).toMatchObject({ type: 'pdf', name: 'doc.pdf' });
   });
 
-  test('uploadPdfBuffer returns a mock URL', async () => {
+  test('uploadPdfBuffer returns a served URL', async () => {
     const url = await uploadPdfBuffer(Buffer.from('%PDF'), 'certificates');
-    expect(url).toMatch(/^https:\/\/mock\.cloudinary\.local\/certificates\//);
+    expect(url).toMatch(/\/api\/v1\/uploads\//);
   });
 });
 

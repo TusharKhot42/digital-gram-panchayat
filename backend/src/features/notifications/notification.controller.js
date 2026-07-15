@@ -36,6 +36,16 @@ export const stats = asyncHandler(async (_req, res) => {
   res.status(200).json(successResponse(await service.stats()));
 });
 
+export const listBroadcasts = asyncHandler(async (req, res) => {
+  res.status(200).json(successResponse(await service.listBroadcasts(req.query)));
+});
+
+export const broadcastRecipients = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .json(successResponse(await service.broadcastRecipients(req.params.broadcastId, req.query)));
+});
+
 export const broadcast = asyncHandler(async (req, res) => {
   const result = await service.broadcast({ ...req.body, officerId: req.user.id });
   res.status(200).json(successResponse(result));

@@ -15,6 +15,7 @@ export function TaxForm() {
   const [citizen, setCitizen] = useState(null);
   const [mobile, setMobile] = useState('');
   const [lookingUp, setLookingUp] = useState(false);
+  const [bills, setBills] = useState([]);
   const m = useTaxMutations();
 
   const {
@@ -47,9 +48,8 @@ export function TaxForm() {
     }
     try {
       await m.create.mutateAsync({
-        ...values,
-        citizenId: citizen.id,
-        amount: Number(values.amount),
+        values: { ...values, citizenId: citizen.id, amount: Number(values.amount) },
+        files: bills,
       });
       toast.success(t('tax.form.created'));
       navigate('/tax', { replace: true });
@@ -162,6 +162,24 @@ export function TaxForm() {
             </label>
             <input type="date" className={input} {...register('dueDate')} />
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">{t('tax.form.bills')}</label>
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            multiple
+            className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border file:border-input file:bg-background file:px-3 file:py-1.5 file:text-sm file:text-foreground"
+            onChange={(e) => setBills(Array.from(e.target.files || []))}
+          />
+          {bills.length ? (
+            <p className="text-xs text-muted-foreground">
+              {t('tax.form.billsSelected', { count: bills.length })}
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">{t('tax.form.billsHint')}</p>
+          )}
         </div>
 
         <Button type="submit" disabled={m.create.isPending}>

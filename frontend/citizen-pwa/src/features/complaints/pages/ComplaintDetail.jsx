@@ -71,7 +71,7 @@ export function ComplaintDetail() {
           <ul className="space-y-2">
             {c.remarks.map((r, i) => (
               <li key={`${r.at}-${i}`} className="rounded-md bg-muted p-2 text-sm text-foreground">
-                {r.note}
+                {r.i18n?.[locale] || r.note}
                 <span className="mt-1 block text-xs text-muted-foreground">
                   {formatDateTime(r.at, locale)}
                 </span>

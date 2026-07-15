@@ -7,6 +7,8 @@ const remarkSchema = new Schema(
   {
     officerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     note: { type: String, required: true, trim: true },
+    // Auto-generated bilingual { en, mr } of the officer's remark.
+    i18n: { type: Schema.Types.Mixed },
     at: { type: Date, default: Date.now },
   },
   { _id: false },

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
-import { formatDateTime } from '@dgp/shared';
+import { formatDateTime, pickLocale } from '@dgp/shared';
 import { useNotification, useMarkRead } from '../hooks';
 
 export function NotificationDetail() {
@@ -32,9 +32,13 @@ export function NotificationDetail() {
         <ArrowLeft className="h-4 w-4" />
         {t('notif.back')}
       </Link>
-      <h1 className="text-lg font-semibold text-foreground">{n.title}</h1>
+      <h1 className="text-lg font-semibold text-foreground">
+        {pickLocale(n.i18n, 'title', locale, n.title)}
+      </h1>
       <p className="mt-1 text-xs text-muted-foreground">{formatDateTime(n.createdAt, locale)}</p>
-      <p className="mt-4 whitespace-pre-wrap text-sm text-foreground">{n.message}</p>
+      <p className="mt-4 whitespace-pre-wrap text-sm text-foreground">
+        {pickLocale(n.i18n, 'message', locale, n.message)}
+      </p>
 
       {n.entityId && n.module === 'complaint' ? (
         <Link to={`/complaints/${n.entityId}`} className="mt-6 inline-block text-sm text-primary">

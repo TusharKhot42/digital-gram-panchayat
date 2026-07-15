@@ -192,7 +192,17 @@
       "submit": "Submit complaint",
       "submitted": "Complaint {{id}} submitted",
       "queuedOffline": "You're offline — complaint saved and will be sent automatically when you reconnect.",
-      "failed": "Could not submit complaint"
+      "failed": "Could not submit complaint",
+      "capturePhoto": "Capture Photo",
+      "uploadPhoto": "Upload Photo",
+      "gpsLoading": "Locating…",
+      "gpsFetching": "Fetching your location…",
+      "gpsCoords": "{{lat}}, {{lng}}",
+      "gpsRetry": "Retry",
+      "gps_denied": "Location permission denied.",
+      "gps_unavailable": "Location is unavailable on this device.",
+      "gps_timeout": "Location request timed out.",
+      "gps_error": "Could not get your location."
     },
     "history": {
       "title": "My complaints",
@@ -287,16 +297,16 @@
       "paid": "Paid",
       "dues": "Dues",
       "dueBy": "Due by",
-      "history": "Payment history"
+      "history": "Payment history",
+      "bills": "Tax bills"
     }
   },
   "dakhala": {
     "type": {
       "Residence": "Residence Certificate",
-      "Income": "Income Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
-      "Character": "Character Certificate",
+      "SevenTwelve": "7/12 Certificate",
       "Other": "Other Certificate"
     },
     "status": {
@@ -321,7 +331,9 @@
       "dateOfDeath": "Date of death",
       "placeOfDeath": "Place of death",
       "relationToApplicant": "Relation to applicant",
-      "details": "Details"
+      "details": "Details",
+      "surveyNumber": "Survey / Gat number",
+      "village": "Village"
     },
     "list": {
       "title": "My Certificates",

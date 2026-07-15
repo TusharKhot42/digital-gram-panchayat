@@ -32,6 +32,8 @@ const certificateSchema = new Schema(
     uploadedDocuments: { type: [documentSchema], default: [] },
     status: { type: String, enum: DAKHALA_STATUSES, default: 'Submitted', index: true },
     rejectionReason: { type: String },
+    // Auto-generated bilingual { en, mr } of the rejection reason.
+    rejectionReasonI18n: { type: Schema.Types.Mixed },
     pdfUrl: { type: String },
     history: { type: [statusEntrySchema], default: [] },
     reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },

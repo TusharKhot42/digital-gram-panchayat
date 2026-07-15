@@ -4,6 +4,7 @@ import { getNextSequence } from './counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadImages } from '../../utils/upload.js';
+import { translateToBoth } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { notifyComplaintStatus } from '../notifications/notification.service.js';
 
@@ -150,7 +151,14 @@ export async function updateStatus(id, officer, payload) {
   complaint.status = payload.status;
   complaint.statusHistory.push({ status: payload.status, by: officer.id, at: new Date() });
   if (payload.remark && payload.remark.trim()) {
-    complaint.remarks.push({ officerId: officer.id, note: payload.remark.trim(), at: new Date() });
+    const note = payload.remark.trim();
+    const both = await translateToBoth(note, payload.lang);
+    complaint.remarks.push({
+      officerId: officer.id,
+      note,
+      i18n: { en: both.en, mr: both.mr },
+      at: new Date(),
+    });
   }
   await complaint.save();
 

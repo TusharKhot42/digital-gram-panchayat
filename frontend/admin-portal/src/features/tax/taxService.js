@@ -17,8 +17,18 @@ export const taxService = {
     const { data } = await apiClient.get('/admin/tax/lookup', { params: { mobile } });
     return data.data;
   },
-  async create(payload) {
-    const { data } = await apiClient.post('/admin/tax', payload);
+  async create(values, files = []) {
+    // Multipart only when bills are attached — plain JSON otherwise (backward compatible).
+    if (files.length) {
+      const fd = new FormData();
+      Object.entries(values).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') fd.append(k, v);
+      });
+      files.forEach((f) => fd.append('bills', f));
+      const { data } = await apiClient.post('/admin/tax', fd);
+      return data.data;
+    }
+    const { data } = await apiClient.post('/admin/tax', values);
     return data.data;
   },
   async update(id, payload) {

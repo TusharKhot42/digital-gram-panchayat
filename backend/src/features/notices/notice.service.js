@@ -3,6 +3,7 @@ import { Notice } from './notice.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadAttachment } from '../../utils/upload.js';
+import { translateFields } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { broadcastNotice } from '../notifications/notification.service.js';
 
@@ -41,12 +42,19 @@ export async function createNotice({ officerId, body, file }) {
   const attachment = await attach(file);
   const published = body.isPublished === true || body.isPublished === 'true';
 
+  // Auto-translate the human-authored fields into both languages (source auto-detected).
+  const i18n = await translateFields(
+    { title: body.title, summary: body.summary, content: body.content },
+    body.lang,
+  );
+
   const notice = await Notice.create({
     noticeId: buildNoticeId(year, seq),
     title: body.title,
     summary: body.summary || undefined,
     content: body.content,
     category: body.category || 'General',
+    i18n,
     attachmentUrl: attachment?.url,
     attachmentType: attachment?.type,
     publishDate: published ? body.publishDate || new Date() : body.publishDate || undefined,
@@ -80,6 +88,12 @@ export async function updateNotice(id, officerId, body, file) {
     notice.attachmentUrl = attachment.url;
     notice.attachmentType = attachment.type;
   }
+
+  // Refresh bilingual versions from the updated fields.
+  notice.i18n = await translateFields(
+    { title: notice.title, summary: notice.summary, content: notice.content },
+    body.lang,
+  );
 
   await notice.save();
   await audit(officerId, 'notice.update', notice, before, { title: notice.title });

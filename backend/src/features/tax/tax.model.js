@@ -41,6 +41,21 @@ const taxRecordSchema = new Schema(
     balance: { type: Number, default: 0, min: 0 },
     paymentStatus: { type: String, enum: PAYMENT_STATUSES, default: 'Unpaid', index: true },
     dueDate: { type: Date },
+    // Scanned tax bills (images/PDFs) uploaded by the officer; visible to the citizen.
+    bills: {
+      type: [
+        new Schema(
+          {
+            url: { type: String, required: true },
+            type: { type: String, enum: ['pdf', 'image'], required: true },
+            name: { type: String },
+            uploadedAt: { type: Date, default: Date.now },
+          },
+          { _id: false },
+        ),
+      ],
+      default: [],
+    },
     payments: { type: [paymentSchema], default: [] },
     history: { type: [historyEntrySchema], default: [] },
     isActive: { type: Boolean, default: true, index: true },

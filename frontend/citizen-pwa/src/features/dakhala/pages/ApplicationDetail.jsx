@@ -63,7 +63,7 @@ export function ApplicationDetail() {
       {a.status === 'Rejected' && a.rejectionReason ? (
         <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
           <span className="font-medium">{t('dakhala.detail.rejected')}: </span>
-          {a.rejectionReason}
+          {a.rejectionReasonI18n?.[locale] || a.rejectionReason}
         </div>
       ) : null}
 

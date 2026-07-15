@@ -1,6 +1,20 @@
-import { randomUUID } from 'node:crypto';
 import { cloudinary, isCloudinaryConfigured } from '../config/cloudinary.js';
+import { env } from '../config/env.js';
+import { putFile } from '../features/uploads/upload-store.js';
 import { logger } from './logger.js';
+
+/**
+ * Store an in-memory file and return an absolute, resolvable URL served by this API. Used only
+ * in mock mode (no Cloudinary), so uploaded images/PDFs actually render in the UIs.
+ */
+function mockUrl(file) {
+  const key = putFile({
+    buffer: file.buffer,
+    contentType: file.mimetype,
+    filename: file.originalname,
+  });
+  return `${env.SELF_URL}/api/${env.API_VERSION}/uploads/${key}`;
+}
 
 /**
  * Upload one in-memory file buffer. Uses Cloudinary when configured, otherwise returns a
@@ -11,7 +25,7 @@ import { logger } from './logger.js';
  */
 function uploadOne(file, folder) {
   if (!isCloudinaryConfigured) {
-    return Promise.resolve(`https://mock.cloudinary.local/${folder}/${randomUUID()}.jpg`);
+    return Promise.resolve(mockUrl(file));
   }
 
   return new Promise((resolve, reject) => {
@@ -82,8 +96,7 @@ export async function uploadAttachment(file, folder = 'notices') {
   const type = file.mimetype === 'application/pdf' ? 'pdf' : 'image';
 
   if (!isCloudinaryConfigured) {
-    const ext = type === 'pdf' ? 'pdf' : 'jpg';
-    return { url: `https://mock.cloudinary.local/${folder}/${randomUUID()}.${ext}`, type };
+    return { url: mockUrl(file), type };
   }
 
   const url = await new Promise((resolve, reject) => {
