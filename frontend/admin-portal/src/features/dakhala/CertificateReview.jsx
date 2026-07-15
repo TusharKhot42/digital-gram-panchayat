@@ -23,6 +23,7 @@ export function CertificateReview() {
   const m = useReviewMutations(id);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [confirmApprove, setConfirmApprove] = useState(false);
+  const [preview, setPreview] = useState(null); // fullscreen image preview
 
   if (isLoading) return <p className="text-sm text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !a)
@@ -95,18 +96,53 @@ export function CertificateReview() {
               {t('dakhala.review.documents')}
             </h2>
             {a.uploadedDocuments?.length ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {a.uploadedDocuments.map((d, i) => (
-                  <a
+                  <div
                     key={`${d.url}-${i}`}
-                    href={d.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-foreground"
+                    className="w-40 rounded-md border border-border p-2 text-sm"
                   >
-                    <FileText className="h-4 w-4 text-primary" />
-                    {d.name || `${t('dakhala.review.document')} ${i + 1}`}
-                  </a>
+                    {d.type === 'image' ? (
+                      <button
+                        type="button"
+                        onClick={() => setPreview(d.url)}
+                        className="block w-full"
+                        title={t('dakhala.review.zoom')}
+                      >
+                        <img
+                          src={d.url}
+                          alt={d.name || ''}
+                          className="h-24 w-full rounded object-cover"
+                        />
+                      </button>
+                    ) : (
+                      <a
+                        href={d.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex h-24 w-full items-center justify-center rounded bg-muted"
+                      >
+                        <FileText className="h-8 w-8 text-primary" />
+                      </a>
+                    )}
+                    <p className="mt-2 truncate text-xs font-medium text-foreground">
+                      {d.docType ? t(`dakhala.doc.${d.docType}`, d.docType) : d.name || '—'}
+                    </p>
+                    {d.group ? (
+                      <p className="truncate text-xs text-muted-foreground">
+                        {t(`dakhala.docGroup.${d.group}`, d.group)}
+                      </p>
+                    ) : null}
+                    <a
+                      href={d.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 text-xs text-primary"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      {t('dakhala.review.open')}
+                    </a>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -211,6 +247,17 @@ export function CertificateReview() {
         onReject={doReject}
         onClose={() => setRejectOpen(false)}
       />
+
+      {preview ? (
+        <button
+          type="button"
+          aria-label={t('dakhala.review.close')}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
+          onClick={() => setPreview(null)}
+        >
+          <img src={preview} alt="" className="max-h-full max-w-full rounded-md" />
+        </button>
+      ) : null}
     </div>
   );
 }

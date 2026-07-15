@@ -8,6 +8,10 @@ const documentSchema = new Schema(
     url: { type: String, required: true },
     type: { type: String, enum: ['pdf', 'image'], required: true },
     name: { type: String },
+    // Which requirement the file satisfies (e.g. 'identity') and what it is (e.g. 'Aadhaar').
+    // Optional so applications created before this change still load unchanged.
+    group: { type: String },
+    docType: { type: String },
   },
   { _id: false },
 );

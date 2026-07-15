@@ -16,10 +16,9 @@ const DEVANAGARI_FONT_PATH = join(
 const GRAM_PANCHAYAT_NAME = 'Grampanchayat Sakharale';
 const TITLES = {
   Residence: 'Residence Certificate',
-  Income: 'Income Certificate',
   Birth: 'Birth Certificate',
   Death: 'Death Certificate',
-  Character: 'Character Certificate',
+  SevenTwelve: '7/12 & 8A Certificate',
   Other: 'Certificate',
 };
 
@@ -71,10 +70,13 @@ export function generateCertificatePdf({ application, citizen, officer }) {
     doc
       .fontSize(15)
       .fillColor('#000')
-      .text(TITLES[application.certificateType] || 'Certificate', {
-        align: 'center',
-        underline: true,
-      });
+      .text(
+        // "Other" carries its own citizen-supplied title; the rest use the fixed template name.
+        application.certificateType === 'Other'
+          ? application.applicationData?.certificateTitle || 'Certificate'
+          : TITLES[application.certificateType] || 'Certificate',
+        { align: 'center', underline: true },
+      );
     doc.moveDown(0.4);
     doc
       .fontSize(10)

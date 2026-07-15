@@ -74,9 +74,8 @@ export const DAKHALA_STATUS_COLOR_MAP = {
 export const CERT_TYPE_FIELDS = {
   Residence: [
     { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'address', label: 'Residential address', type: 'textarea', required: true },
-    { key: 'yearsOfResidence', label: 'Years of residence', type: 'number', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+    { key: 'mobile', label: 'Mobile number', type: 'text', required: true },
+    { key: 'address', label: 'Address', type: 'textarea', required: true },
   ],
   Birth: [
     { key: 'childName', label: 'Child name', type: 'text', required: true },
@@ -89,19 +88,91 @@ export const CERT_TYPE_FIELDS = {
     { key: 'deceasedName', label: 'Name of deceased', type: 'text', required: true },
     { key: 'dateOfDeath', label: 'Date of death', type: 'date', required: true },
     { key: 'placeOfDeath', label: 'Place of death', type: 'text', required: true },
-    { key: 'relationToApplicant', label: 'Relation to applicant', type: 'text', required: true },
+    { key: 'relationToApplicant', label: 'Relation with applicant', type: 'text', required: true },
   ],
   SevenTwelve: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'surveyNumber', label: 'Survey / Gat number', type: 'text', required: true },
+    { key: 'surveyNumber', label: 'Survey number', type: 'text', required: true },
+    { key: 'gatNumber', label: 'Gat number', type: 'text', required: true },
     { key: 'village', label: 'Village', type: 'text', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+    { key: 'taluka', label: 'Taluka', type: 'text', required: true },
+    { key: 'district', label: 'District', type: 'text', required: true },
   ],
   Other: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'details', label: 'Details', type: 'textarea', required: true },
+    { key: 'certificateTitle', label: 'Certificate title', type: 'text', required: true },
     { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+    { key: 'description', label: 'Description', type: 'textarea', required: true },
   ],
+};
+
+/** Every document kind a citizen can attach. Used for the per-file `docType` selector. */
+export const CERT_DOC_TYPES = [
+  'Aadhaar',
+  'PAN',
+  'VoterId',
+  'Passport',
+  'DrivingLicence',
+  'RationCard',
+  'ElectricityBill',
+  'WaterBill',
+  'PropertyTaxReceipt',
+  'SelfDeclaration',
+  'HospitalBirthReport',
+  'DoctorMedicalCertificate',
+  'DoctorDeathCertificate',
+  'AadhaarOfRelative',
+  'Existing712',
+  'Existing8A',
+  'PropertyRecord',
+  'Supporting',
+];
+
+/**
+ * Required document groups per certificate type. Each group needs at least one uploaded file
+ * whose `docType` is in `anyOf`. Backend enforces this and the citizen form renders one
+ * uploader per group from the same map (single source of truth).
+ */
+export const CERT_DOC_REQUIREMENTS = {
+  Residence: [
+    {
+      key: 'identity',
+      required: true,
+      anyOf: ['Aadhaar', 'PAN', 'VoterId', 'Passport', 'DrivingLicence'],
+    },
+    {
+      key: 'address',
+      required: true,
+      anyOf: ['RationCard', 'ElectricityBill', 'WaterBill', 'PropertyTaxReceipt'],
+    },
+    { key: 'selfDeclaration', required: true, anyOf: ['SelfDeclaration'] },
+  ],
+  Birth: [
+    {
+      key: 'birthProof',
+      required: true,
+      anyOf: ['HospitalBirthReport', 'DoctorMedicalCertificate'],
+    },
+    { key: 'parentIdentity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId'] },
+    {
+      key: 'parentAddress',
+      required: true,
+      anyOf: ['Aadhaar', 'RationCard', 'ElectricityBill', 'WaterBill'],
+    },
+  ],
+  Death: [
+    { key: 'deathProof', required: true, anyOf: ['DoctorDeathCertificate'] },
+    { key: 'deceasedIdentity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId'] },
+    {
+      key: 'addressProof',
+      required: true,
+      anyOf: ['Aadhaar', 'RationCard', 'ElectricityBill', 'WaterBill'],
+    },
+    { key: 'applicantIdentity', required: true, anyOf: ['AadhaarOfRelative'] },
+  ],
+  SevenTwelve: [
+    { key: 'identity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId', 'Passport'] },
+    { key: 'landProof', required: true, anyOf: ['Existing712', 'Existing8A', 'PropertyRecord'] },
+  ],
+  Other: [{ key: 'supporting', required: true, anyOf: ['Supporting'] }],
 };
 
 export const MAX_CERT_DOCUMENTS = 5;

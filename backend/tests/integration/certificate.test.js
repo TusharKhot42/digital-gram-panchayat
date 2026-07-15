@@ -20,10 +20,16 @@ const PNG = Buffer.from(
 
 const RESIDENCE_DATA = {
   fullName: 'Test Citizen',
+  mobile: '9876500001',
   address: '12 Main Road, Sakharale',
-  yearsOfResidence: '10',
-  purpose: 'School admission',
 };
+
+// Residence needs one identity + one address proof + a self declaration.
+const RESIDENCE_DOCS = [
+  { group: 'identity', docType: 'Aadhaar' },
+  { group: 'address', docType: 'RationCard' },
+  { group: 'selfDeclaration', docType: 'SelfDeclaration' },
+];
 
 beforeAll(async () => {
   mongo = await MongoMemoryServer.create();
@@ -76,7 +82,12 @@ function applyResidence(token, data = RESIDENCE_DATA, withDoc = true) {
     .set('Authorization', `Bearer ${token}`)
     .field('certificateType', 'Residence')
     .field('applicationData', JSON.stringify(data));
-  if (withDoc) req.attach('documents', PNG, { filename: 'proof.png', contentType: 'image/png' });
+  if (withDoc) {
+    req.field('documentMeta', JSON.stringify(RESIDENCE_DOCS));
+    RESIDENCE_DOCS.forEach((d, i) =>
+      req.attach('documents', PNG, { filename: `${d.docType}-${i}.png`, contentType: 'image/png' }),
+    );
+  }
   return req;
 }
 
@@ -103,15 +114,33 @@ describe('citizen apply', () => {
     expect(res.status).toBe(201);
     expect(res.body.data.applicationId).toMatch(/^DKH-\d{4}-\d{6}$/);
     expect(res.body.data.status).toBe('Submitted');
-    expect(res.body.data.uploadedDocuments).toHaveLength(1);
+    expect(res.body.data.uploadedDocuments).toHaveLength(3);
+    expect(res.body.data.uploadedDocuments[0]).toMatchObject({
+      group: 'identity',
+      docType: 'Aadhaar',
+    });
     expect(res.body.data.history).toHaveLength(1);
   });
 
   test('rejects missing required field for the type (400)', async () => {
     const token = await citizenToken();
-    const res = await applyResidence(token, { fullName: 'X', purpose: 'Y' }, false);
+    const res = await applyResidence(token, { fullName: 'X', mobile: '9876500001' }, false);
     expect(res.status).toBe(400);
     expect(res.body.error.fields.address).toBeDefined();
+  });
+
+  test('rejects an application missing a required document group (400)', async () => {
+    const token = await citizenToken();
+    const res = await request(app)
+      .post('/api/v1/dakhala')
+      .set('Authorization', `Bearer ${token}`)
+      .field('certificateType', 'Residence')
+      .field('applicationData', JSON.stringify(RESIDENCE_DATA))
+      .field('documentMeta', JSON.stringify([{ group: 'identity', docType: 'Aadhaar' }]))
+      .attach('documents', PNG, { filename: 'id.png', contentType: 'image/png' });
+    expect(res.status).toBe(400);
+    expect(res.body.error.fields['documents.address']).toBeDefined();
+    expect(res.body.error.fields['documents.selfDeclaration']).toBeDefined();
   });
 
   test('rejects an unauthenticated apply (401)', async () => {
@@ -209,7 +238,7 @@ describe('ownership + authorization', () => {
   test('citizen cannot read another citizen application (403)', async () => {
     const aToken = await citizenToken('9876500001');
     const bToken = await citizenToken('9876500002');
-    const created = await applyResidence(aToken, RESIDENCE_DATA, false);
+    const created = await applyResidence(aToken);
     const res = await request(app)
       .get(`/api/v1/dakhala/${created.body.data.id}`)
       .set('Authorization', `Bearer ${bToken}`);
@@ -227,7 +256,7 @@ describe('ownership + authorization', () => {
   test('officer lists + filters by status', async () => {
     const cToken = await citizenToken();
     const oToken = await officerToken();
-    await applyResidence(cToken, RESIDENCE_DATA, false);
+    await applyResidence(cToken);
     const all = await request(app)
       .get('/api/v1/admin/dakhala')
       .set('Authorization', `Bearer ${oToken}`);

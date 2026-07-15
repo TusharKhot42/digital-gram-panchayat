@@ -446,7 +446,7 @@
       "Residence": "Residence Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
-      "SevenTwelve": "7/12 Certificate",
+      "SevenTwelve": "7/12 & 8A Certificate",
       "Other": "Other Certificate"
     },
     "status": {
@@ -457,11 +457,8 @@
     },
     "field": {
       "fullName": "Full name",
-      "address": "Residential address",
-      "yearsOfResidence": "Years of residence",
+      "address": "Address",
       "purpose": "Purpose",
-      "annualIncome": "Annual income (₹)",
-      "occupation": "Occupation",
       "childName": "Child name",
       "dateOfBirth": "Date of birth",
       "placeOfBirth": "Place of birth",
@@ -470,10 +467,15 @@
       "deceasedName": "Name of deceased",
       "dateOfDeath": "Date of death",
       "placeOfDeath": "Place of death",
-      "relationToApplicant": "Relation to applicant",
-      "details": "Details",
-      "surveyNumber": "Survey / Gat number",
-      "village": "Village"
+      "relationToApplicant": "Relation with applicant",
+      "surveyNumber": "Survey number",
+      "village": "Village",
+      "mobile": "Mobile number",
+      "gatNumber": "Gat number",
+      "taluka": "Taluka",
+      "district": "District",
+      "certificateTitle": "Certificate title",
+      "description": "Description"
     },
     "dash": {
       "title": "Certificate Applications",
@@ -513,7 +515,44 @@
       "rejected": "Application rejected",
       "cancel": "Cancel",
       "actionFailed": "Action failed",
-      "timeline": "Status timeline"
+      "timeline": "Status timeline",
+      "zoom": "View full size",
+      "open": "Open",
+      "close": "Close preview"
+    },
+    "doc": {
+      "Aadhaar": "Aadhaar Card",
+      "PAN": "PAN Card",
+      "VoterId": "Voter ID",
+      "Passport": "Passport",
+      "DrivingLicence": "Driving Licence",
+      "RationCard": "Ration Card",
+      "ElectricityBill": "Electricity Bill",
+      "WaterBill": "Water Bill",
+      "PropertyTaxReceipt": "Property Tax Receipt",
+      "SelfDeclaration": "Self Declaration Form",
+      "HospitalBirthReport": "Hospital Birth Report",
+      "DoctorMedicalCertificate": "Doctor Medical Certificate",
+      "DoctorDeathCertificate": "Doctor Death Certificate",
+      "AadhaarOfRelative": "Aadhaar of Relative",
+      "Existing712": "Existing 7/12",
+      "Existing8A": "Existing 8A",
+      "PropertyRecord": "Property Record",
+      "Supporting": "Supporting Document"
+    },
+    "docGroup": {
+      "identity": "Identity proof",
+      "address": "Address proof",
+      "selfDeclaration": "Self declaration",
+      "birthProof": "Birth proof",
+      "parentIdentity": "Parent identity proof",
+      "parentAddress": "Parent address proof",
+      "deathProof": "Death proof",
+      "deceasedIdentity": "Deceased identity proof",
+      "addressProof": "Address proof",
+      "applicantIdentity": "Applicant identity",
+      "landProof": "Land proof",
+      "supporting": "Supporting documents"
     }
   },
   "auth": {
