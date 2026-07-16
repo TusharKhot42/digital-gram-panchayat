@@ -6,6 +6,8 @@ import { ArrowLeft, Paperclip } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { NOTICE_CATEGORIES, SMS_SUMMARY_MAX_LENGTH } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { controlClass } from '@/components/ui/input';
+import { cn } from '@/utils/cn';
 import { useNotice, useNoticeMutations } from './hooks';
 
 export function NoticeForm() {
@@ -54,66 +56,57 @@ export function NoticeForm() {
     }
   };
 
-  const inputClass =
-    'h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
-
   return (
     <div className="max-w-2xl">
       <Link
         to="/notices"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
+        className="mb-3 -ml-1 inline-flex min-h-9 items-center gap-1 rounded-md px-1 text-body text-muted-foreground transition-colors duration-150 hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
         {t('notice.form.back')}
       </Link>
 
-      <h1 className="mb-4 text-lg font-semibold text-foreground">
+      <h1 className="mb-4 text-title text-foreground">
         {isEdit ? t('notice.form.editTitle') : t('notice.form.createTitle')}
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('notice.form.title')}
-          </label>
+          <label className="block text-label text-foreground">{t('notice.form.title')}</label>
           <input
-            className={inputClass}
+            className={controlClass}
             {...register('title', { required: t('notice.form.required') })}
           />
-          {errors.title ? <p className="text-xs text-destructive">{errors.title.message}</p> : null}
+          {errors.title ? (
+            <p className="text-caption text-destructive-strong">{errors.title.message}</p>
+          ) : null}
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('notice.form.summary')}
-          </label>
+          <label className="block text-label text-foreground">{t('notice.form.summary')}</label>
           <input
-            className={inputClass}
+            className={controlClass}
             maxLength={SMS_SUMMARY_MAX_LENGTH}
             {...register('summary')}
           />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('notice.form.content')}
-          </label>
+          <label className="block text-label text-foreground">{t('notice.form.content')}</label>
           <textarea
             rows={6}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('content', { required: t('notice.form.required') })}
           />
           {errors.content ? (
-            <p className="text-xs text-destructive">{errors.content.message}</p>
+            <p className="text-caption text-destructive-strong">{errors.content.message}</p>
           ) : null}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('notice.form.category')}
-            </label>
-            <select className={inputClass} {...register('category')}>
+            <label className="block text-label text-foreground">{t('notice.form.category')}</label>
+            <select className={controlClass} {...register('category')}>
               {NOTICE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
                   {t(`notice.category.${c}`, c)}
@@ -122,17 +115,13 @@ export function NoticeForm() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('notice.form.expiry')}
-            </label>
-            <input type="date" className={inputClass} {...register('expiryDate')} />
+            <label className="block text-label text-foreground">{t('notice.form.expiry')}</label>
+            <input type="date" className={controlClass} {...register('expiryDate')} />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('notice.form.attachment')}
-          </label>
+          <label className="block text-label text-foreground">{t('notice.form.attachment')}</label>
           <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-input px-3 py-2 text-sm text-muted-foreground">
             <Paperclip className="h-4 w-4" />
             {file

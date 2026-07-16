@@ -1,14 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, Landmark } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
+import { Chip } from '@/components/ui/chip';
+import { SkeletonRows } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
+import { FilterBar, SearchInput } from '@/components/FilterBar';
+import { Pagination } from '@/components/Pagination';
+import {
+  TableShell,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  TableMessageRow,
+} from '@/components/ui/table';
 import { useSchemes, useSchemeMutations } from './hooks';
 import { ConfirmDialog } from './ConfirmDialog';
 
 const LIMIT = 20;
+const COLS = 5;
 
 export function SchemesList() {
   const { t, i18n } = useTranslation();
@@ -48,139 +64,130 @@ export function SchemesList() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">{t('scheme.dash.title')}</h1>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h1 className="text-title text-foreground">{t('scheme.dash.title')}</h1>
         <Button asChild size="sm">
           <Link to="/schemes/new">
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
             {t('scheme.dash.new')}
           </Link>
         </Button>
       </div>
 
-      <div className="relative mb-4 w-72">
-        <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <input
+      <FilterBar>
+        <SearchInput
           value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
+          onChange={(v) => {
+            setQ(v);
             setPage(1);
           }}
           placeholder={t('scheme.dash.search')}
-          className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-      </div>
+      </FilterBar>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('scheme.dash.scheme')}</th>
-              <th className="px-4 py-2 font-medium">{t('scheme.dash.category')}</th>
-              <th className="px-4 py-2 font-medium">{t('scheme.dash.state')}</th>
-              <th className="px-4 py-2 font-medium">{t('scheme.dash.date')}</th>
-              <th className="px-4 py-2 text-right font-medium">{t('scheme.dash.actions')}</th>
+              <TH>{t('scheme.dash.scheme')}</TH>
+              <TH>{t('scheme.dash.category')}</TH>
+              <TH>{t('scheme.dash.state')}</TH>
+              <TH>{t('scheme.dash.date')}</TH>
+              <TH className="text-right">{t('scheme.dash.actions')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <SkeletonRows />
+              </TableMessageRow>
             ) : isError ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-destructive">
-                  {t('scheme.dash.loadError')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="text-destructive-strong">
+                {t('scheme.dash.loadError')}
+              </TableMessageRow>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('scheme.dash.empty')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="p-0">
+                <EmptyState
+                  icon={Landmark}
+                  title={t('scheme.dash.empty')}
+                  className="border-0 shadow-none"
+                  action={
+                    <Button asChild size="sm">
+                      <Link to="/schemes/new">{t('scheme.dash.new')}</Link>
+                    </Button>
+                  }
+                />
+              </TableMessageRow>
             ) : (
               rows.map((s) => (
-                <tr key={s.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2">
+                <TR key={s.id}>
+                  <TD>
                     <p className="max-w-xs truncate font-medium text-foreground">{s.title}</p>
-                    <p className="text-xs text-muted-foreground">{s.schemeId}</p>
-                  </td>
-                  <td className="px-4 py-2">{t(`scheme.category.${s.category}`, s.category)}</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${s.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300' : 'bg-gray-200 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300'}`}
-                    >
+                    <p className="text-caption text-muted-foreground">{s.schemeId}</p>
+                  </TD>
+                  <TD>{t(`scheme.category.${s.category}`, s.category)}</TD>
+                  <TD>
+                    <Chip color={s.isPublished ? 'green' : 'grey'}>
                       {s.isPublished ? t('scheme.state.published') : t('scheme.state.draft')}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground">
+                    </Chip>
+                  </TD>
+                  <TD className="whitespace-nowrap text-muted-foreground">
                     {formatDate(s.createdAt, locale)}
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button asChild variant="ghost" size="icon" title={t('scheme.dash.edit')}>
+                  </TD>
+                  <TD>
+                    <div className="flex items-center justify-end gap-0.5">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="icon"
+                        aria-label={t('scheme.dash.edit')}
+                        title={t('scheme.dash.edit')}
+                      >
                         <Link to={`/schemes/${s.id}/edit`}>
-                          <Pencil className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" aria-hidden="true" />
                         </Link>
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label={
+                          s.isPublished ? t('scheme.dash.unpublish') : t('scheme.dash.publish')
+                        }
                         title={
                           s.isPublished ? t('scheme.dash.unpublish') : t('scheme.dash.publish')
                         }
                         onClick={() => togglePublish(s)}
                       >
                         {s.isPublished ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className="h-4 w-4" aria-hidden="true" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4" aria-hidden="true" />
                         )}
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label={t('scheme.dash.delete')}
                         title={t('scheme.dash.delete')}
                         onClick={() => setToDelete(s)}
                       >
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" />
                       </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TD>
+                </TR>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{t('scheme.dash.total', { total })}</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            {t('scheme.dash.prev')}
-          </Button>
-          <span>
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {t('scheme.dash.next')}
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPage={setPage}
+        totalLabel={t('scheme.dash.total', { total })}
+      />
 
       <ConfirmDialog
         open={Boolean(toDelete)}

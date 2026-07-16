@@ -3,7 +3,7 @@ import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
-import { uploadSingleImage } from '../../middlewares/upload.middleware.js';
+import { uploadSchemeFiles } from '../../middlewares/upload.middleware.js';
 import * as controller from './scheme.controller.js';
 import {
   createSchemeValidation,
@@ -25,10 +25,10 @@ adminSchemeRouter.use(authenticate, authorize(ROLES.OFFICER));
 
 adminSchemeRouter.get('/', listQueryValidation, validate, controller.adminList);
 adminSchemeRouter.get('/:id', schemeIdParamValidation, validate, controller.adminGetOne);
-adminSchemeRouter.post('/', uploadSingleImage, createSchemeValidation, validate, controller.create);
+adminSchemeRouter.post('/', uploadSchemeFiles, createSchemeValidation, validate, controller.create);
 adminSchemeRouter.put(
   '/:id',
-  uploadSingleImage,
+  uploadSchemeFiles,
   updateSchemeValidation,
   validate,
   controller.update,

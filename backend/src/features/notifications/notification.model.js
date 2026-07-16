@@ -27,6 +27,12 @@ const notificationSchema = new Schema(
     channel: { type: String, enum: NOTIFICATION_CHANNELS, default: 'inApp', index: true },
     channels: { type: [String], enum: NOTIFICATION_CHANNELS, default: ['inApp'] },
     purpose: { type: String, enum: Object.values(NotificationPurpose), required: true },
+    // Set on every notification produced by a single broadcast, so the admin dashboard can
+    // roll many per-recipient rows up into one entry. Absent for individual notifications.
+    broadcastId: { type: String, index: true },
+    // Auto-generated bilingual { title:{en,mr}, message:{en,mr} } so citizens read in their
+    // language regardless of the language the officer authored the broadcast in.
+    i18n: { type: Schema.Types.Mixed },
     entityId: { type: Schema.Types.ObjectId },
     to: { type: String }, // external destination (e.g. mobile) when dispatched off-platform
     status: {

@@ -39,16 +39,34 @@
     "retry": "पुन्हा प्रयत्न",
     "retried": "सूचना पुन्हा रांगेत",
     "actionFailed": "क्रिया अयशस्वी",
-    "status": { "queued": "रांगेत", "sent": "पाठवले", "delivered": "वितरित", "failed": "अयशस्वी" },
-    "type": { "info": "माहिती", "success": "यशस्वी", "warning": "इशारा", "error": "त्रुटी" },
-    "stat": { "total": "एकूण" },
+    "status": {
+      "queued": "रांगेत",
+      "sent": "पाठवले",
+      "delivered": "वितरित",
+      "failed": "अयशस्वी"
+    },
+    "type": {
+      "info": "माहिती",
+      "success": "यशस्वी",
+      "warning": "इशारा",
+      "error": "त्रुटी"
+    },
+    "stat": {
+      "total": "एकूण",
+      "broadcasts": "प्रसारणे"
+    },
     "col": {
       "title": "शीर्षक",
       "module": "मॉड्यूल",
       "channel": "माध्यम",
       "date": "तयार केले",
       "status": "स्थिती",
-      "actions": "क्रिया"
+      "actions": "क्रिया",
+      "recipients": "प्राप्तकर्ते",
+      "delivered": "वितरित",
+      "failed": "अयशस्वी",
+      "mobile": "मोबाईल",
+      "read": "वाचले"
     },
     "detail": {
       "recipient": "प्राप्तकर्ता",
@@ -73,6 +91,17 @@
       "send": "प्रसारण पाठवा",
       "sent": "{{count}} प्राप्तकर्त्यांना प्रसारण पाठवले",
       "failed": "प्रसारण पाठवता आले नाही"
+    },
+    "broadcastHint": "प्रत्येक प्रसारण एकदाच वितरण एकूणासह दाखवले जाते. प्राप्तकर्ते पाहण्यासाठी प्रसारणावर क्लिक करा.",
+    "totalBroadcasts": "{{total}} प्रसारणे",
+    "recipientsCount": "{{count}} प्राप्तकर्ते",
+    "readYes": "वाचले",
+    "readNo": "न वाचलेले",
+    "bstatus": {
+      "queued": "रांगेत",
+      "delivered": "वितरित",
+      "partial": "अंशतः",
+      "failed": "अयशस्वी"
     }
   },
   "dashboard": {
@@ -133,7 +162,11 @@
     "backHome": "डॅशबोर्डवर परत जा"
   },
   "common": {
-    "loading": "लोड होत आहे…"
+    "loading": "लोड होत आहे…",
+    "prevPage": "मागील पृष्ठ",
+    "nextPage": "पुढील पृष्ठ",
+    "clear": "साफ करा",
+    "close": "बंद करा"
   },
   "complaint": {
     "category": {
@@ -314,7 +347,19 @@
       "save": "योजना जतन करा",
       "created": "योजना तयार झाली",
       "updated": "योजना अद्यतनित झाली",
-      "failed": "योजना जतन करता आली नाही"
+      "failed": "योजना जतन करता आली नाही",
+      "expiry": "समाप्ती दिनांक",
+      "expiryHint": "या दिवसाच्या अखेरीपर्यंत योजना ग्रामस्थांना दिसत राहील.",
+      "attachments": "संलग्नके (PDF किंवा छायाचित्र)",
+      "addAttachments": "फाइल जोडा",
+      "currentImage": "सध्याचा बॅनर",
+      "removeImage": "बॅनर काढा",
+      "undoRemove": "पूर्ववत करा",
+      "markedRemove": "जतन केल्यावर काढले जाईल",
+      "attachmentsHint": "जास्तीत जास्त 5 फाइल, प्रत्येकी 5MB. काढल्याशिवाय विद्यमान फाइल कायम राहतात.",
+      "preview": "पूर्वावलोकन",
+      "download": "डाउनलोड",
+      "removeFile": "काढा"
     },
     "delete": {
       "title": "योजना हटवायची?",
@@ -386,7 +431,10 @@
       "required": "हे क्षेत्र आवश्यक आहे",
       "save": "नोंद तयार करा",
       "created": "कर नोंद तयार झाली",
-      "failed": "नोंद तयार करता आली नाही"
+      "failed": "नोंद तयार करता आली नाही",
+      "bills": "कर बिल स्कॅन (प्रतिमा/PDF)",
+      "billsHint": "ऐच्छिक. नागरिक पाहू शकतील अशी स्कॅन केलेली बिले जोडा.",
+      "billsSelected": "{{count}} फाइल निवडल्या"
     },
     "detail": {
       "back": "कर नोंदींकडे परत",
@@ -412,10 +460,9 @@
   "dakhala": {
     "type": {
       "Residence": "रहिवासी दाखला",
-      "Income": "उत्पन्न दाखला",
       "Birth": "जन्म दाखला",
       "Death": "मृत्यू दाखला",
-      "Character": "चारित्र्य दाखला",
+      "SevenTwelve": "७/१२ व ८अ उतारा",
       "Other": "इतर दाखला"
     },
     "status": {
@@ -426,11 +473,8 @@
     },
     "field": {
       "fullName": "पूर्ण नाव",
-      "address": "राहण्याचा पत्ता",
-      "yearsOfResidence": "वास्तव्याची वर्षे",
+      "address": "पत्ता",
       "purpose": "उद्देश",
-      "annualIncome": "वार्षिक उत्पन्न (₹)",
-      "occupation": "व्यवसाय",
       "childName": "बालकाचे नाव",
       "dateOfBirth": "जन्मतारीख",
       "placeOfBirth": "जन्मस्थळ",
@@ -440,7 +484,14 @@
       "dateOfDeath": "मृत्यूची तारीख",
       "placeOfDeath": "मृत्यूचे ठिकाण",
       "relationToApplicant": "अर्जदाराशी नाते",
-      "details": "तपशील"
+      "surveyNumber": "सर्वे क्रमांक",
+      "village": "गाव",
+      "mobile": "मोबाईल क्रमांक",
+      "gatNumber": "गट क्रमांक",
+      "taluka": "तालुका",
+      "district": "जिल्हा",
+      "certificateTitle": "दाखल्याचे नाव",
+      "description": "तपशील"
     },
     "dash": {
       "title": "दाखला अर्ज",
@@ -480,7 +531,44 @@
       "rejected": "अर्ज नाकारला",
       "cancel": "रद्द करा",
       "actionFailed": "क्रिया अयशस्वी",
-      "timeline": "स्थिती कालरेखा"
+      "timeline": "स्थिती कालरेखा",
+      "zoom": "पूर्ण आकारात पहा",
+      "open": "उघडा",
+      "close": "पूर्वावलोकन बंद करा"
+    },
+    "doc": {
+      "Aadhaar": "आधार कार्ड",
+      "PAN": "पॅन कार्ड",
+      "VoterId": "मतदार ओळखपत्र",
+      "Passport": "पासपोर्ट",
+      "DrivingLicence": "वाहन चालक परवाना",
+      "RationCard": "रेशन कार्ड",
+      "ElectricityBill": "वीज बिल",
+      "WaterBill": "पाणी बिल",
+      "PropertyTaxReceipt": "मालमत्ता कर पावती",
+      "SelfDeclaration": "स्वयंघोषणा पत्र",
+      "HospitalBirthReport": "रुग्णालय जन्म अहवाल",
+      "DoctorMedicalCertificate": "डॉक्टर वैद्यकीय प्रमाणपत्र",
+      "DoctorDeathCertificate": "डॉक्टर मृत्यू प्रमाणपत्र",
+      "AadhaarOfRelative": "नातेवाईकाचे आधार",
+      "Existing712": "सध्याचा ७/१२",
+      "Existing8A": "सध्याचा ८अ",
+      "PropertyRecord": "मालमत्ता नोंद",
+      "Supporting": "पूरक कागदपत्र"
+    },
+    "docGroup": {
+      "identity": "ओळखपत्र पुरावा",
+      "address": "पत्ता पुरावा",
+      "selfDeclaration": "स्वयंघोषणा",
+      "birthProof": "जन्म पुरावा",
+      "parentIdentity": "पालक ओळखपत्र पुरावा",
+      "parentAddress": "पालक पत्ता पुरावा",
+      "deathProof": "मृत्यू पुरावा",
+      "deceasedIdentity": "मृताचे ओळखपत्र",
+      "addressProof": "पत्ता पुरावा",
+      "applicantIdentity": "अर्जदाराचे ओळखपत्र",
+      "landProof": "जमीन पुरावा",
+      "supporting": "पूरक कागदपत्रे"
     }
   },
   "auth": {
@@ -494,5 +582,34 @@
     "emailInvalid": "वैध ईमेल प्रविष्ट करा",
     "loginSuccess": "साइन इन झाले",
     "loginFailed": "अवैध क्रेडेन्शियल्स"
+  },
+  "reports": {
+    "title": "अहवाल",
+    "loadError": "अहवाल लोड होऊ शकला नाही",
+    "generatedAt": "तयार केले",
+    "exportCsv": "CSV",
+    "exportExcel": "Excel",
+    "exportPdf": "PDF",
+    "total": "एकूण",
+    "assessed": "आकारणी",
+    "collected": "वसूल",
+    "outstanding": "थकबाकी",
+    "published": "प्रकाशित",
+    "byStatus": "स्थितीनुसार",
+    "byCategory": "श्रेणीनुसार",
+    "byType": "प्रकारानुसार",
+    "col": {
+      "section": "विभाग",
+      "metric": "मापदंड",
+      "value": "मूल्य"
+    },
+    "section": {
+      "complaints": "तक्रारी",
+      "certificates": "दाखले",
+      "tax": "कर",
+      "users": "नागरिक",
+      "schemes": "योजना",
+      "notices": "सूचना"
+    }
   }
 }

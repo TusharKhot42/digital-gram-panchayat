@@ -13,6 +13,7 @@ import { enqueue, setQueueHandler } from './notification.queue.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { writeAudit } from '../audit/audit.service.js';
+import { translateFields } from '../translation/translation.service.js';
 import { env } from '../../config/env.js';
 
 // Collision-proof id (no shared counter) — a notification must never fail the caller.
@@ -124,6 +125,8 @@ export async function notify(input) {
     channel: external[0] || 'inApp',
     channels,
     purpose: input.purpose || NotificationPurpose.Broadcast,
+    broadcastId: input.broadcastId,
+    i18n: input.i18n,
     entityId: input.entityId,
     to: input.to,
     status: 'queued',
@@ -148,6 +151,9 @@ export async function notify(input) {
 export async function broadcast(input) {
   const targetRole = input.targetRole || ROLES.CITIZEN;
   const users = await User.find({ role: targetRole, isActive: true }).select('mobile').lean();
+  const broadcastId = randomUUID(); // groups all per-recipient rows into one dashboard entry
+  // Translate the officer-authored title/message once; every recipient row carries both.
+  const i18n = await translateFields({ title: input.title, message: input.message }, input.lang);
 
   let count = 0;
   for (const user of users) {
@@ -160,6 +166,8 @@ export async function broadcast(input) {
       module: input.module || NotificationModule.System,
       channels: input.channels || ['inApp'],
       purpose: NotificationPurpose.Broadcast,
+      broadcastId,
+      i18n,
       to: user.mobile,
     });
     count += 1;
@@ -170,10 +178,10 @@ export async function broadcast(input) {
     actorRole: ROLES.OFFICER,
     action: 'notification.broadcast',
     entity: 'notifications',
-    after: { recipientCount: count, channels: input.channels },
+    after: { recipientCount: count, channels: input.channels, broadcastId },
   });
 
-  return { recipientCount: count, channels: input.channels || ['inApp'] };
+  return { recipientCount: count, channels: input.channels || ['inApp'], broadcastId };
 }
 
 /** @param {string} id @param {string} userId */
@@ -297,6 +305,98 @@ export async function stats() {
   return { total, byStatus, byChannel };
 }
 
+/**
+ * Admin dashboard: one row per broadcast (not per recipient). Rolls the per-recipient
+ * notification documents up by `broadcastId` with delivery counts. Individual (non-broadcast)
+ * notifications are excluded — the citizen notification centre is unaffected.
+ */
+export async function listBroadcasts(query = {}) {
+  // Query params arrive as strings; $skip/$limit reject non-numbers outright.
+  const page = Math.max(1, Number(query.page) || 1);
+  const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+  const [rows, ids] = await Promise.all([
+    Notification.aggregate([
+      { $match: { broadcastId: { $ne: null } } },
+      {
+        $group: {
+          _id: '$broadcastId',
+          title: { $first: '$title' },
+          message: { $first: '$message' },
+          module: { $first: '$module' },
+          channels: { $first: '$channels' },
+          createdAt: { $min: '$createdAt' },
+          recipientCount: { $sum: 1 },
+          delivered: { $sum: { $cond: [{ $in: ['$status', ['sent', 'delivered']] }, 1, 0] } },
+          failed: { $sum: { $cond: [{ $eq: ['$status', 'failed'] }, 1, 0] } },
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]),
+    Notification.distinct('broadcastId', { broadcastId: { $ne: null } }),
+  ]);
+
+  const data = rows.map((r) => ({
+    broadcastId: r._id,
+    title: r.title,
+    message: r.message,
+    module: r.module,
+    channels: r.channels,
+    createdAt: r.createdAt,
+    recipientCount: r.recipientCount,
+    deliveredCount: r.delivered,
+    failedCount: r.failed,
+    status:
+      r.failed > 0
+        ? r.delivered > 0
+          ? 'partial'
+          : 'failed'
+        : r.delivered >= r.recipientCount
+          ? 'delivered'
+          : 'queued',
+  }));
+  return { data, total: ids.length, page, limit };
+}
+
+/** Recipient-level breakdown for one broadcast (drill-in from the dashboard). */
+export async function broadcastRecipients(broadcastId, query = {}) {
+  const page = query.page || 1;
+  const limit = query.limit || 50;
+  const [items, total] = await Promise.all([
+    Notification.find({ broadcastId })
+      .populate('recipientId', 'fullName mobile')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit),
+    Notification.countDocuments({ broadcastId }),
+  ]);
+  if (!total) throw new AppError(404, 'BROADCAST_NOT_FOUND', 'Broadcast not found');
+
+  const first = items[0];
+  return {
+    broadcast: {
+      broadcastId,
+      title: first?.title,
+      message: first?.message,
+      channels: first?.channels,
+      createdAt: first?.createdAt,
+    },
+    recipients: items.map((n) => ({
+      id: n.id,
+      name: n.recipientId?.fullName,
+      mobile: n.recipientId?.mobile || n.to,
+      status: n.status,
+      read: Boolean(n.readAt),
+      deliveredAt: n.deliveredAt,
+      error: n.error,
+    })),
+    total,
+    page,
+    limit,
+  };
+}
+
 // ---- Backward-compatible module helpers (unchanged signatures for existing callers) ----
 
 /** @param {{ recipientId?, mobile?, complaintId, status, entityId? }} params */
@@ -393,6 +493,8 @@ export async function broadcastNotice({ notice, channels, summary }) {
     ...(channels.sms ? ['sms'] : []),
     ...(channels.voice ? ['voice'] : []),
   ];
+  const broadcastId = randomUUID();
+  const i18n = await translateFields({ title: notice.title, message: summary });
   let smsCount = 0;
   let voiceCount = 0;
 
@@ -406,6 +508,8 @@ export async function broadcastNotice({ notice, channels, summary }) {
       module: NotificationModule.Notice,
       channels: noticeChannels,
       purpose: NotificationPurpose.NoticeBroadcast,
+      broadcastId,
+      i18n,
       entityId: notice.id,
       to: citizen.mobile,
     });

@@ -1,17 +1,32 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatCurrency, formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { PageHeader } from '@/components/PageHeader';
+import { Timeline } from '@/components/Timeline';
+import { Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
+import { PaymentStatusBadge } from './PaymentStatusBadge';
 import { useTaxRecord, useTaxMutations } from './hooks';
 
-const STATUS_CLASS = {
-  Unpaid: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  Partial: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  Paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-};
+/** One figure in the assessed/paid/balance strip. */
+function Figure({ label, value, tone = 'default' }) {
+  const toneClass = {
+    default: 'text-foreground',
+    paid: 'text-success-strong',
+    due: 'text-destructive-strong',
+  }[tone];
+
+  return (
+    <div>
+      <p className="text-caption text-muted-foreground">{label}</p>
+      <p className={`text-title tabular-nums ${toneClass}`}>{value}</p>
+    </div>
+  );
+}
 
 export function TaxDetail() {
   const { id } = useParams();
@@ -24,8 +39,9 @@ export function TaxDetail() {
   const [payAmount, setPayAmount] = useState('');
   const [receiptNo, setReceiptNo] = useState('');
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">{t('common.loading')}</p>;
-  if (isError || !r) return <p className="text-sm text-destructive">{t('tax.detail.notFound')}</p>;
+  if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
+  if (isError || !r)
+    return <p className="text-body text-destructive-strong">{t('tax.detail.notFound')}</p>;
 
   const saveAmount = async (e) => {
     e.preventDefault();
@@ -55,157 +71,144 @@ export function TaxDetail() {
     }
   };
 
-  const input =
-    'h-9 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
+  const settled = r.balance <= 0;
 
   return (
     <div>
-      <Link to="/tax" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground">
-        <ArrowLeft className="h-4 w-4" />
-        {t('tax.detail.back')}
-      </Link>
+      <PageHeader
+        backTo="/tax"
+        backLabel={t('tax.detail.back')}
+        title={t(`tax.type.${r.taxType}`, r.taxType)}
+        subtitle={`${r.taxRecordId} · ${r.propertyNumber} · ${r.financialYear}`}
+        action={<PaymentStatusBadge status={r.paymentStatus} />}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-lg border border-border bg-card p-5">
-            <div className="mb-3 flex items-start justify-between">
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">
-                  {t(`tax.type.${r.taxType}`, r.taxType)}
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  {r.taxRecordId} · {r.propertyNumber} · {r.financialYear}
-                </p>
-              </div>
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_CLASS[r.paymentStatus]}`}
-              >
-                {t(`tax.status.${r.paymentStatus}`, r.paymentStatus)}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div>
-                <p className="text-xs text-muted-foreground">{t('tax.card.assessed')}</p>
-                <p className="text-lg font-semibold text-foreground">
-                  {formatCurrency(r.amount, locale)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{t('tax.card.paid')}</p>
-                <p className="text-lg font-semibold text-foreground">
-                  {formatCurrency(r.amountPaid, locale)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{t('tax.card.dues')}</p>
-                <p className="text-lg font-semibold text-destructive">
-                  {formatCurrency(r.balance, locale)}
-                </p>
-              </div>
-            </div>
-          </div>
+          <Card>
+            <CardContent className="grid grid-cols-3 gap-4 p-5">
+              <Figure label={t('tax.card.assessed')} value={formatCurrency(r.amount, locale)} />
+              <Figure
+                label={t('tax.card.paid')}
+                value={formatCurrency(r.amountPaid, locale)}
+                tone="paid"
+              />
+              <Figure
+                label={t('tax.card.dues')}
+                value={formatCurrency(r.balance, locale)}
+                tone={settled ? 'paid' : 'due'}
+              />
+            </CardContent>
+          </Card>
 
-          <div className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
+          <Card>
+            <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
               {t('tax.detail.payments')}
             </h2>
             {r.payments?.length ? (
-              <table className="w-full text-sm">
-                <thead className="text-left text-muted-foreground">
+              <Table>
+                <THead className="static">
                   <tr>
-                    <th className="py-1 font-medium">{t('tax.detail.date')}</th>
-                    <th className="py-1 font-medium">{t('tax.detail.receipt')}</th>
-                    <th className="py-1 text-right font-medium">{t('tax.detail.amount')}</th>
+                    <TH>{t('tax.detail.date')}</TH>
+                    <TH>{t('tax.detail.receipt')}</TH>
+                    <TH className="text-right">{t('tax.detail.amount')}</TH>
                   </tr>
-                </thead>
-                <tbody>
+                </THead>
+                <TBody>
                   {r.payments.map((p, i) => (
-                    <tr key={`${p.paidAt}-${i}`} className="border-t border-border">
-                      <td className="py-1.5">{formatDateTime(p.paidAt, locale)}</td>
-                      <td className="py-1.5 text-muted-foreground">{p.receiptNo || '—'}</td>
-                      <td className="py-1.5 text-right font-medium">
+                    <TR key={`${p.paidAt}-${i}`}>
+                      <TD className="whitespace-nowrap">{formatDateTime(p.paidAt, locale)}</TD>
+                      <TD className="text-muted-foreground">{p.receiptNo || '—'}</TD>
+                      <TD className="text-right font-medium tabular-nums">
                         {formatCurrency(p.amount, locale)}
-                      </td>
-                    </tr>
+                      </TD>
+                    </TR>
                   ))}
-                </tbody>
-              </table>
+                </TBody>
+              </Table>
             ) : (
-              <p className="text-sm text-muted-foreground">{t('tax.detail.noPayments')}</p>
+              <CardContent className="p-5">
+                <p className="text-body text-muted-foreground">{t('tax.detail.noPayments')}</p>
+              </CardContent>
             )}
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
+          <Card>
+            <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
               {t('tax.detail.auditTimeline')}
             </h2>
-            <ol className="space-y-3">
-              {[...r.history].reverse().map((h, i) => (
-                <li key={`${h.at}-${i}`} className="flex gap-3 text-sm">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-                  <div>
-                    <p className="text-foreground">
-                      {t(`tax.action.${h.action}`, h.action)}
-                      {h.field ? ` · ${h.field}` : ''}
-                      {h.old != null || h.new != null ? `: ${h.old ?? '—'} → ${h.new ?? '—'}` : ''}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{formatDateTime(h.at, locale)}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+            <CardContent className="p-5">
+              <Timeline
+                items={[...r.history].reverse().map((h, i) => ({
+                  key: `${h.at}-${i}`,
+                  title: `${t(`tax.action.${h.action}`, h.action)}${h.field ? ` · ${h.field}` : ''}${
+                    h.old != null || h.new != null ? `: ${h.old ?? '—'} → ${h.new ?? '—'}` : ''
+                  }`,
+                  meta: formatDateTime(h.at, locale),
+                }))}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-4">
-          <form onSubmit={recordPayment} className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
-              {t('tax.detail.recordPayment')}
-            </h2>
-            <input
-              type="number"
-              min="1"
-              value={payAmount}
-              onChange={(e) => setPayAmount(e.target.value)}
-              placeholder={t('tax.detail.amount')}
-              className={`mb-2 ${input}`}
-            />
-            <input
-              value={receiptNo}
-              onChange={(e) => setReceiptNo(e.target.value)}
-              placeholder={t('tax.detail.receiptNo')}
-              className={`mb-3 ${input}`}
-            />
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={m.addPayment.isPending || r.balance <= 0}
-            >
-              {r.balance <= 0 ? t('tax.detail.fullyPaid') : t('tax.detail.addPayment')}
-            </Button>
-          </form>
+          <Card>
+            <form onSubmit={recordPayment}>
+              <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
+                {t('tax.detail.recordPayment')}
+              </h2>
+              <CardContent className="space-y-2.5 p-5">
+                <Input
+                  type="number"
+                  min="1"
+                  value={payAmount}
+                  onChange={(e) => setPayAmount(e.target.value)}
+                  placeholder={t('tax.detail.amount')}
+                  aria-label={t('tax.detail.amount')}
+                />
+                <Input
+                  value={receiptNo}
+                  onChange={(e) => setReceiptNo(e.target.value)}
+                  placeholder={t('tax.detail.receiptNo')}
+                  aria-label={t('tax.detail.receiptNo')}
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  loading={m.addPayment.isPending}
+                  disabled={settled}
+                >
+                  {settled ? t('tax.detail.fullyPaid') : t('tax.detail.addPayment')}
+                </Button>
+              </CardContent>
+            </form>
+          </Card>
 
-          <form onSubmit={saveAmount} className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
-              {t('tax.detail.updateAmount')}
-            </h2>
-            <input
-              type="number"
-              min="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder={String(r.amount)}
-              className={`mb-3 ${input}`}
-            />
-            <Button
-              type="submit"
-              variant="outline"
-              className="w-full"
-              disabled={m.update.isPending}
-            >
-              {t('tax.detail.saveAmount')}
-            </Button>
-          </form>
+          <Card>
+            <form onSubmit={saveAmount}>
+              <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
+                {t('tax.detail.updateAmount')}
+              </h2>
+              <CardContent className="space-y-2.5 p-5">
+                <Input
+                  type="number"
+                  min="0"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder={String(r.amount)}
+                  aria-label={t('tax.detail.updateAmount')}
+                />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="w-full"
+                  loading={m.update.isPending}
+                >
+                  {t('tax.detail.saveAmount')}
+                </Button>
+              </CardContent>
+            </form>
+          </Card>
         </div>
       </div>
     </div>

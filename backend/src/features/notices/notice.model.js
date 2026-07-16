@@ -27,6 +27,9 @@ const noticeSchema = new Schema(
     publishDate: { type: Date },
     expiryDate: { type: Date },
     isPublished: { type: Boolean, default: false, index: true },
+    // Auto-generated bilingual versions: { title:{en,mr}, summary:{en,mr}, content:{en,mr} }.
+    // Original fields above stay the source of truth; citizens read i18n by selected language.
+    i18n: { type: Schema.Types.Mixed },
     // Soft delete (blueprint: delete is soft, never hard).
     isActive: { type: Boolean, default: true, index: true },
     broadcast: { type: broadcastSchema },

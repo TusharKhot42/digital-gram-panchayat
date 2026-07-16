@@ -12,3 +12,4 @@ adminDashboardRouter.use(authenticate, authorize(ROLES.OFFICER));
 adminDashboardRouter.get('/metrics', controller.metrics);
 adminDashboardRouter.get('/charts', controller.charts);
 adminDashboardRouter.get('/activity', controller.activity);
+adminDashboardRouter.get('/report', controller.report);

@@ -22,7 +22,8 @@
     "outstandingDues": "थकित कर",
     "latestNotices": "नवीनतम सूचना",
     "latestSchemes": "नवीनतम योजना",
-    "seeAll": "सर्व पहा"
+    "seeAll": "सर्व पहा",
+    "services": "सेवा"
   },
   "notFound": {
     "title": "पान सापडले नाही",
@@ -32,7 +33,8 @@
   "common": {
     "loading": "लोड होत आहे…",
     "online": "ऑनलाइन",
-    "offline": "ऑफलाइन"
+    "offline": "ऑफलाइन",
+    "close": "बंद करा"
   },
   "error": {
     "boundaryTitle": "काहीतरी चूक झाली",
@@ -116,8 +118,8 @@
     "loadError": "सूचना लोड करता आल्या नाहीत",
     "notFound": "सूचना सापडली नाही",
     "back": "सूचनांकडे परत",
-    "viewComplaint": "तक्रार पहा →",
-    "viewCertificate": "दाखला पहा →",
+    "viewComplaint": "तक्रार पहा",
+    "viewCertificate": "दाखला पहा",
     "settings.title": "सूचना सेटिंग्ज",
     "settings.subtitle": "तुम्हाला कशा प्रकारे सूचित करावे ते निवडा.",
     "settings.inApp": "अ‍ॅपमधील सूचना",
@@ -125,7 +127,17 @@
     "settings.voice": "व्हॉइस कॉल",
     "settings.email": "ईमेल",
     "settings.save": "प्राधान्ये जतन करा",
-    "settings.saved": "प्राधान्ये जतन झाली"
+    "settings.saved": "प्राधान्ये जतन झाली",
+    "group": {
+      "today": "आज",
+      "yesterday": "काल",
+      "older": "जुने"
+    },
+    "unreadSection": "न वाचलेले",
+    "readSection": "पूर्वीचे",
+    "unreadCount": "{{count}} न वाचलेले",
+    "emptyFiltered": "तुमच्या शोधाशी जुळणाऱ्या सूचना नाहीत.",
+    "clearSearch": "शोध साफ करा"
   },
   "auth": {
     "welcomeBack": "पुन्हा स्वागत आहे",
@@ -153,7 +165,30 @@
     "registerSuccess": "खाते तयार झाले",
     "registerFailed": "नोंदणी अयशस्वी. पुन्हा प्रयत्न करा.",
     "profileUpdated": "प्रोफाईल अद्यतनित झाले",
-    "profileFailed": "प्रोफाईल अद्यतनित करता आले नाही"
+    "profileFailed": "प्रोफाईल अद्यतनित करता आले नाही",
+    "stats": "तुमची क्रिया",
+    "statComplaints": "तक्रारी",
+    "statCertificates": "दाखले",
+    "statDues": "कर थकबाकी",
+    "recentActivity": "अलीकडील क्रिया",
+    "noActivity": "अद्याप काहीही नाही.",
+    "editProfile": "तपशील संपादित करा",
+    "memberSince": "सदस्य कधीपासून",
+    "identifier": "ईमेल किंवा मोबाईल क्रमांक",
+    "identifierInvalid": "वैध मोबाईल क्रमांक किंवा ईमेल पत्ता प्रविष्ट करा",
+    "subtitle": "स्मार्ट गाव डिजिटल सेवा",
+    "tabVillager": "ग्रामस्थ लॉगिन",
+    "tabOfficer": "अधिकारी लॉगिन",
+    "citizenLoginTitle": "नागरिक लॉगिन",
+    "citizenLoginDesc": "तक्रारी, दाखले, सूचना, योजना आणि कर नोंदी पाहण्यासाठी लॉगिन करा.",
+    "officerLoginTitle": "अधिकारी लॉगिन",
+    "officerLoginDesc": "फक्त अधिकृत पंचायत अधिकाऱ्यांसाठी.",
+    "officerEmail": "अधिकारी ईमेल",
+    "officerWarning": "फक्त अधिकृत ग्रामपंचायत अधिकारीच या पोर्टलमध्ये प्रवेश करू शकतात.",
+    "forgot": "पासवर्ड विसरलात?",
+    "forgotHint": "पासवर्ड रीसेट करण्यासाठी कृपया आपल्या ग्रामपंचायत कार्यालयाशी संपर्क साधा.",
+    "wrongTabOfficer": "हे खाते अधिकारी म्हणून नोंदणीकृत आहे. कृपया अधिकारी लॉगिन वापरा.",
+    "wrongTabVillager": "हे खाते अधिकारी पोर्टलसाठी अधिकृत नाही."
   },
   "complaint": {
     "category": {
@@ -192,7 +227,17 @@
       "submit": "तक्रार सबमिट करा",
       "submitted": "तक्रार {{id}} सबमिट झाली",
       "queuedOffline": "तुम्ही ऑफलाइन आहात — तक्रार जतन झाली असून पुन्हा कनेक्ट झाल्यावर आपोआप पाठवली जाईल.",
-      "failed": "तक्रार सबमिट करता आली नाही"
+      "failed": "तक्रार सबमिट करता आली नाही",
+      "capturePhoto": "फोटो काढा",
+      "uploadPhoto": "फोटो अपलोड करा",
+      "gpsLoading": "स्थान शोधत आहे…",
+      "gpsFetching": "तुमचे स्थान मिळवत आहे…",
+      "gpsCoords": "{{lat}}, {{lng}}",
+      "gpsRetry": "पुन्हा प्रयत्न करा",
+      "gps_denied": "स्थान परवानगी नाकारली.",
+      "gps_unavailable": "या उपकरणावर स्थान उपलब्ध नाही.",
+      "gps_timeout": "स्थान विनंतीची वेळ संपली.",
+      "gps_error": "तुमचे स्थान मिळवता आले नाही."
     },
     "history": {
       "title": "माझ्या तक्रारी",
@@ -205,7 +250,10 @@
       "back": "तक्रारींकडे परत",
       "notFound": "तक्रार सापडली नाही",
       "timeline": "स्थिती कालरेखा",
-      "remarks": "अधिकारी शेरे"
+      "remarks": "अधिकारी शेरे",
+      "photos": "छायाचित्रे",
+      "photo": "छायाचित्र",
+      "location": "ठिकाण"
     }
   },
   "notice": {
@@ -224,7 +272,9 @@
       "search": "सूचना शोधा…",
       "allCategories": "सर्व प्रवर्ग",
       "empty": "अद्याप कोणतीही सूचना नाही.",
-      "loadError": "सूचना लोड करता आल्या नाहीत"
+      "loadError": "सूचना लोड करता आल्या नाहीत",
+      "clearFilters": "फिल्टर साफ करा",
+      "emptyFiltered": "तुमच्या फिल्टरशी जुळणाऱ्या सूचना नाहीत."
     },
     "detail": {
       "back": "सूचनांकडे परत",
@@ -233,7 +283,8 @@
       "pdfAttachment": "PDF दस्तऐवज",
       "download": "डाउनलोड करा",
       "open": "उघडा"
-    }
+    },
+    "broadcast": "प्रसारित"
   },
   "scheme": {
     "category": {
@@ -252,7 +303,9 @@
       "search": "योजना शोधा…",
       "allCategories": "सर्व प्रवर्ग",
       "empty": "अद्याप कोणतीही योजना नाही.",
-      "loadError": "योजना लोड करता आल्या नाहीत"
+      "loadError": "योजना लोड करता आल्या नाहीत",
+      "clearFilters": "फिल्टर साफ करा",
+      "emptyFiltered": "तुमच्या फिल्टरशी जुळणाऱ्या योजना नाहीत."
     },
     "detail": {
       "back": "योजनांकडे परत",
@@ -262,7 +315,10 @@
       "requiredDocuments": "आवश्यक कागदपत्रे",
       "benefits": "लाभ",
       "applicationProcess": "अर्ज कसा करावा",
-      "officialSite": "अधिकृत संकेतस्थळ"
+      "officialSite": "अधिकृत संकेतस्थळ",
+      "attachments": "कागदपत्रे व अर्ज",
+      "open": "उघडा",
+      "download": "डाउनलोड"
     }
   },
   "tax": {
@@ -287,16 +343,21 @@
       "paid": "भरलेले",
       "dues": "थकबाकी",
       "dueBy": "देय दिनांक",
-      "history": "भरणा इतिहास"
+      "history": "भरणा इतिहास",
+      "bills": "कर पावत्या",
+      "billNo": "बिल क्र.",
+      "receipt": "पावती",
+      "viewBill": "बिल पहा",
+      "noPayments": "अद्याप कोणतीही देयके नोंदवलेली नाहीत.",
+      "paidInFull": "पूर्ण भरले"
     }
   },
   "dakhala": {
     "type": {
       "Residence": "रहिवासी दाखला",
-      "Income": "उत्पन्न दाखला",
       "Birth": "जन्म दाखला",
       "Death": "मृत्यू दाखला",
-      "Character": "चारित्र्य दाखला",
+      "SevenTwelve": "७/१२ व ८अ उतारा",
       "Other": "इतर दाखला"
     },
     "status": {
@@ -307,11 +368,8 @@
     },
     "field": {
       "fullName": "पूर्ण नाव",
-      "address": "राहण्याचा पत्ता",
-      "yearsOfResidence": "वास्तव्याची वर्षे",
+      "address": "पत्ता",
       "purpose": "उद्देश",
-      "annualIncome": "वार्षिक उत्पन्न (₹)",
-      "occupation": "व्यवसाय",
       "childName": "बालकाचे नाव",
       "dateOfBirth": "जन्मतारीख",
       "placeOfBirth": "जन्मस्थळ",
@@ -321,7 +379,14 @@
       "dateOfDeath": "मृत्यूची तारीख",
       "placeOfDeath": "मृत्यूचे ठिकाण",
       "relationToApplicant": "अर्जदाराशी नाते",
-      "details": "तपशील"
+      "surveyNumber": "सर्वे क्रमांक",
+      "village": "गाव",
+      "mobile": "मोबाईल क्रमांक",
+      "gatNumber": "गट क्रमांक",
+      "taluka": "तालुका",
+      "district": "जिल्हा",
+      "certificateTitle": "दाखल्याचे नाव",
+      "description": "तपशील"
     },
     "list": {
       "title": "माझे दाखले",
@@ -342,7 +407,9 @@
       "required": "हे क्षेत्र आवश्यक आहे",
       "submit": "अर्ज सादर करा",
       "submitted": "अर्ज {{id}} सादर झाला",
-      "failed": "अर्ज सादर करता आला नाही"
+      "failed": "अर्ज सादर करता आला नाही",
+      "chooseDocType": "कागदपत्र निवडा",
+      "missingDocs": "कृपया सर्व आवश्यक कागदपत्रे जोडा"
     },
     "detail": {
       "back": "दाखल्यांकडे परत",
@@ -353,7 +420,48 @@
       "timeline": "स्थिती कालरेखा",
       "download": "दाखला डाउनलोड करा",
       "downloadFailed": "दाखला डाउनलोड करता आला नाही",
-      "rejected": "नाकारले"
+      "rejected": "नाकारले",
+      "progress": "अर्जाची प्रगती"
+    },
+    "doc": {
+      "Aadhaar": "आधार कार्ड",
+      "PAN": "पॅन कार्ड",
+      "VoterId": "मतदार ओळखपत्र",
+      "Passport": "पासपोर्ट",
+      "DrivingLicence": "वाहन चालक परवाना",
+      "RationCard": "रेशन कार्ड",
+      "ElectricityBill": "वीज बिल",
+      "WaterBill": "पाणी बिल",
+      "PropertyTaxReceipt": "मालमत्ता कर पावती",
+      "SelfDeclaration": "स्वयंघोषणा पत्र",
+      "HospitalBirthReport": "रुग्णालय जन्म अहवाल",
+      "DoctorMedicalCertificate": "डॉक्टर वैद्यकीय प्रमाणपत्र",
+      "DoctorDeathCertificate": "डॉक्टर मृत्यू प्रमाणपत्र",
+      "AadhaarOfRelative": "नातेवाईकाचे आधार",
+      "Existing712": "सध्याचा ७/१२",
+      "Existing8A": "सध्याचा ८अ",
+      "PropertyRecord": "मालमत्ता नोंद",
+      "Supporting": "पूरक कागदपत्र"
+    },
+    "docGroup": {
+      "identity": "ओळखपत्र पुरावा",
+      "address": "पत्ता पुरावा",
+      "selfDeclaration": "स्वयंघोषणा",
+      "birthProof": "जन्म पुरावा",
+      "parentIdentity": "पालक ओळखपत्र पुरावा",
+      "parentAddress": "पालक पत्ता पुरावा",
+      "deathProof": "मृत्यू पुरावा",
+      "deceasedIdentity": "मृताचे ओळखपत्र",
+      "addressProof": "पत्ता पुरावा",
+      "applicantIdentity": "अर्जदाराचे ओळखपत्र",
+      "landProof": "जमीन पुरावा",
+      "supporting": "पूरक कागदपत्रे"
+    },
+    "stage": {
+      "Submitted": "सादर केले",
+      "UnderReview": "पुनरावलोकनाधीन",
+      "Approved": "मंजूर",
+      "Download": "डाउनलोड"
     }
   }
 }

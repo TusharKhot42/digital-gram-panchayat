@@ -8,6 +8,10 @@ const documentSchema = new Schema(
     url: { type: String, required: true },
     type: { type: String, enum: ['pdf', 'image'], required: true },
     name: { type: String },
+    // Which requirement the file satisfies (e.g. 'identity') and what it is (e.g. 'Aadhaar').
+    // Optional so applications created before this change still load unchanged.
+    group: { type: String },
+    docType: { type: String },
   },
   { _id: false },
 );
@@ -32,6 +36,8 @@ const certificateSchema = new Schema(
     uploadedDocuments: { type: [documentSchema], default: [] },
     status: { type: String, enum: DAKHALA_STATUSES, default: 'Submitted', index: true },
     rejectionReason: { type: String },
+    // Auto-generated bilingual { en, mr } of the rejection reason.
+    rejectionReasonI18n: { type: Schema.Types.Mixed },
     pdfUrl: { type: String },
     history: { type: [statusEntrySchema], default: [] },
     reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },

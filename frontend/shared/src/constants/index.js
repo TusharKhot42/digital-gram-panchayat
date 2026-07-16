@@ -58,15 +58,15 @@ export const PAYMENT_STATUS_COLOR_MAP = {
   Paid: 'green',
 };
 
-export const CERT_TYPES = ['Residence', 'Income', 'Birth', 'Death', 'Character', 'Other'];
+export const CERT_TYPES = ['Residence', 'Birth', 'Death', 'SevenTwelve', 'Other'];
 
 export const DAKHALA_STATUSES = ['Submitted', 'UnderReview', 'Approved', 'Rejected'];
 
 export const DAKHALA_STATUS_COLOR_MAP = {
-  Submitted: 'red',
+  Submitted: 'orange',
   UnderReview: 'orange',
-  Approved: 'green',
-  Rejected: 'grey',
+  Approved: 'blue',
+  Rejected: 'red',
 };
 
 // Dynamic per-type application fields. Backend validates required keys against these;
@@ -74,15 +74,8 @@ export const DAKHALA_STATUS_COLOR_MAP = {
 export const CERT_TYPE_FIELDS = {
   Residence: [
     { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'address', label: 'Residential address', type: 'textarea', required: true },
-    { key: 'yearsOfResidence', label: 'Years of residence', type: 'number', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
-  ],
-  Income: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'annualIncome', label: 'Annual income (₹)', type: 'number', required: true },
-    { key: 'occupation', label: 'Occupation', type: 'text', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+    { key: 'mobile', label: 'Mobile number', type: 'text', required: true },
+    { key: 'address', label: 'Address', type: 'textarea', required: true },
   ],
   Birth: [
     { key: 'childName', label: 'Child name', type: 'text', required: true },
@@ -95,23 +88,111 @@ export const CERT_TYPE_FIELDS = {
     { key: 'deceasedName', label: 'Name of deceased', type: 'text', required: true },
     { key: 'dateOfDeath', label: 'Date of death', type: 'date', required: true },
     { key: 'placeOfDeath', label: 'Place of death', type: 'text', required: true },
-    { key: 'relationToApplicant', label: 'Relation to applicant', type: 'text', required: true },
+    { key: 'relationToApplicant', label: 'Relation with applicant', type: 'text', required: true },
   ],
-  Character: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+  SevenTwelve: [
+    { key: 'surveyNumber', label: 'Survey number', type: 'text', required: true },
+    { key: 'gatNumber', label: 'Gat number', type: 'text', required: true },
+    { key: 'village', label: 'Village', type: 'text', required: true },
+    { key: 'taluka', label: 'Taluka', type: 'text', required: true },
+    { key: 'district', label: 'District', type: 'text', required: true },
   ],
   Other: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'details', label: 'Details', type: 'textarea', required: true },
+    { key: 'certificateTitle', label: 'Certificate title', type: 'text', required: true },
     { key: 'purpose', label: 'Purpose', type: 'text', required: true },
+    { key: 'description', label: 'Description', type: 'textarea', required: true },
   ],
+};
+
+/** Every document kind a citizen can attach. Used for the per-file `docType` selector. */
+export const CERT_DOC_TYPES = [
+  'Aadhaar',
+  'PAN',
+  'VoterId',
+  'Passport',
+  'DrivingLicence',
+  'RationCard',
+  'ElectricityBill',
+  'WaterBill',
+  'PropertyTaxReceipt',
+  'SelfDeclaration',
+  'HospitalBirthReport',
+  'DoctorMedicalCertificate',
+  'DoctorDeathCertificate',
+  'AadhaarOfRelative',
+  'Existing712',
+  'Existing8A',
+  'PropertyRecord',
+  'Supporting',
+];
+
+/**
+ * Required document groups per certificate type. Each group needs at least one uploaded file
+ * whose `docType` is in `anyOf`. Backend enforces this and the citizen form renders one
+ * uploader per group from the same map (single source of truth).
+ */
+export const CERT_DOC_REQUIREMENTS = {
+  Residence: [
+    {
+      key: 'identity',
+      required: true,
+      anyOf: ['Aadhaar', 'PAN', 'VoterId', 'Passport', 'DrivingLicence'],
+    },
+    {
+      key: 'address',
+      required: true,
+      anyOf: ['RationCard', 'ElectricityBill', 'WaterBill', 'PropertyTaxReceipt'],
+    },
+    { key: 'selfDeclaration', required: true, anyOf: ['SelfDeclaration'] },
+  ],
+  Birth: [
+    {
+      key: 'birthProof',
+      required: true,
+      anyOf: ['HospitalBirthReport', 'DoctorMedicalCertificate'],
+    },
+    { key: 'parentIdentity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId'] },
+    {
+      key: 'parentAddress',
+      required: true,
+      anyOf: ['Aadhaar', 'RationCard', 'ElectricityBill', 'WaterBill'],
+    },
+  ],
+  Death: [
+    { key: 'deathProof', required: true, anyOf: ['DoctorDeathCertificate'] },
+    { key: 'deceasedIdentity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId'] },
+    {
+      key: 'addressProof',
+      required: true,
+      anyOf: ['Aadhaar', 'RationCard', 'ElectricityBill', 'WaterBill'],
+    },
+    { key: 'applicantIdentity', required: true, anyOf: ['AadhaarOfRelative'] },
+  ],
+  SevenTwelve: [
+    { key: 'identity', required: true, anyOf: ['Aadhaar', 'PAN', 'VoterId', 'Passport'] },
+    { key: 'landProof', required: true, anyOf: ['Existing712', 'Existing8A', 'PropertyRecord'] },
+  ],
+  Other: [{ key: 'supporting', required: true, anyOf: ['Supporting'] }],
 };
 
 export const MAX_CERT_DOCUMENTS = 5;
 
-// Chart palette for the officer dashboard (recharts).
-export const CHART_COLORS = ['#15803d', '#f97316', '#ef4444', '#3b82f6', '#a855f7', '#64748b'];
+/**
+ * Chart palette for the officer dashboard (recharts).
+ *
+ * Recharts wants literal colours, not CSS variables, so this is the one place the design
+ * tokens are repeated as hex. Keep it in step with the semantic colours in the apps'
+ * `styles/index.css`: primary, warning, danger, info, then two neutral extensions for
+ * series beyond the semantic four.
+ */
+export const CHART_COLORS = [
+  '#1E3A5F', // primary navy
+  '#0F766E', // teal
+  '#D97706', // amber
+  '#2563EB', // info blue
+  '#334155', // slate
+  '#64748B', // muted
+];
 
 // ---- Notifications ----
 export const NOTIFICATION_CHANNELS = ['inApp', 'sms', 'voice', 'email'];
@@ -135,13 +216,13 @@ export const NOTIFICATION_TYPE_COLOR_MAP = {
 };
 
 export const STATUS_COLOR_MAP = {
-  Pending: 'red',
-  Submitted: 'red',
+  Pending: 'orange',
+  Submitted: 'orange',
   InProgress: 'orange',
   UnderReview: 'orange',
   Resolved: 'green',
-  Approved: 'green',
-  Rejected: 'grey',
+  Approved: 'blue',
+  Rejected: 'red',
 };
 
 // ---- PWA / Offline (M10) ----

@@ -108,8 +108,11 @@ export function AuthProvider({ children }) {
       register,
       logout,
       updateProfile,
+      // Store an already-authenticated session (shared login page authenticates first,
+      // then decides whether this app keeps the session or hands it to the admin portal).
+      adoptSession: persistSession,
     }),
-    [user, token, ready, login, register, logout, updateProfile],
+    [user, token, ready, login, register, logout, updateProfile, persistSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

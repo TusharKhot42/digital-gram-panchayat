@@ -1,19 +1,27 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Check, X, FileText, ExternalLink } from 'lucide-react';
+import { Check, X, FileText, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/PageHeader';
+import { Timeline } from '@/components/Timeline';
+import { Lightbox } from '@/components/Lightbox';
+import { SafeImage } from '@/components/SafeImage';
+import { DakhalaStatusBadge } from './DakhalaStatusBadge';
 import { useApplication, useReviewMutations } from './hooks';
 import { RejectDialog } from './RejectDialog';
 
-const STATUS_CLASS = {
-  Submitted: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
-  UnderReview: 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300',
-  Approved: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  Rejected: 'bg-gray-200 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300',
-};
+function Panel({ title, children }) {
+  return (
+    <Card>
+      <h2 className="border-b border-border px-5 py-3 text-section text-foreground">{title}</h2>
+      {children}
+    </Card>
+  );
+}
 
 export function CertificateReview() {
   const { id } = useParams();
@@ -23,10 +31,11 @@ export function CertificateReview() {
   const m = useReviewMutations(id);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [confirmApprove, setConfirmApprove] = useState(false);
+  const [preview, setPreview] = useState(null);
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">{t('common.loading')}</p>;
+  if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !a)
-    return <p className="text-sm text-destructive">{t('dakhala.review.notFound')}</p>;
+    return <p className="text-body text-destructive-strong">{t('dakhala.review.notFound')}</p>;
 
   const pending = a.status === 'Submitted' || a.status === 'UnderReview';
 
@@ -52,87 +61,112 @@ export function CertificateReview() {
 
   return (
     <div>
-      <Link
-        to="/dakhala"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('dakhala.review.back')}
-      </Link>
+      <PageHeader
+        backTo="/dakhala"
+        backLabel={t('dakhala.review.back')}
+        title={t(`dakhala.type.${a.certificateType}`, a.certificateType)}
+        subtitle={a.applicationId}
+        action={<DakhalaStatusBadge status={a.status} />}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-lg border border-border bg-card p-5">
-            <div className="mb-3 flex items-start justify-between">
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">
-                  {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
-                </h1>
-                <p className="text-xs text-muted-foreground">{a.applicationId}</p>
-              </div>
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_CLASS[a.status]}`}
-              >
-                {t(`dakhala.status.${a.status}`, a.status)}
-              </span>
-            </div>
-
-            <h2 className="mb-2 text-sm font-semibold text-foreground">
-              {t('dakhala.review.details')}
-            </h2>
-            <div className="space-y-1">
+          <Panel title={t('dakhala.review.details')}>
+            <dl className="divide-y divide-border">
               {Object.entries(a.applicationData || {}).map(([key, value]) => (
-                <div key={key} className="flex justify-between gap-2 text-sm">
-                  <span className="text-muted-foreground">{t(`dakhala.field.${key}`, key)}</span>
-                  <span className="text-right font-medium text-foreground">{String(value)}</span>
+                <div key={key} className="flex justify-between gap-3 px-5 py-2.5">
+                  <dt className="text-body text-muted-foreground">
+                    {t(`dakhala.field.${key}`, key)}
+                  </dt>
+                  <dd className="text-right text-body font-medium text-foreground">
+                    {String(value)}
+                  </dd>
                 </div>
               ))}
-            </div>
-          </div>
+            </dl>
+          </Panel>
 
-          <div className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
-              {t('dakhala.review.documents')}
-            </h2>
-            {a.uploadedDocuments?.length ? (
-              <div className="flex flex-wrap gap-2">
-                {a.uploadedDocuments.map((d, i) => (
-                  <a
-                    key={`${d.url}-${i}`}
-                    href={d.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-foreground"
-                  >
-                    <FileText className="h-4 w-4 text-primary" />
-                    {d.name || `${t('dakhala.review.document')} ${i + 1}`}
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">{t('dakhala.review.noDocuments')}</p>
-            )}
-          </div>
+          <Panel title={t('dakhala.review.documents')}>
+            <CardContent className="p-5">
+              {a.uploadedDocuments?.length ? (
+                <div className="flex flex-wrap gap-3">
+                  {a.uploadedDocuments.map((d, i) => (
+                    <div
+                      key={`${d.url}-${i}`}
+                      className="w-40 overflow-hidden rounded-md border border-border"
+                    >
+                      {d.type === 'image' ? (
+                        <button
+                          type="button"
+                          onClick={() => setPreview(d.url)}
+                          title={t('dakhala.review.zoom')}
+                          className="block w-full transition-opacity duration-150 hover:opacity-90"
+                        >
+                          <SafeImage
+                            src={d.url}
+                            alt={d.name || ''}
+                            className="h-24 w-full object-cover"
+                          />
+                        </button>
+                      ) : (
+                        <a
+                          href={d.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-24 w-full items-center justify-center bg-primary-subtle transition-opacity duration-150 hover:opacity-90"
+                        >
+                          <FileText className="h-8 w-8 text-primary" aria-hidden="true" />
+                        </a>
+                      )}
+                      <div className="border-t border-border p-2">
+                        <p className="truncate text-caption font-medium text-foreground">
+                          {d.docType ? t(`dakhala.doc.${d.docType}`, d.docType) : d.name || '—'}
+                        </p>
+                        {d.group ? (
+                          <p className="truncate text-caption text-muted-foreground">
+                            {t(`dakhala.docGroup.${d.group}`, d.group)}
+                          </p>
+                        ) : null}
+                        <a
+                          href={d.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-1 inline-flex items-center gap-1 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                        >
+                          <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                          {t('dakhala.review.open')}
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-body text-muted-foreground">{t('dakhala.review.noDocuments')}</p>
+              )}
+            </CardContent>
+          </Panel>
 
           {a.status === 'Approved' && a.pdfUrl ? (
-            <div className="rounded-lg border border-border bg-card p-5">
-              <h2 className="mb-3 text-sm font-semibold text-foreground">
-                {t('dakhala.review.pdf')}
-              </h2>
-              <a
-                href={a.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-primary"
-              >
-                <ExternalLink className="h-4 w-4" />
-                {t('dakhala.review.openPdf')}
-              </a>
-            </div>
+            <Panel title={t('dakhala.review.pdf')}>
+              <CardContent className="p-5">
+                <a
+                  href={a.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-body font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                >
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  {t('dakhala.review.openPdf')}
+                </a>
+              </CardContent>
+            </Panel>
           ) : null}
 
           {a.status === 'Rejected' && a.rejectionReason ? (
-            <div className="rounded-lg border border-border bg-destructive/10 p-4 text-sm text-destructive">
+            <div
+              role="alert"
+              className="rounded-lg bg-destructive-subtle p-4 text-body text-destructive-strong ring-1 ring-inset ring-destructive/20"
+            >
               <span className="font-medium">{t('dakhala.review.rejectionReason')}: </span>
               {a.rejectionReason}
             </div>
@@ -141,66 +175,58 @@ export function CertificateReview() {
 
         <div className="space-y-4">
           {pending ? (
-            <div className="rounded-lg border border-border bg-card p-5">
-              <h2 className="mb-3 text-sm font-semibold text-foreground">
-                {t('dakhala.review.decision')}
-              </h2>
-              {confirmApprove ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    {t('dakhala.review.approveConfirm', {
-                      type: t(`dakhala.type.${a.certificateType}`, a.certificateType),
-                    })}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={doApprove} disabled={m.approve.isPending}>
-                      {m.approve.isPending
-                        ? t('common.loading')
-                        : t('dakhala.review.confirmApprove')}
+            <Panel title={t('dakhala.review.decision')}>
+              <CardContent className="p-5">
+                {confirmApprove ? (
+                  <div className="space-y-2.5">
+                    <p className="text-body text-muted-foreground">
+                      {t('dakhala.review.approveConfirm', {
+                        type: t(`dakhala.type.${a.certificateType}`, a.certificateType),
+                      })}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={doApprove} loading={m.approve.isPending}>
+                        {t('dakhala.review.confirmApprove')}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setConfirmApprove(false)}>
+                        {t('dakhala.review.cancel')}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <Button onClick={() => setConfirmApprove(true)}>
+                      <Check className="h-4 w-4" aria-hidden="true" />
+                      {t('dakhala.review.approve')}
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setConfirmApprove(false)}>
-                      {t('dakhala.review.cancel')}
+                    <Button variant="destructive" onClick={() => setRejectOpen(true)}>
+                      <X className="h-4 w-4" aria-hidden="true" />
+                      {t('dakhala.review.reject')}
                     </Button>
                   </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Button onClick={() => setConfirmApprove(true)}>
-                    <Check className="h-4 w-4" />
-                    {t('dakhala.review.approve')}
-                  </Button>
-                  <Button variant="destructive" onClick={() => setRejectOpen(true)}>
-                    <X className="h-4 w-4" />
-                    {t('dakhala.review.reject')}
-                  </Button>
-                </div>
-              )}
-            </div>
+                )}
+              </CardContent>
+            </Panel>
           ) : (
-            <div className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
-              {t('dakhala.review.decided')}
-            </div>
+            <Card>
+              <CardContent className="p-5">
+                <p className="text-body text-muted-foreground">{t('dakhala.review.decided')}</p>
+              </CardContent>
+            </Card>
           )}
 
-          <div className="rounded-lg border border-border bg-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-foreground">
-              {t('dakhala.review.timeline')}
-            </h2>
-            <ol className="space-y-3">
-              {[...a.history].reverse().map((h, i) => (
-                <li key={`${h.status}-${h.at}-${i}`} className="flex gap-3 text-sm">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-                  <div>
-                    <p className="text-foreground">{t(`dakhala.status.${h.status}`, h.status)}</p>
-                    <p className="text-xs text-muted-foreground">{formatDateTime(h.at, locale)}</p>
-                    {h.note ? (
-                      <p className="mt-0.5 text-xs text-muted-foreground">{h.note}</p>
-                    ) : null}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          <Panel title={t('dakhala.review.timeline')}>
+            <CardContent className="p-5">
+              <Timeline
+                items={[...a.history].reverse().map((h, i) => ({
+                  key: `${h.status}-${h.at}-${i}`,
+                  title: t(`dakhala.status.${h.status}`, h.status),
+                  meta: formatDateTime(h.at, locale),
+                  note: h.note,
+                }))}
+              />
+            </CardContent>
+          </Panel>
         </div>
       </div>
 
@@ -211,6 +237,8 @@ export function CertificateReview() {
         onReject={doReject}
         onClose={() => setRejectOpen(false)}
       />
+
+      <Lightbox src={preview} label={t('dakhala.review.zoom')} onClose={() => setPreview(null)} />
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { NOTIFICATION_TYPES } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { controlClass } from '@/components/ui/input';
+import { cn } from '@/utils/cn';
 import { useNotificationMutations } from './hooks';
 
 const CHANNELS = ['inApp', 'sms', 'voice', 'email'];
@@ -47,50 +49,41 @@ export function BroadcastForm() {
     }
   };
 
-  const input =
-    'h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring';
-
   return (
     <div className="max-w-xl">
       <Link
         to="/notifications"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
+        className="mb-3 -ml-1 inline-flex min-h-9 items-center gap-1 rounded-md px-1 text-body text-muted-foreground transition-colors duration-150 hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
         {t('ntf.back')}
       </Link>
-      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('ntf.form.title')}</h1>
+      <h1 className="mb-4 text-title text-foreground">{t('ntf.form.title')}</h1>
 
       <form onSubmit={submit} className="space-y-4">
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('ntf.form.subject')}
-          </label>
+          <label className="block text-label text-foreground">{t('ntf.form.subject')}</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={160}
-            className={input}
+            className={controlClass}
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('ntf.form.message')}
-          </label>
+          <label className="block text-label text-foreground">{t('ntf.form.message')}</label>
           <textarea
             rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             maxLength={1000}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('ntf.form.type')}
-            </label>
-            <select value={type} onChange={(e) => setType(e.target.value)} className={input}>
+            <label className="block text-label text-foreground">{t('ntf.form.type')}</label>
+            <select value={type} onChange={(e) => setType(e.target.value)} className={controlClass}>
               {NOTIFICATION_TYPES.map((ty) => (
                 <option key={ty} value={ty}>
                   {t(`ntf.type.${ty}`, ty)}
@@ -99,13 +92,11 @@ export function BroadcastForm() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-foreground">
-              {t('ntf.form.target')}
-            </label>
+            <label className="block text-label text-foreground">{t('ntf.form.target')}</label>
             <select
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
-              className={input}
+              className={controlClass}
             >
               <option value="citizen">{t('ntf.form.citizens')}</option>
               <option value="officer">{t('ntf.form.officers')}</option>
@@ -113,9 +104,7 @@ export function BroadcastForm() {
           </div>
         </div>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-foreground">
-            {t('ntf.form.channels')}
-          </label>
+          <label className="block text-label text-foreground">{t('ntf.form.channels')}</label>
           <div className="flex flex-wrap gap-3">
             {CHANNELS.map((ch) => (
               <label key={ch} className="flex items-center gap-1 text-sm text-foreground">
@@ -130,7 +119,7 @@ export function BroadcastForm() {
           </div>
         </div>
 
-        <p className="rounded-md bg-orange-100 p-2 text-xs text-orange-800 dark:bg-orange-500/15 dark:text-orange-300">
+        <p className="rounded-md bg-warning-subtle p-2 text-caption text-warning-strong ring-1 ring-inset ring-warning/30">
           {t('ntf.form.costWarning')}
         </p>
 

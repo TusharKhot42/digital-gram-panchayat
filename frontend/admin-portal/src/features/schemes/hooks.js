@@ -28,11 +28,11 @@ export function useSchemeMutations() {
 
   return {
     create: useMutation({
-      mutationFn: ({ values, file }) => schemeService.create(values, file),
+      mutationFn: ({ values, files }) => schemeService.create(values, files),
       onSuccess: invalidate,
     }),
     update: useMutation({
-      mutationFn: ({ id, values, file }) => schemeService.update(id, values, file),
+      mutationFn: ({ id, values, files }) => schemeService.update(id, values, files),
       onSuccess: invalidate,
     }),
     publish: useMutation({ mutationFn: (id) => schemeService.publish(id), onSuccess: invalidate }),

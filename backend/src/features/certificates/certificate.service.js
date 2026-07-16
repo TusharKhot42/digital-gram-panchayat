@@ -1,10 +1,17 @@
-import { ROLES, PAGINATION_DEFAULTS, CERT_TYPE_FIELDS } from '@dgp/shared';
+import {
+  ROLES,
+  PAGINATION_DEFAULTS,
+  CERT_TYPE_FIELDS,
+  CERT_DOC_REQUIREMENTS,
+  CERT_DOC_TYPES,
+} from '@dgp/shared';
 import { CertificateApplication } from './certificate.model.js';
 import { generateCertificatePdf } from './pdf.service.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadAttachments, uploadPdfBuffer } from '../../utils/upload.js';
+import { translateToBoth } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { notifyDakhalaStatus } from '../notifications/notification.service.js';
 
@@ -17,6 +24,47 @@ function escapeRegex(str) {
 }
 
 /** Dynamic per-type required-field validation (single source: CERT_TYPE_FIELDS). */
+/** Parse the multipart `documentMeta` JSON string (array of { group, docType }). */
+function parseDocumentMeta(raw) {
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string' && raw.trim()) {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      throw new AppError(400, 'VALIDATION_ERROR', 'documentMeta must be valid JSON', {
+        documentMeta: 'Invalid JSON',
+      });
+    }
+  }
+  return [];
+}
+
+/**
+ * Every required document group for the type must be covered by at least one uploaded file
+ * whose docType is allowed for that group. Unknown docTypes are rejected outright.
+ */
+function validateRequiredDocuments(type, meta) {
+  const groups = CERT_DOC_REQUIREMENTS[type] || [];
+  const errors = {};
+
+  for (const entry of meta) {
+    if (entry?.docType && !CERT_DOC_TYPES.includes(entry.docType)) {
+      errors.documents = `Unknown document type "${entry.docType}"`;
+    }
+  }
+
+  for (const group of groups) {
+    if (!group.required) continue;
+    const covered = meta.some((m) => m?.group === group.key && group.anyOf.includes(m?.docType));
+    if (!covered) errors[`documents.${group.key}`] = `A valid ${group.key} document is required`;
+  }
+
+  if (Object.keys(errors).length > 0) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Required documents are missing', errors);
+  }
+}
+
 function validateApplicationData(type, data) {
   const fields = CERT_TYPE_FIELDS[type] || [];
   const missing = {};
@@ -69,7 +117,16 @@ export async function apply({ citizenId, body, files }) {
   const applicationData = parseApplicationData(body.applicationData);
   validateApplicationData(certificateType, applicationData);
 
-  const uploadedDocuments = await uploadAttachments(files, 'certificates/docs');
+  // Per-file { group, docType }, positionally aligned with `files`.
+  const documentMeta = parseDocumentMeta(body.documentMeta);
+  validateRequiredDocuments(certificateType, documentMeta);
+
+  const uploaded = await uploadAttachments(files, 'certificates/docs');
+  const uploadedDocuments = uploaded.map((doc, i) => ({
+    ...doc,
+    group: documentMeta[i]?.group,
+    docType: documentMeta[i]?.docType,
+  }));
 
   const year = new Date().getFullYear();
   const seq = await getNextSequence(`dakhala-${year}`);
@@ -248,6 +305,8 @@ export async function reject(id, officerId, reason) {
   const before = { status: app.status };
   app.status = 'Rejected';
   app.rejectionReason = reason.trim();
+  const both = await translateToBoth(reason.trim());
+  app.rejectionReasonI18n = { en: both.en, mr: both.mr };
   app.reviewedBy = officerId;
   app.updatedBy = officerId;
   app.history.push({ status: 'Rejected', by: officerId, note: reason.trim(), at: new Date() });

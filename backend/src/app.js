@@ -4,6 +4,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import { healthRouter } from './features/health/health.routes.js';
+import { uploadsRouter } from './features/uploads/uploads.routes.js';
 import { citizenAuthRouter, adminAuthRouter } from './features/auth/auth.routes.js';
 import { complaintRouter, adminComplaintRouter } from './features/complaints/complaint.routes.js';
 import { noticeRouter, adminNoticeRouter } from './features/notices/notice.routes.js';
@@ -53,6 +54,7 @@ export function createApp() {
   apiRouter.use(generalLimiter);
 
   apiRouter.use('/health', healthRouter);
+  apiRouter.use('/uploads', uploadsRouter);
   apiRouter.use('/auth', citizenAuthRouter);
   apiRouter.use('/admin', adminAuthRouter);
   apiRouter.use('/complaints', complaintRouter);

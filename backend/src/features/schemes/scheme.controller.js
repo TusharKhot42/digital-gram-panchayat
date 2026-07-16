@@ -18,7 +18,7 @@ export const create = asyncHandler(async (req, res) => {
   const scheme = await schemeService.createScheme({
     officerId: req.user.id,
     body: req.body,
-    file: req.file,
+    files: req.files,
   });
   res.status(201).json(successResponse(scheme));
 });
@@ -34,7 +34,7 @@ export const adminGetOne = asyncHandler(async (req, res) => {
 });
 
 export const update = asyncHandler(async (req, res) => {
-  const scheme = await schemeService.updateScheme(req.params.id, req.user.id, req.body, req.file);
+  const scheme = await schemeService.updateScheme(req.params.id, req.user.id, req.body, req.files);
   res.status(200).json(successResponse(scheme));
 });
 

@@ -5,7 +5,26 @@ export const notificationKeys = {
   list: (params) => ['admin-notifications', 'list', params ?? {}],
   detail: (id) => ['admin-notifications', 'detail', id],
   stats: () => ['admin-notifications', 'stats'],
+  broadcasts: (params) => ['admin-notifications', 'broadcasts', params ?? {}],
+  recipients: (id, params) => ['admin-notifications', 'recipients', id, params ?? {}],
 };
+
+export function useBroadcasts(params) {
+  return useQuery({
+    queryKey: notificationKeys.broadcasts(params),
+    queryFn: () => notificationService.listBroadcasts(params),
+    placeholderData: (prev) => prev,
+    refetchInterval: 30_000,
+  });
+}
+
+export function useBroadcastRecipients(broadcastId, params) {
+  return useQuery({
+    queryKey: notificationKeys.recipients(broadcastId, params),
+    queryFn: () => notificationService.broadcastRecipients(broadcastId, params),
+    enabled: Boolean(broadcastId),
+  });
+}
 
 export function useNotifications(params) {
   return useQuery({

@@ -30,6 +30,10 @@ adminNotificationRouter.use(authenticate, authorize(ROLES.OFFICER));
 
 adminNotificationRouter.get('/', adminListValidation, validate, controller.adminList);
 adminNotificationRouter.get('/stats', controller.stats);
+// Broadcast rollup (one entry per broadcast) + drill-in. Declared before '/:id' so the
+// literal path isn't captured by the id param route.
+adminNotificationRouter.get('/broadcasts', controller.listBroadcasts);
+adminNotificationRouter.get('/broadcasts/:broadcastId', controller.broadcastRecipients);
 adminNotificationRouter.post(
   '/broadcast',
   broadcastLimiter,

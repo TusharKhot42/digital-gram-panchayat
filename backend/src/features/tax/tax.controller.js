@@ -25,7 +25,11 @@ export const adminGetOne = asyncHandler(async (req, res) => {
 });
 
 export const create = asyncHandler(async (req, res) => {
-  const record = await taxService.createRecord({ officerId: req.user.id, body: req.body });
+  const record = await taxService.createRecord({
+    officerId: req.user.id,
+    body: req.body,
+    files: req.files,
+  });
   res.status(201).json(successResponse(record));
 });
 

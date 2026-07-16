@@ -1,12 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
-import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/input';
+import { SkeletonRows } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
+import { FilterBar, SearchInput } from '@/components/FilterBar';
+import { Pagination } from '@/components/Pagination';
+import {
+  TableShell,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  TableMessageRow,
+} from '@/components/ui/table';
 import { useUsers } from './hooks';
 
 const LIMIT = 20;
+const COLS = 5;
 
 export function UsersList() {
   const { t, i18n } = useTranslation();
@@ -28,110 +43,90 @@ export function UsersList() {
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-semibold text-foreground">{t('users.title')}</h1>
+      <h1 className="mb-4 text-title text-foreground">{t('users.title')}</h1>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => onFilter(setQ)(e.target.value)}
-            placeholder={t('users.search')}
-            className="h-9 w-64 rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <select
+      <FilterBar>
+        <SearchInput value={q} onChange={onFilter(setQ)} placeholder={t('users.search')} />
+        <Select
           value={status}
           onChange={(e) => onFilter(setStatus)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+          aria-label={t('users.allStatuses')}
+          className="w-auto"
         >
           <option value="">{t('users.allStatuses')}</option>
           <option value="active">{t('users.active')}</option>
           <option value="inactive">{t('users.inactive')}</option>
-        </select>
-      </div>
+        </Select>
+      </FilterBar>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('users.name')}</th>
-              <th className="px-4 py-2 font-medium">{t('users.mobile')}</th>
-              <th className="px-4 py-2 font-medium">{t('users.village')}</th>
-              <th className="px-4 py-2 font-medium">{t('users.joined')}</th>
-              <th className="px-4 py-2 font-medium">{t('users.status')}</th>
+              <TH>{t('users.name')}</TH>
+              <TH>{t('users.mobile')}</TH>
+              <TH>{t('users.village')}</TH>
+              <TH>{t('users.joined')}</TH>
+              <TH>{t('users.status')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <SkeletonRows />
+              </TableMessageRow>
             ) : isError ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-destructive">
-                  {t('users.loadError')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="text-destructive-strong">
+                {t('users.loadError')}
+              </TableMessageRow>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('users.empty')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="p-0">
+                <EmptyState
+                  icon={Users}
+                  title={t('users.empty')}
+                  className="border-0 shadow-none"
+                />
+              </TableMessageRow>
             ) : (
               rows.map((u) => (
-                <tr key={u.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2">
-                    <Link to={`/users/${u.id}`} className="font-medium text-primary">
+                <TR key={u.id}>
+                  <TD>
+                    <Link
+                      to={`/users/${u.id}`}
+                      className="font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                    >
                       {u.fullName}
                     </Link>
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground">{u.mobile || '—'}</td>
-                  <td className="px-4 py-2 text-muted-foreground">{u.village || '—'}</td>
-                  <td className="px-4 py-2 text-muted-foreground">
+                  </TD>
+                  <TD className="text-muted-foreground">{u.mobile || '—'}</TD>
+                  <TD className="text-muted-foreground">{u.village || '—'}</TD>
+                  <TD className="whitespace-nowrap text-muted-foreground">
                     {formatDate(u.createdAt, locale)}
-                  </td>
-                  <td className="px-4 py-2">
+                  </TD>
+                  <TD>
                     <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${u.isActive ? 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300' : 'bg-gray-200 text-gray-700 dark:bg-gray-500/20 dark:text-gray-300'}`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-caption font-medium ring-1 ring-inset ${
+                        u.isActive
+                          ? 'bg-success-subtle text-success-strong ring-success/20'
+                          : 'bg-muted text-body-foreground ring-border'
+                      }`}
                     >
                       {u.isActive ? t('users.active') : t('users.inactive')}
                     </span>
-                  </td>
-                </tr>
+                  </TD>
+                </TR>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{t('users.total', { total })}</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            {t('users.prev')}
-          </Button>
-          <span>
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {t('users.next')}
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPage={setPage}
+        totalLabel={t('users.total', { total })}
+      />
     </div>
   );
 }

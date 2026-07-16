@@ -1,90 +1,130 @@
-import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { formatDateTime } from '@dgp/shared';
 import { StatusBadge } from '@/components/StatusBadge';
 import { MapView } from '@/components/MapView';
+import { Lightbox } from '@/components/Lightbox';
+import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader, SectionHeader } from '@/components/PageHeader';
+import { Stepper } from '@/components/Stepper';
+import { SafeImage } from '@/components/SafeImage';
 import { StatusTimeline } from '../components/StatusTimeline';
 import { useComplaint } from '../hooks';
+
+/** The lifecycle a complaint moves through, in order. */
+const STAGES = ['Pending', 'InProgress', 'Resolved'];
 
 export function ComplaintDetail() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const { data: c, isLoading, isError } = useComplaint(id);
+  const [preview, setPreview] = useState(null);
 
   if (isLoading)
-    return <p className="px-4 py-6 text-sm text-muted-foreground">{t('common.loading')}</p>;
+    return <p className="dgp-page text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !c)
-    return <p className="px-4 py-6 text-sm text-destructive">{t('complaint.detail.notFound')}</p>;
+    return (
+      <p className="dgp-page text-body text-destructive-strong">{t('complaint.detail.notFound')}</p>
+    );
 
   const [lng, lat] = c.location?.coordinates ?? [];
+  const stage = Math.max(0, STAGES.indexOf(c.status));
+  const steps = STAGES.map((key) => ({ key, label: t(`complaint.status.${key}`, key) }));
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <Link
-        to="/complaints"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('complaint.detail.back')}
-      </Link>
+    <div className="dgp-page">
+      <PageHeader
+        backTo="/complaints"
+        backLabel={t('complaint.detail.back')}
+        title={c.title}
+        subtitle={c.complaintId}
+        action={<StatusBadge status={c.status} />}
+      />
 
-      <div className="mb-3 flex items-start justify-between gap-2">
-        <div>
-          <h1 className="text-lg font-semibold text-foreground">{c.title}</h1>
-          <p className="text-xs text-muted-foreground">{c.complaintId}</p>
-        </div>
-        <StatusBadge status={c.status} />
-      </div>
+      <Card className="mb-4">
+        <CardContent className="px-3 py-5">
+          <Stepper steps={steps} current={stage} label={t('complaint.detail.timeline')} />
+        </CardContent>
+      </Card>
 
-      <p className="mb-1 text-xs text-muted-foreground">
-        {t(`complaint.category.${c.category}`, c.category)} · {formatDateTime(c.createdAt, locale)}
-      </p>
-      <p className="mb-4 whitespace-pre-wrap text-sm text-foreground">{c.description}</p>
+      <Card className="mb-6">
+        <CardContent>
+          <p className="text-caption text-muted-foreground">
+            {t(`complaint.category.${c.category}`, c.category)} ·{' '}
+            {formatDateTime(c.createdAt, locale)}
+          </p>
+          <p className="mt-2 whitespace-pre-wrap text-body text-foreground">{c.description}</p>
+        </CardContent>
+      </Card>
 
       {c.images?.length ? (
-        <div className="mb-4 grid grid-cols-3 gap-2">
-          {c.images.map((src) => (
-            <a key={src} href={src} target="_blank" rel="noopener noreferrer">
-              <img
-                src={src}
-                alt=""
-                className="h-24 w-full rounded-md border border-border object-cover"
-              />
-            </a>
-          ))}
-        </div>
+        <>
+          <SectionHeader title={t('complaint.detail.photos')} />
+          <div className="mb-6 grid grid-cols-3 gap-2">
+            {c.images.map((src, i) => (
+              <button
+                key={src}
+                type="button"
+                onClick={() => setPreview(src)}
+                aria-label={`${t('complaint.detail.photo')} ${i + 1}`}
+                className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
+              >
+                <SafeImage src={src} className="h-24 w-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </>
       ) : null}
 
       {lat != null && lng != null ? (
-        <div className="mb-4">
-          <MapView latitude={lat} longitude={lng} />
-        </div>
+        <>
+          <SectionHeader title={t('complaint.detail.location')} />
+          <Card className="mb-6 overflow-hidden">
+            <MapView latitude={lat} longitude={lng} />
+            <div className="flex items-center gap-1.5 border-t border-border px-3 py-2">
+              <MapPin className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+              <p className="text-caption tabular-nums text-muted-foreground">
+                {lat.toFixed(5)}, {lng.toFixed(5)}
+              </p>
+            </div>
+          </Card>
+        </>
       ) : null}
 
       {c.remarks?.length ? (
-        <div className="mb-4">
-          <h2 className="mb-2 text-sm font-semibold text-foreground">
-            {t('complaint.detail.remarks')}
-          </h2>
-          <ul className="space-y-2">
+        <>
+          <SectionHeader title={t('complaint.detail.remarks')} />
+          <ul className="mb-6 space-y-2">
             {c.remarks.map((r, i) => (
-              <li key={`${r.at}-${i}`} className="rounded-md bg-muted p-2 text-sm text-foreground">
-                {r.note}
-                <span className="mt-1 block text-xs text-muted-foreground">
+              <li
+                key={`${r.at}-${i}`}
+                className="rounded-md bg-secondary p-3 text-body text-foreground"
+              >
+                {r.i18n?.[locale] || r.note}
+                <span className="mt-1 block text-caption text-muted-foreground">
                   {formatDateTime(r.at, locale)}
                 </span>
               </li>
             ))}
           </ul>
-        </div>
+        </>
       ) : null}
 
-      <h2 className="mb-3 text-sm font-semibold text-foreground">
-        {t('complaint.detail.timeline')}
-      </h2>
-      <StatusTimeline history={c.statusHistory} />
+      <SectionHeader title={t('complaint.detail.timeline')} />
+      <Card>
+        <CardContent>
+          <StatusTimeline history={c.statusHistory} />
+        </CardContent>
+      </Card>
+
+      <Lightbox
+        src={preview}
+        label={t('complaint.detail.photo')}
+        onClose={() => setPreview(null)}
+      />
     </div>
   );
 }

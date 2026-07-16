@@ -27,7 +27,7 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#15803d',
+        theme_color: '#1E3A5F',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
@@ -55,9 +55,18 @@ export default defineConfig({
         clientsClaim: true,
         runtimeCaching: [
           {
-            // Static JS/CSS emitted at hashed URLs — StaleWhileRevalidate.
-            urlPattern: ({ request }) =>
-              request.destination === 'script' || request.destination === 'style',
+            // Static JS/CSS emitted at hashed URLs under /assets/ — StaleWhileRevalidate.
+            //
+            // Scoped to the build output path on purpose. The old rule matched EVERY
+            // script/style, which in dev meant the service worker also cached Vite's
+            // dep-optimizer chunks (/node_modules/.vite/deps/*?v=hash) and source modules.
+            // After a lockfile change re-optimized deps, the SW served a mix of stale and
+            // fresh module graphs — two React copies at runtime — and every lazy route
+            // crashed with "Cannot read properties of null (reading 'useContext')".
+            urlPattern: ({ url, request }) =>
+              url.origin === self.location.origin &&
+              url.pathname.startsWith('/assets/') &&
+              (request.destination === 'script' || request.destination === 'style'),
             handler: 'StaleWhileRevalidate',
             options: { cacheName: CACHE.static },
           },

@@ -31,7 +31,7 @@ export function useTaxMutations(id) {
 
   return {
     create: useMutation({
-      mutationFn: (payload) => taxService.create(payload),
+      mutationFn: ({ values, files }) => taxService.create(values, files),
       onSuccess: invalidate,
     }),
     update: useMutation({

@@ -39,16 +39,34 @@
     "retry": "Retry",
     "retried": "Notification re-queued",
     "actionFailed": "Action failed",
-    "status": { "queued": "Queued", "sent": "Sent", "delivered": "Delivered", "failed": "Failed" },
-    "type": { "info": "Info", "success": "Success", "warning": "Warning", "error": "Error" },
-    "stat": { "total": "Total" },
+    "status": {
+      "queued": "Queued",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "failed": "Failed"
+    },
+    "type": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "stat": {
+      "total": "Total",
+      "broadcasts": "Broadcasts"
+    },
     "col": {
       "title": "Title",
       "module": "Module",
       "channel": "Channel",
       "date": "Created",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "recipients": "Recipients",
+      "delivered": "Delivered",
+      "failed": "Failed",
+      "mobile": "Mobile",
+      "read": "Read"
     },
     "detail": {
       "recipient": "Recipient",
@@ -73,6 +91,17 @@
       "send": "Send broadcast",
       "sent": "Broadcast sent to {{count}} recipients",
       "failed": "Could not send broadcast"
+    },
+    "broadcastHint": "Each broadcast is shown once with delivery totals. Click a broadcast to see recipients.",
+    "totalBroadcasts": "{{total}} broadcasts",
+    "recipientsCount": "{{count}} recipients",
+    "readYes": "Read",
+    "readNo": "Unread",
+    "bstatus": {
+      "queued": "Queued",
+      "delivered": "Delivered",
+      "partial": "Partial",
+      "failed": "Failed"
     }
   },
   "dashboard": {
@@ -133,7 +162,11 @@
     "backHome": "Back to Dashboard"
   },
   "common": {
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "clear": "Clear",
+    "close": "Close"
   },
   "complaint": {
     "category": {
@@ -314,7 +347,19 @@
       "save": "Save scheme",
       "created": "Scheme created",
       "updated": "Scheme updated",
-      "failed": "Could not save scheme"
+      "failed": "Could not save scheme",
+      "expiry": "Expiry date",
+      "expiryHint": "Scheme stays visible to villagers until the end of this day.",
+      "attachments": "Attachments (PDF or image)",
+      "addAttachments": "Add files",
+      "currentImage": "Current banner",
+      "removeImage": "Remove banner",
+      "undoRemove": "Undo",
+      "markedRemove": "Will be removed on save",
+      "attachmentsHint": "Up to 5 files, 5MB each. Existing files stay unless you remove them.",
+      "preview": "Preview",
+      "download": "Download",
+      "removeFile": "Remove"
     },
     "delete": {
       "title": "Delete scheme?",
@@ -386,7 +431,10 @@
       "required": "This field is required",
       "save": "Create record",
       "created": "Tax record created",
-      "failed": "Could not create record"
+      "failed": "Could not create record",
+      "bills": "Tax bill scans (image/PDF)",
+      "billsHint": "Optional. Attach scanned bills the citizen can view.",
+      "billsSelected": "{{count}} file(s) selected"
     },
     "detail": {
       "back": "Back to tax records",
@@ -412,10 +460,9 @@
   "dakhala": {
     "type": {
       "Residence": "Residence Certificate",
-      "Income": "Income Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
-      "Character": "Character Certificate",
+      "SevenTwelve": "7/12 & 8A Certificate",
       "Other": "Other Certificate"
     },
     "status": {
@@ -426,11 +473,8 @@
     },
     "field": {
       "fullName": "Full name",
-      "address": "Residential address",
-      "yearsOfResidence": "Years of residence",
+      "address": "Address",
       "purpose": "Purpose",
-      "annualIncome": "Annual income (₹)",
-      "occupation": "Occupation",
       "childName": "Child name",
       "dateOfBirth": "Date of birth",
       "placeOfBirth": "Place of birth",
@@ -439,8 +483,15 @@
       "deceasedName": "Name of deceased",
       "dateOfDeath": "Date of death",
       "placeOfDeath": "Place of death",
-      "relationToApplicant": "Relation to applicant",
-      "details": "Details"
+      "relationToApplicant": "Relation with applicant",
+      "surveyNumber": "Survey number",
+      "village": "Village",
+      "mobile": "Mobile number",
+      "gatNumber": "Gat number",
+      "taluka": "Taluka",
+      "district": "District",
+      "certificateTitle": "Certificate title",
+      "description": "Description"
     },
     "dash": {
       "title": "Certificate Applications",
@@ -480,7 +531,44 @@
       "rejected": "Application rejected",
       "cancel": "Cancel",
       "actionFailed": "Action failed",
-      "timeline": "Status timeline"
+      "timeline": "Status timeline",
+      "zoom": "View full size",
+      "open": "Open",
+      "close": "Close preview"
+    },
+    "doc": {
+      "Aadhaar": "Aadhaar Card",
+      "PAN": "PAN Card",
+      "VoterId": "Voter ID",
+      "Passport": "Passport",
+      "DrivingLicence": "Driving Licence",
+      "RationCard": "Ration Card",
+      "ElectricityBill": "Electricity Bill",
+      "WaterBill": "Water Bill",
+      "PropertyTaxReceipt": "Property Tax Receipt",
+      "SelfDeclaration": "Self Declaration Form",
+      "HospitalBirthReport": "Hospital Birth Report",
+      "DoctorMedicalCertificate": "Doctor Medical Certificate",
+      "DoctorDeathCertificate": "Doctor Death Certificate",
+      "AadhaarOfRelative": "Aadhaar of Relative",
+      "Existing712": "Existing 7/12",
+      "Existing8A": "Existing 8A",
+      "PropertyRecord": "Property Record",
+      "Supporting": "Supporting Document"
+    },
+    "docGroup": {
+      "identity": "Identity proof",
+      "address": "Address proof",
+      "selfDeclaration": "Self declaration",
+      "birthProof": "Birth proof",
+      "parentIdentity": "Parent identity proof",
+      "parentAddress": "Parent address proof",
+      "deathProof": "Death proof",
+      "deceasedIdentity": "Deceased identity proof",
+      "addressProof": "Address proof",
+      "applicantIdentity": "Applicant identity",
+      "landProof": "Land proof",
+      "supporting": "Supporting documents"
     }
   },
   "auth": {
@@ -494,5 +582,34 @@
     "emailInvalid": "Enter a valid email",
     "loginSuccess": "Signed in",
     "loginFailed": "Invalid credentials"
+  },
+  "reports": {
+    "title": "Reports",
+    "loadError": "Could not load the report",
+    "generatedAt": "Generated",
+    "exportCsv": "CSV",
+    "exportExcel": "Excel",
+    "exportPdf": "PDF",
+    "total": "Total",
+    "assessed": "Assessed",
+    "collected": "Collected",
+    "outstanding": "Outstanding",
+    "published": "Published",
+    "byStatus": "By status",
+    "byCategory": "By category",
+    "byType": "By type",
+    "col": {
+      "section": "Section",
+      "metric": "Metric",
+      "value": "Value"
+    },
+    "section": {
+      "complaints": "Complaints",
+      "certificates": "Certificates",
+      "tax": "Tax",
+      "users": "Citizens",
+      "schemes": "Schemes",
+      "notices": "Notices"
+    }
   }
 }

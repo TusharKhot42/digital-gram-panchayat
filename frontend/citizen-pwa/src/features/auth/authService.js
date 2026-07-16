@@ -15,6 +15,12 @@ export const authService = {
     return data.data; // { user, token }
   },
 
+  /** Shared login: identifier is a mobile number or email, any role. */
+  async loginSession(payload) {
+    const { data } = await apiClient.post('/auth/session', payload);
+    return data.data; // { user, token }
+  },
+
   async getProfile() {
     const { data } = await apiClient.get('/auth/profile');
     return data.data.user;

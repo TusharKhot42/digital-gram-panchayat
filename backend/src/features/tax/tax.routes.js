@@ -4,6 +4,7 @@ import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
+import { uploadTaxBills } from '../../middlewares/upload.middleware.js';
 import * as controller from './tax.controller.js';
 import {
   createTaxValidation,
@@ -42,6 +43,6 @@ adminTaxRouter.get(
 adminTaxRouter.get('/', listQueryValidation, validate, controller.adminList);
 adminTaxRouter.get('/:id', taxIdParamValidation, validate, controller.adminGetOne);
 adminTaxRouter.get('/:id/history', taxIdParamValidation, validate, controller.history);
-adminTaxRouter.post('/', createTaxValidation, validate, controller.create);
+adminTaxRouter.post('/', uploadTaxBills, createTaxValidation, validate, controller.create);
 adminTaxRouter.patch('/:id', updateTaxValidation, validate, controller.update);
 adminTaxRouter.post('/:id/payment', paymentValidation, validate, controller.addPayment);

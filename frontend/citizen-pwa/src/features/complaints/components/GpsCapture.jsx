@@ -21,17 +21,36 @@ export function GpsCapture({ coords, status, onRequest }) {
         ) : (
           <LocateFixed className="h-4 w-4" />
         )}
-        {coords ? t('complaint.form.updateLocation') : t('complaint.form.captureLocation')}
+        {status === 'loading'
+          ? t('complaint.form.gpsLoading')
+          : coords
+            ? t('complaint.form.updateLocation')
+            : t('complaint.form.captureLocation')}
       </Button>
 
       {coords ? (
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
           <MapPin className="h-3.5 w-3.5 text-primary" />
-          {coords.latitude.toFixed(5)}, {coords.longitude.toFixed(5)}
+          {t('complaint.form.gpsCoords', {
+            lat: coords.latitude.toFixed(5),
+            lng: coords.longitude.toFixed(5),
+          })}
           {coords.accuracy ? ` (±${Math.round(coords.accuracy)}m)` : ''}
         </p>
-      ) : status === 'denied' || status === 'unavailable' ? (
-        <p className="text-xs text-muted-foreground">{t('complaint.form.locationUnavailable')}</p>
+      ) : status === 'loading' ? (
+        <p className="text-xs text-muted-foreground">{t('complaint.form.gpsFetching')}</p>
+      ) : status !== 'idle' ? (
+        <div className="space-y-1">
+          <p className="text-xs text-destructive">{t(`complaint.form.gps_${status}`)}</p>
+          <button
+            type="button"
+            onClick={onRequest}
+            className="text-xs font-medium text-primary underline-offset-2 hover:underline"
+          >
+            {t('complaint.form.gpsRetry')}
+          </button>
+          <p className="text-xs text-muted-foreground">{t('complaint.form.locationUnavailable')}</p>
+        </div>
       ) : null}
     </div>
   );

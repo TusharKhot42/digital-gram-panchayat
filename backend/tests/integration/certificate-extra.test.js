@@ -16,10 +16,15 @@ const PNG = Buffer.from(
 );
 const DATA = {
   fullName: 'Test Citizen',
+  mobile: '9876500002',
   address: '12 Main Road',
-  yearsOfResidence: '10',
-  purpose: 'School admission',
 };
+
+const DOCS = [
+  { group: 'identity', docType: 'Aadhaar' },
+  { group: 'address', docType: 'RationCard' },
+  { group: 'selfDeclaration', docType: 'SelfDeclaration' },
+];
 
 beforeAll(async () => {
   mongo = await MongoMemoryServer.create();
@@ -67,14 +72,95 @@ async function citizenToken(mobile = '9876500002') {
 }
 
 async function apply(token) {
-  const res = await request(app)
+  const req = request(app)
     .post('/api/v1/dakhala')
     .set('Authorization', `Bearer ${token}`)
     .field('certificateType', 'Residence')
     .field('applicationData', JSON.stringify(DATA))
-    .attach('documents', PNG, { filename: 'proof.png', contentType: 'image/png' });
+    .field('documentMeta', JSON.stringify(DOCS));
+  DOCS.forEach((d, i) =>
+    req.attach('documents', PNG, { filename: `${d.docType}-${i}.png`, contentType: 'image/png' }),
+  );
+  const res = await req;
   return res.body.data;
 }
+
+describe('all five certificate types accept a valid application', () => {
+  const CASES = [
+    {
+      type: 'Birth',
+      data: {
+        childName: 'Baby Patil',
+        dateOfBirth: '2024-01-01',
+        placeOfBirth: 'Sakharale',
+        fatherName: 'Ramesh',
+        motherName: 'Sita',
+      },
+      docs: [
+        { group: 'birthProof', docType: 'HospitalBirthReport' },
+        { group: 'parentIdentity', docType: 'Aadhaar' },
+        { group: 'parentAddress', docType: 'RationCard' },
+      ],
+    },
+    {
+      type: 'Death',
+      data: {
+        deceasedName: 'Late Patil',
+        dateOfDeath: '2025-05-05',
+        placeOfDeath: 'Sakharale',
+        relationToApplicant: 'Son',
+      },
+      docs: [
+        { group: 'deathProof', docType: 'DoctorDeathCertificate' },
+        { group: 'deceasedIdentity', docType: 'Aadhaar' },
+        { group: 'addressProof', docType: 'RationCard' },
+        { group: 'applicantIdentity', docType: 'AadhaarOfRelative' },
+      ],
+    },
+    {
+      type: 'SevenTwelve',
+      data: {
+        surveyNumber: '123',
+        gatNumber: '45',
+        village: 'Sakharale',
+        taluka: 'Walwa',
+        district: 'Sangli',
+      },
+      docs: [
+        { group: 'identity', docType: 'Aadhaar' },
+        { group: 'landProof', docType: 'Existing712' },
+      ],
+    },
+    {
+      type: 'Other',
+      data: { certificateTitle: 'No Dues', purpose: 'Bank loan', description: 'Need no-dues' },
+      docs: [{ group: 'supporting', docType: 'Supporting' }],
+    },
+  ];
+
+  test.each(CASES)(
+    '$type application is accepted with its documents',
+    async ({ type, data, docs }) => {
+      const token = await citizenToken(); // each case runs against a clean DB (afterEach)
+      const req = request(app)
+        .post('/api/v1/dakhala')
+        .set('Authorization', `Bearer ${token}`)
+        .field('certificateType', type)
+        .field('applicationData', JSON.stringify(data))
+        .field('documentMeta', JSON.stringify(docs));
+      docs.forEach((d, i) =>
+        req.attach('documents', PNG, {
+          filename: `${d.docType}-${i}.png`,
+          contentType: 'image/png',
+        }),
+      );
+      const res = await req;
+      expect(res.status).toBe(201);
+      expect(res.body.data.certificateType).toBe(type);
+      expect(res.body.data.uploadedDocuments).toHaveLength(docs.length);
+    },
+  );
+});
 
 describe('officer review moves application to UnderReview', () => {
   test('review then citizen sees UnderReview', async () => {

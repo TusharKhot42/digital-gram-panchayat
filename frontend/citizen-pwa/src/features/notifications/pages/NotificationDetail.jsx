@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
-import { formatDateTime } from '@dgp/shared';
+import { ArrowRight } from 'lucide-react';
+import { formatDateTime, pickLocale } from '@dgp/shared';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/PageHeader';
 import { useNotification, useMarkRead } from '../hooks';
 
 export function NotificationDetail() {
@@ -19,32 +22,41 @@ export function NotificationDetail() {
   }, [n?.id]);
 
   if (isLoading)
-    return <p className="px-4 py-6 text-sm text-muted-foreground">{t('common.loading')}</p>;
+    return <p className="dgp-page text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !n)
-    return <p className="px-4 py-6 text-sm text-destructive">{t('notif.notFound')}</p>;
+    return <p className="dgp-page text-body text-destructive-strong">{t('notif.notFound')}</p>;
+
+  const link =
+    n.entityId && n.module === 'complaint'
+      ? { to: `/complaints/${n.entityId}`, label: t('notif.viewComplaint') }
+      : n.entityId && n.module === 'certificate'
+        ? { to: `/dakhala/${n.entityId}`, label: t('notif.viewCertificate') }
+        : null;
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <Link
-        to="/notifications"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('notif.back')}
-      </Link>
-      <h1 className="text-lg font-semibold text-foreground">{n.title}</h1>
-      <p className="mt-1 text-xs text-muted-foreground">{formatDateTime(n.createdAt, locale)}</p>
-      <p className="mt-4 whitespace-pre-wrap text-sm text-foreground">{n.message}</p>
+    <div className="dgp-page">
+      <PageHeader
+        backTo="/notifications"
+        backLabel={t('notif.back')}
+        title={pickLocale(n.i18n, 'title', locale, n.title)}
+        subtitle={formatDateTime(n.createdAt, locale)}
+      />
 
-      {n.entityId && n.module === 'complaint' ? (
-        <Link to={`/complaints/${n.entityId}`} className="mt-6 inline-block text-sm text-primary">
-          {t('notif.viewComplaint')}
-        </Link>
-      ) : null}
-      {n.entityId && n.module === 'certificate' ? (
-        <Link to={`/dakhala/${n.entityId}`} className="mt-6 inline-block text-sm text-primary">
-          {t('notif.viewCertificate')}
-        </Link>
+      <Card>
+        <CardContent>
+          <p className="whitespace-pre-wrap text-body leading-relaxed text-body-foreground">
+            {pickLocale(n.i18n, 'message', locale, n.message)}
+          </p>
+        </CardContent>
+      </Card>
+
+      {link ? (
+        <Button asChild className="mt-5 w-full">
+          <Link to={link.to}>
+            {link.label}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </Button>
       ) : null}
     </div>
   );

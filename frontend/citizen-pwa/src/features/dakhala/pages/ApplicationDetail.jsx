@@ -1,13 +1,29 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Download, FileText } from 'lucide-react';
+import { Download, FileText, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader, SectionHeader } from '@/components/PageHeader';
+import { Stepper } from '@/components/Stepper';
 import { DakhalaStatusBadge } from '../components/DakhalaStatusBadge';
 import { useApplication } from '../hooks';
 import { certificateService } from '../certificateService';
+
+/** The happy path a certificate travels. Rejection is not a stage — it ends the journey. */
+const STAGES = ['Submitted', 'UnderReview', 'Approved', 'Download'];
+
+/**
+ * Where the application sits on the rail. A rejected application freezes at the stage that
+ * rejected it (Under Review) so the rail shows where it stopped rather than a fake position.
+ */
+function stageIndex(status) {
+  if (status === 'Approved') return 2;
+  if (status === 'UnderReview' || status === 'Rejected') return 1;
+  return 0;
+}
 
 export function ApplicationDetail() {
   const { id } = useParams();
@@ -17,9 +33,11 @@ export function ApplicationDetail() {
   const [downloading, setDownloading] = useState(false);
 
   if (isLoading)
-    return <p className="px-4 py-6 text-sm text-muted-foreground">{t('common.loading')}</p>;
+    return <p className="dgp-page text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !a)
-    return <p className="px-4 py-6 text-sm text-destructive">{t('dakhala.detail.notFound')}</p>;
+    return (
+      <p className="dgp-page text-body text-destructive-strong">{t('dakhala.detail.notFound')}</p>
+    );
 
   const download = async () => {
     setDownloading(true);
@@ -33,95 +51,132 @@ export function ApplicationDetail() {
     }
   };
 
-  return (
-    <div className="mx-auto w-full max-w-md px-4 py-6">
-      <Link
-        to="/dakhala"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('dakhala.detail.back')}
-      </Link>
+  const rejected = a.status === 'Rejected';
+  const steps = STAGES.map((key) => ({ key, label: t(`dakhala.stage.${key}`) }));
 
-      <div className="mb-3 flex items-start justify-between gap-2">
-        <div>
-          <h1 className="text-lg font-semibold text-foreground">
-            {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
-          </h1>
-          <p className="text-xs text-muted-foreground">{a.applicationId}</p>
-        </div>
-        <DakhalaStatusBadge status={a.status} />
-      </div>
+  return (
+    <div className="dgp-page">
+      <PageHeader
+        backTo="/dakhala"
+        backLabel={t('dakhala.detail.back')}
+        title={t(`dakhala.type.${a.certificateType}`, a.certificateType)}
+        subtitle={a.applicationId}
+        action={<DakhalaStatusBadge status={a.status} />}
+      />
+
+      <Card className="mb-4">
+        <CardContent className="px-3 py-5">
+          <Stepper
+            steps={steps}
+            current={stageIndex(a.status)}
+            failed={rejected}
+            label={t('dakhala.detail.progress')}
+          />
+        </CardContent>
+      </Card>
 
       {a.status === 'Approved' ? (
-        <Button className="mb-4 w-full" onClick={download} disabled={downloading}>
-          <Download className="h-4 w-4" />
-          {downloading ? t('common.loading') : t('dakhala.detail.download')}
+        <Button className="mb-4 w-full" onClick={download} loading={downloading}>
+          <Download className="h-4 w-4" aria-hidden="true" />
+          {t('dakhala.detail.download')}
         </Button>
       ) : null}
 
-      {a.status === 'Rejected' && a.rejectionReason ? (
-        <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+      {rejected && a.rejectionReason ? (
+        <div
+          role="alert"
+          className="mb-4 rounded-md bg-destructive-subtle p-3 text-body text-destructive-strong ring-1 ring-inset ring-destructive/20"
+        >
           <span className="font-medium">{t('dakhala.detail.rejected')}: </span>
-          {a.rejectionReason}
+          {a.rejectionReasonI18n?.[locale] || a.rejectionReason}
         </div>
       ) : null}
 
-      <h2 className="mb-2 text-sm font-semibold text-foreground">{t('dakhala.detail.details')}</h2>
-      <div className="mb-4 space-y-1 rounded-md border border-border bg-card p-3">
-        {Object.entries(a.applicationData || {}).map(([key, value]) => (
-          <div key={key} className="flex justify-between gap-2 text-sm">
-            <span className="text-muted-foreground">{t(`dakhala.field.${key}`, key)}</span>
-            <span className="text-right font-medium text-foreground">{String(value)}</span>
-          </div>
-        ))}
-      </div>
+      <SectionHeader title={t('dakhala.detail.details')} />
+      <Card className="mb-6">
+        <dl className="divide-y divide-border">
+          {Object.entries(a.applicationData || {}).map(([key, value]) => (
+            <div key={key} className="flex justify-between gap-3 px-3 py-2.5">
+              <dt className="text-body text-muted-foreground">{t(`dakhala.field.${key}`, key)}</dt>
+              <dd className="text-right text-body font-medium text-foreground">{String(value)}</dd>
+            </div>
+          ))}
+        </dl>
+      </Card>
 
       {a.uploadedDocuments?.length ? (
-        <div className="mb-4">
-          <h2 className="mb-2 text-sm font-semibold text-foreground">
-            {t('dakhala.detail.documents')}
-          </h2>
-          <ul className="space-y-2">
-            {a.uploadedDocuments.map((d, i) => (
-              <li key={`${d.url}-${i}`}>
-                <a
-                  href={d.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground"
-                >
-                  <FileText className="h-4 w-4 text-primary" />
-                  <span className="truncate">
-                    {d.name || `${t('dakhala.detail.document')} ${i + 1}`}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <>
+          <SectionHeader title={t('dakhala.detail.documents')} />
+          <Card className="mb-6">
+            <ul className="divide-y divide-border">
+              {a.uploadedDocuments.map((d, i) => (
+                <li key={`${d.url}-${i}`}>
+                  <a
+                    href={d.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-11 items-center gap-2.5 px-3 py-2.5 transition-colors duration-150 hover:bg-muted/40"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-subtle">
+                      <FileText className="h-4 w-4 text-primary" aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-body text-foreground">
+                        {d.docType
+                          ? t(`dakhala.doc.${d.docType}`, d.docType)
+                          : d.name || `${t('dakhala.detail.document')} ${i + 1}`}
+                      </span>
+                      {d.group ? (
+                        <span className="block truncate text-caption text-muted-foreground">
+                          {t(`dakhala.docGroup.${d.group}`, d.group)}
+                        </span>
+                      ) : null}
+                    </span>
+                    <ExternalLink
+                      className="h-4 w-4 shrink-0 text-muted-foreground"
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </>
       ) : null}
 
-      <h2 className="mb-3 text-sm font-semibold text-foreground">{t('dakhala.detail.timeline')}</h2>
-      <ol className="space-y-4">
-        {a.history.map((h, idx) => (
-          <li key={`${h.status}-${h.at}`} className="flex gap-3">
-            <div className="flex flex-col items-center">
-              <span
-                className={`mt-1 h-2.5 w-2.5 rounded-full ${idx === a.history.length - 1 ? 'bg-primary' : 'bg-muted-foreground/40'}`}
-              />
-              {idx < a.history.length - 1 ? <span className="w-px flex-1 bg-border" /> : null}
-            </div>
-            <div className="pb-1">
-              <p className="text-sm font-medium text-foreground">
-                {t(`dakhala.status.${h.status}`, h.status)}
-              </p>
-              <p className="text-xs text-muted-foreground">{formatDateTime(h.at, locale)}</p>
-              {h.note ? <p className="mt-0.5 text-xs text-muted-foreground">{h.note}</p> : null}
-            </div>
-          </li>
-        ))}
-      </ol>
+      <SectionHeader title={t('dakhala.detail.timeline')} />
+      <Card>
+        <CardContent>
+          <ol className="space-y-4">
+            {a.history.map((h, idx) => {
+              const last = idx === a.history.length - 1;
+              return (
+                <li key={`${h.status}-${h.at}`} className="flex gap-3">
+                  <div className="flex flex-col items-center" aria-hidden="true">
+                    <span
+                      className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${
+                        last ? 'bg-primary ring-4 ring-primary-subtle' : 'bg-border'
+                      }`}
+                    />
+                    {!last ? <span className="mt-1 w-px flex-1 bg-border" /> : null}
+                  </div>
+                  <div className="pb-1">
+                    <p className="text-body font-medium text-foreground">
+                      {t(`dakhala.status.${h.status}`, h.status)}
+                    </p>
+                    <p className="text-caption text-muted-foreground">
+                      {formatDateTime(h.at, locale)}
+                    </p>
+                    {h.note ? (
+                      <p className="mt-0.5 text-caption text-muted-foreground">{h.note}</p>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </CardContent>
+      </Card>
     </div>
   );
 }

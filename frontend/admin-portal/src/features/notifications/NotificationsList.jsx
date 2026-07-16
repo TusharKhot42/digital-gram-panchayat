@@ -1,66 +1,56 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Send, RotateCw } from 'lucide-react';
-import {
-  NOTIFICATION_STATUSES,
-  NOTIFICATION_CHANNELS,
-  NOTIFICATION_MODULES,
-  formatDateTime,
-} from '@dgp/shared';
-import toast from 'react-hot-toast';
+import { Send, Bell } from 'lucide-react';
+import { formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
-import { useNotifications, useNotificationStats, useNotificationMutations } from './hooks';
+import { Chip } from '@/components/ui/chip';
+import { SkeletonRows } from '@/components/Skeleton';
+import { QueryError } from '@/components/QueryError';
+import { EmptyState } from '@/components/EmptyState';
+import { Pagination } from '@/components/Pagination';
+import {
+  TableShell,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  TableMessageRow,
+} from '@/components/ui/table';
+import { useBroadcasts, useNotificationStats } from './hooks';
 
 const LIMIT = 20;
+const COLS = 6;
 
-const STATUS_CLASS = {
-  queued: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300',
-  sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300',
-  delivered: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  failed: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
+/** Delivery outcome → chip colour. */
+const STATUS_COLOR = {
+  queued: 'blue',
+  delivered: 'green',
+  partial: 'orange',
+  failed: 'red',
 };
 
+/**
+ * Broadcast dashboard: one row per broadcast (rolled up from per-recipient notifications),
+ * with recipient/delivered/failed counts. Drill into a row for recipient detail. Individual
+ * citizen notifications are intentionally not listed here — no redundancy.
+ */
 export function NotificationsList() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const [q, setQ] = useState('');
-  const [status, setStatus] = useState('');
-  const [channel, setChannel] = useState('');
-  const [module, setModule] = useState('');
   const [page, setPage] = useState(1);
 
-  const params = {
-    page,
-    limit: LIMIT,
-    ...(q ? { q } : {}),
-    ...(status ? { status } : {}),
-    ...(channel ? { channel } : {}),
-    ...(module ? { module } : {}),
-  };
-  const { data, isLoading, isError } = useNotifications(params);
+  const { data, isLoading, isError, refetch, isFetching } = useBroadcasts({ page, limit: LIMIT });
   const { data: stats } = useNotificationStats();
-  const m = useNotificationMutations();
 
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
-  const onFilter = (setter) => (v) => {
-    setter(v);
-    setPage(1);
-  };
-
-  const retry = async (id) => {
-    try {
-      await m.retry.mutateAsync(id);
-      toast.success(t('ntf.retried'));
-    } catch (err) {
-      toast.error(err.response?.data?.error?.message || t('ntf.actionFailed'));
-    }
-  };
-
   const statCards = [
+    { label: t('ntf.stat.broadcasts'), value: total },
     { label: t('ntf.stat.total'), value: stats?.total ?? '—' },
     ...(stats?.byStatus ?? []).map((s) => ({
       label: t(`ntf.status.${s.label}`, s.label),
@@ -70,167 +60,114 @@ export function NotificationsList() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">{t('ntf.title')}</h1>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h1 className="text-title text-foreground">{t('ntf.title')}</h1>
         <Button asChild size="sm">
           <Link to="/notifications/broadcast">
-            <Send className="h-4 w-4" />
+            <Send className="h-4 w-4" aria-hidden="true" />
             {t('ntf.broadcast')}
           </Link>
         </Button>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <p className="mb-4 text-body text-muted-foreground">{t('ntf.broadcastHint')}</p>
+
+      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {statCards.map((c) => (
-          <div key={c.label} className="rounded-lg border border-border bg-card p-3 text-center">
-            <p className="text-xl font-semibold text-foreground">{c.value}</p>
-            <p className="text-xs text-muted-foreground">{c.label}</p>
+          <div
+            key={c.label}
+            className="rounded-lg border border-border bg-card p-3 text-center shadow-xs"
+          >
+            <p className="text-title tabular-nums text-foreground">{c.value}</p>
+            <p className="text-caption text-muted-foreground">{c.label}</p>
           </div>
         ))}
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => onFilter(setQ)(e.target.value)}
-            placeholder={t('ntf.search')}
-            className="h-9 w-56 rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <select
-          value={status}
-          onChange={(e) => onFilter(setStatus)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-        >
-          <option value="">{t('ntf.allStatuses')}</option>
-          {NOTIFICATION_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {t(`ntf.status.${s}`, s)}
-            </option>
-          ))}
-        </select>
-        <select
-          value={channel}
-          onChange={(e) => onFilter(setChannel)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-        >
-          <option value="">{t('ntf.allChannels')}</option>
-          {NOTIFICATION_CHANNELS.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-        <select
-          value={module}
-          onChange={(e) => onFilter(setModule)(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-        >
-          <option value="">{t('ntf.allModules')}</option>
-          {NOTIFICATION_MODULES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-left text-muted-foreground">
+      <TableShell className="max-h-[calc(100dvh-22rem)] overflow-y-auto">
+        <Table>
+          <THead>
             <tr>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.title')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.module')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.channel')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.date')}</th>
-              <th className="px-4 py-2 font-medium">{t('ntf.col.status')}</th>
-              <th className="px-4 py-2 text-right font-medium">{t('ntf.col.actions')}</th>
+              <TH>{t('ntf.col.title')}</TH>
+              <TH className="text-right">{t('ntf.col.recipients')}</TH>
+              <TH className="text-right">{t('ntf.col.delivered')}</TH>
+              <TH className="text-right">{t('ntf.col.failed')}</TH>
+              <TH>{t('ntf.col.date')}</TH>
+              <TH>{t('ntf.col.status')}</TH>
             </tr>
-          </thead>
-          <tbody>
+          </THead>
+          <TBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('common.loading')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <SkeletonRows />
+              </TableMessageRow>
             ) : isError ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-destructive">
-                  {t('ntf.loadError')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="py-4">
+                <QueryError
+                  message={t('ntf.loadError')}
+                  onRetry={() => refetch()}
+                  isFetching={isFetching}
+                />
+              </TableMessageRow>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                  {t('ntf.empty')}
-                </td>
-              </tr>
+              <TableMessageRow colSpan={COLS} className="p-0">
+                <EmptyState
+                  icon={Bell}
+                  title={t('ntf.empty')}
+                  className="border-0 shadow-none"
+                  action={
+                    <Button asChild size="sm">
+                      <Link to="/notifications/broadcast">{t('ntf.broadcast')}</Link>
+                    </Button>
+                  }
+                />
+              </TableMessageRow>
             ) : (
-              rows.map((n) => (
-                <tr key={n.id} className="border-t border-border hover:bg-muted/30">
-                  <td className="px-4 py-2">
-                    <Link to={`/notifications/${n.id}`} className="font-medium text-primary">
-                      {n.title}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2">{n.module}</td>
-                  <td className="px-4 py-2 text-muted-foreground">{n.channel}</td>
-                  <td className="px-4 py-2 text-muted-foreground">
-                    {formatDateTime(n.createdAt, locale)}
-                  </td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[n.status]}`}
+              rows.map((b) => (
+                <TR key={b.broadcastId}>
+                  <TD className="max-w-xs">
+                    <Link
+                      to={`/notifications/${b.broadcastId}`}
+                      className="font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
                     >
-                      {t(`ntf.status.${n.status}`, n.status)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 text-right">
-                    {n.status === 'failed' ? (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        title={t('ntf.retry')}
-                        onClick={() => retry(n.id)}
-                      >
-                        <RotateCw className="h-4 w-4" />
-                      </Button>
-                    ) : null}
-                  </td>
-                </tr>
+                      {b.title}
+                    </Link>
+                    <p className="truncate text-caption text-muted-foreground">{b.message}</p>
+                  </TD>
+                  <TD className="text-right tabular-nums text-muted-foreground">
+                    {b.recipientCount}
+                  </TD>
+                  <TD className="text-right tabular-nums text-success-strong">
+                    {b.deliveredCount}
+                  </TD>
+                  <TD
+                    className={`text-right tabular-nums ${
+                      b.failedCount > 0 ? 'text-destructive-strong' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {b.failedCount}
+                  </TD>
+                  <TD className="whitespace-nowrap text-muted-foreground">
+                    {formatDateTime(b.createdAt, locale)}
+                  </TD>
+                  <TD>
+                    <Chip color={STATUS_COLOR[b.status] ?? 'grey'}>
+                      {t(`ntf.bstatus.${b.status}`, b.status)}
+                    </Chip>
+                  </TD>
+                </TR>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableShell>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{t('ntf.total', { total })}</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            {t('ntf.prev')}
-          </Button>
-          <span>
-            {page} / {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {t('ntf.next')}
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPage={setPage}
+        totalLabel={t('ntf.totalBroadcasts', { total })}
+      />
     </div>
   );
 }

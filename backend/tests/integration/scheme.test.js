@@ -260,3 +260,80 @@ describe('public browse', () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe('scheme editing — attachments, expiry, publish toggle (stabilization)', () => {
+  const PDF = Buffer.from('%PDF-1.4\n%%EOF\n');
+
+  test('edit updates in place: attachments append/remove, expiry end-of-day, publish toggle works', async () => {
+    const token = await officerToken();
+
+    // Create with a banner + one attachment.
+    const created = await request(app)
+      .post('/api/v1/admin/schemes')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Solar Pump Subsidy')
+      .field('description', 'Subsidy for farm solar pumps')
+      .field('category', 'Agriculture')
+      .attach('image', PNG, 'banner.png')
+      .attach('attachments', PDF, 'form-a.pdf');
+    expect(created.status).toBe(201);
+    const id = created.body.data.id;
+    const schemeId = created.body.data.schemeId;
+    expect(created.body.data.attachments).toHaveLength(1);
+    expect(created.body.data.imageUrl).toMatch(/\/api\/v1\/uploads\//);
+    const firstUrl = created.body.data.attachments[0].url;
+
+    // Edit: change title, set a date-only expiry, publish, remove the old
+    // attachment, add a new one — all in one save.
+    const updated = await request(app)
+      .put(`/api/v1/admin/schemes/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Solar Pump Subsidy 2.0')
+      .field('expiryDate', '2099-01-15')
+      .field('isPublished', 'true')
+      .field('removeAttachments', firstUrl)
+      .attach('attachments', PDF, 'form-b.pdf');
+    expect(updated.status).toBe(200);
+
+    // Same document — same schemeId, no duplicate row.
+    expect(updated.body.data.schemeId).toBe(schemeId);
+    expect(await Scheme.countDocuments({})).toBe(1);
+
+    // Publish toggle from the edit form actually took effect.
+    expect(updated.body.data.isPublished).toBe(true);
+
+    // Old attachment gone, new one present.
+    expect(updated.body.data.attachments).toHaveLength(1);
+    expect(updated.body.data.attachments[0].name).toBe('form-b.pdf');
+    expect(updated.body.data.attachments[0].url).not.toBe(firstUrl);
+
+    // Date-only expiry rolled to end of day, so it stays public ON the expiry date.
+    expect(new Date(updated.body.data.expiryDate).getUTCHours()).toBe(23);
+
+    // Villagers immediately see the updated content.
+    const pub = await request(app).get(`/api/v1/schemes/${id}`);
+    expect(pub.status).toBe(200);
+    expect(pub.body.data.title).toBe('Solar Pump Subsidy 2.0');
+    expect(pub.body.data.attachments).toHaveLength(1);
+
+    // Banner removal on a later edit.
+    const cleared = await request(app)
+      .put(`/api/v1/admin/schemes/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .field('removeImage', 'true');
+    expect(cleared.status).toBe(200);
+    expect(cleared.body.data.imageUrl).toBeUndefined();
+  });
+
+  test('non-image banner is rejected', async () => {
+    const token = await officerToken();
+    const res = await request(app)
+      .post('/api/v1/admin/schemes')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Bad Banner Scheme')
+      .field('description', 'Banner must be an image')
+      .attach('image', PDF, 'not-an-image.pdf');
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('INVALID_FILE_TYPE');
+  });
+});

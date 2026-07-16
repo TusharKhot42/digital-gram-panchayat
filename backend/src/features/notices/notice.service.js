@@ -3,6 +3,7 @@ import { Notice } from './notice.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadAttachment } from '../../utils/upload.js';
+import { translateFields } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { broadcastNotice } from '../notifications/notification.service.js';
 
@@ -32,6 +33,28 @@ async function attach(file) {
 }
 
 /**
+ * An expiry chosen from a date picker arrives as midnight ("2026-07-15" parses to
+ * 00:00:00 UTC), and the visibility filter is `expiryDate >= now` — so the notice
+ * disappeared the moment its expiry DAY began, sometimes before it was even published.
+ * A human picking "15 July" means "visible through 15 July": roll date-only values to
+ * the end of that day. Exact timestamps (non-midnight) pass through untouched.
+ */
+function normalizeExpiry(value) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value; // let schema validation reject it
+  if (
+    d.getUTCHours() === 0 &&
+    d.getUTCMinutes() === 0 &&
+    d.getUTCSeconds() === 0 &&
+    d.getUTCMilliseconds() === 0
+  ) {
+    d.setUTCHours(23, 59, 59, 999);
+  }
+  return d;
+}
+
+/**
  * @param {{ officerId: string, body: object, file?: object }} params
  */
 export async function createNotice({ officerId, body, file }) {
@@ -41,16 +64,23 @@ export async function createNotice({ officerId, body, file }) {
   const attachment = await attach(file);
   const published = body.isPublished === true || body.isPublished === 'true';
 
+  // Auto-translate the human-authored fields into both languages (source auto-detected).
+  const i18n = await translateFields(
+    { title: body.title, summary: body.summary, content: body.content },
+    body.lang,
+  );
+
   const notice = await Notice.create({
     noticeId: buildNoticeId(year, seq),
     title: body.title,
     summary: body.summary || undefined,
     content: body.content,
     category: body.category || 'General',
+    i18n,
     attachmentUrl: attachment?.url,
     attachmentType: attachment?.type,
     publishDate: published ? body.publishDate || new Date() : body.publishDate || undefined,
-    expiryDate: body.expiryDate || undefined,
+    expiryDate: normalizeExpiry(body.expiryDate),
     isPublished: published,
     createdBy: officerId,
   });
@@ -74,12 +104,19 @@ export async function updateNotice(id, officerId, body, file) {
   for (const key of fields) {
     if (body[key] !== undefined) notice[key] = body[key] || undefined;
   }
+  if (body.expiryDate !== undefined) notice.expiryDate = normalizeExpiry(body.expiryDate);
 
   const attachment = await attach(file);
   if (attachment) {
     notice.attachmentUrl = attachment.url;
     notice.attachmentType = attachment.type;
   }
+
+  // Refresh bilingual versions from the updated fields.
+  notice.i18n = await translateFields(
+    { title: notice.title, summary: notice.summary, content: notice.content },
+    body.lang,
+  );
 
   await notice.save();
   await audit(officerId, 'notice.update', notice, before, { title: notice.title });

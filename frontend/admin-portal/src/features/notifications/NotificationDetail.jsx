@@ -1,79 +1,74 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, RotateCw } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { formatDateTime } from '@dgp/shared';
-import { Button } from '@/components/ui/button';
-import { useNotification, useNotificationMutations } from './hooks';
+import { Card, CardContent } from '@/components/ui/card';
+import { Chip } from '@/components/ui/chip';
+import { PageHeader } from '@/components/PageHeader';
+import { TableShell, Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
+import { useBroadcastRecipients } from './hooks';
 
+const STATUS_COLOR = {
+  queued: 'blue',
+  sent: 'blue',
+  delivered: 'green',
+  failed: 'red',
+};
+
+/** Recipient-level breakdown for one broadcast (drill-in from the rollup dashboard). */
 export function NotificationDetail() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data: n, isLoading, isError } = useNotification(id);
-  const m = useNotificationMutations();
+  const { data, isLoading, isError } = useBroadcastRecipients(id);
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">{t('common.loading')}</p>;
-  if (isError || !n) return <p className="text-sm text-destructive">{t('ntf.notFound')}</p>;
+  if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
+  if (isError || !data)
+    return <p className="text-body text-destructive-strong">{t('ntf.notFound')}</p>;
 
-  const retry = async () => {
-    try {
-      await m.retry.mutateAsync(n.id);
-      toast.success(t('ntf.retried'));
-    } catch (err) {
-      toast.error(err.response?.data?.error?.message || t('ntf.actionFailed'));
-    }
-  };
-
-  const rows = [
-    [t('ntf.col.status'), t(`ntf.status.${n.status}`, n.status)],
-    [t('ntf.col.module'), n.module],
-    [t('ntf.col.channel'), (n.channels || []).join(', ')],
-    [t('ntf.detail.recipient'), n.to || n.recipientId],
-    [t('ntf.detail.retries'), n.retryCount],
-    [t('ntf.detail.provider'), n.providerMessageId || '—'],
-    [t('ntf.detail.delivered'), n.deliveredAt ? formatDateTime(n.deliveredAt, locale) : '—'],
-    [t('ntf.detail.read'), n.readAt ? formatDateTime(n.readAt, locale) : '—'],
-    [t('ntf.detail.created'), formatDateTime(n.createdAt, locale)],
-  ];
+  const { broadcast: b, recipients, total } = data;
 
   return (
-    <div className="max-w-xl">
-      <Link
-        to="/notifications"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('ntf.back')}
-      </Link>
+    <div className="max-w-3xl">
+      <PageHeader backTo="/notifications" backLabel={t('ntf.back')} title={b.title} />
 
-      <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-lg font-semibold text-foreground">{n.title}</h1>
-        <p className="mt-1 text-xs text-muted-foreground">{n.notificationId}</p>
-        <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">{n.message}</p>
+      <Card className="mb-4">
+        <CardContent className="p-5">
+          <p className="whitespace-pre-wrap text-body text-body-foreground">{b.message}</p>
+          <p className="mt-3 text-caption text-muted-foreground">
+            {(b.channels || []).join(', ')} · {formatDateTime(b.createdAt, locale)} ·{' '}
+            {t('ntf.recipientsCount', { count: total })}
+          </p>
+        </CardContent>
+      </Card>
 
-        {n.error ? (
-          <div className="mt-3 rounded-md bg-destructive/10 p-2 text-sm text-destructive">
-            {n.error}
-          </div>
-        ) : null}
-
-        <dl className="mt-4 space-y-2 border-t border-border pt-4">
-          {rows.map(([label, value]) => (
-            <div key={label} className="flex justify-between gap-2 text-sm">
-              <dt className="text-muted-foreground">{label}</dt>
-              <dd className="text-right font-medium text-foreground">{String(value)}</dd>
-            </div>
-          ))}
-        </dl>
-
-        {n.status === 'failed' ? (
-          <Button className="mt-5" size="sm" onClick={retry} disabled={m.retry.isPending}>
-            <RotateCw className="h-4 w-4" />
-            {t('ntf.retry')}
-          </Button>
-        ) : null}
-      </div>
+      <TableShell className="max-h-[calc(100dvh-22rem)] overflow-y-auto">
+        <Table>
+          <THead>
+            <tr>
+              <TH>{t('ntf.detail.recipient')}</TH>
+              <TH>{t('ntf.col.mobile')}</TH>
+              <TH>{t('ntf.col.status')}</TH>
+              <TH>{t('ntf.col.read')}</TH>
+            </tr>
+          </THead>
+          <TBody>
+            {recipients.map((r) => (
+              <TR key={r.id}>
+                <TD>{r.name || '—'}</TD>
+                <TD className="tabular-nums text-muted-foreground">{r.mobile || '—'}</TD>
+                <TD>
+                  <Chip color={STATUS_COLOR[r.status] ?? 'grey'}>
+                    {t(`ntf.status.${r.status}`, r.status)}
+                  </Chip>
+                </TD>
+                <TD className="text-muted-foreground">
+                  {r.read ? t('ntf.readYes') : t('ntf.readNo')}
+                </TD>
+              </TR>
+            ))}
+          </TBody>
+        </Table>
+      </TableShell>
     </div>
   );
 }

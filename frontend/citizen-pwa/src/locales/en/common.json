@@ -22,7 +22,8 @@
     "outstandingDues": "Outstanding tax dues",
     "latestNotices": "Latest notices",
     "latestSchemes": "Latest schemes",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "services": "Services"
   },
   "notFound": {
     "title": "Page not found",
@@ -32,7 +33,8 @@
   "common": {
     "loading": "Loading…",
     "online": "Online",
-    "offline": "Offline"
+    "offline": "Offline",
+    "close": "Close"
   },
   "error": {
     "boundaryTitle": "Something went wrong",
@@ -116,8 +118,8 @@
     "loadError": "Could not load notifications",
     "notFound": "Notification not found",
     "back": "Back to notifications",
-    "viewComplaint": "View complaint →",
-    "viewCertificate": "View certificate →",
+    "viewComplaint": "View complaint",
+    "viewCertificate": "View certificate",
     "settings.title": "Notification settings",
     "settings.subtitle": "Choose how you'd like to be notified.",
     "settings.inApp": "In-app notifications",
@@ -125,7 +127,17 @@
     "settings.voice": "Voice call",
     "settings.email": "Email",
     "settings.save": "Save preferences",
-    "settings.saved": "Preferences saved"
+    "settings.saved": "Preferences saved",
+    "group": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older"
+    },
+    "unreadSection": "Unread",
+    "readSection": "Earlier",
+    "unreadCount": "{{count}} unread",
+    "emptyFiltered": "No notifications match your search.",
+    "clearSearch": "Clear search"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -153,7 +165,30 @@
     "registerSuccess": "Account created",
     "registerFailed": "Registration failed. Try again.",
     "profileUpdated": "Profile updated",
-    "profileFailed": "Could not update profile"
+    "profileFailed": "Could not update profile",
+    "stats": "Your activity",
+    "statComplaints": "Complaints",
+    "statCertificates": "Certificates",
+    "statDues": "Tax dues",
+    "recentActivity": "Recent activity",
+    "noActivity": "Nothing here yet.",
+    "editProfile": "Edit details",
+    "memberSince": "Member since",
+    "identifier": "Email or mobile number",
+    "identifierInvalid": "Enter a valid mobile number or email address",
+    "subtitle": "Smart Village Digital Services",
+    "tabVillager": "Villager Login",
+    "tabOfficer": "Officer Login",
+    "citizenLoginTitle": "Citizen Login",
+    "citizenLoginDesc": "Login to access complaints, certificates, notices, schemes and tax records.",
+    "officerLoginTitle": "Officer Login",
+    "officerLoginDesc": "Authorized Panchayat officials only.",
+    "officerEmail": "Officer email",
+    "officerWarning": "Only authorized Gram Panchayat officials can access this portal.",
+    "forgot": "Forgot password?",
+    "forgotHint": "Please contact your Gram Panchayat office to reset your password.",
+    "wrongTabOfficer": "This account is registered as an Officer. Please use Officer Login.",
+    "wrongTabVillager": "This account is not authorized for Officer Portal."
   },
   "complaint": {
     "category": {
@@ -192,7 +227,17 @@
       "submit": "Submit complaint",
       "submitted": "Complaint {{id}} submitted",
       "queuedOffline": "You're offline — complaint saved and will be sent automatically when you reconnect.",
-      "failed": "Could not submit complaint"
+      "failed": "Could not submit complaint",
+      "capturePhoto": "Capture Photo",
+      "uploadPhoto": "Upload Photo",
+      "gpsLoading": "Locating…",
+      "gpsFetching": "Fetching your location…",
+      "gpsCoords": "{{lat}}, {{lng}}",
+      "gpsRetry": "Retry",
+      "gps_denied": "Location permission denied.",
+      "gps_unavailable": "Location is unavailable on this device.",
+      "gps_timeout": "Location request timed out.",
+      "gps_error": "Could not get your location."
     },
     "history": {
       "title": "My complaints",
@@ -205,7 +250,10 @@
       "back": "Back to complaints",
       "notFound": "Complaint not found",
       "timeline": "Status timeline",
-      "remarks": "Officer remarks"
+      "remarks": "Officer remarks",
+      "photos": "Photos",
+      "photo": "Photo",
+      "location": "Location"
     }
   },
   "notice": {
@@ -224,7 +272,9 @@
       "search": "Search notices…",
       "allCategories": "All categories",
       "empty": "No notices to show yet.",
-      "loadError": "Could not load notices"
+      "loadError": "Could not load notices",
+      "clearFilters": "Clear filters",
+      "emptyFiltered": "No notices match your filters."
     },
     "detail": {
       "back": "Back to notices",
@@ -233,7 +283,8 @@
       "pdfAttachment": "PDF document",
       "download": "Download",
       "open": "Open"
-    }
+    },
+    "broadcast": "Broadcast"
   },
   "scheme": {
     "category": {
@@ -252,7 +303,9 @@
       "search": "Search schemes…",
       "allCategories": "All categories",
       "empty": "No schemes to show yet.",
-      "loadError": "Could not load schemes"
+      "loadError": "Could not load schemes",
+      "clearFilters": "Clear filters",
+      "emptyFiltered": "No schemes match your filters."
     },
     "detail": {
       "back": "Back to schemes",
@@ -262,7 +315,10 @@
       "requiredDocuments": "Required documents",
       "benefits": "Benefits",
       "applicationProcess": "How to apply",
-      "officialSite": "Official website"
+      "officialSite": "Official website",
+      "attachments": "Documents & forms",
+      "open": "Open",
+      "download": "Download"
     }
   },
   "tax": {
@@ -287,16 +343,21 @@
       "paid": "Paid",
       "dues": "Dues",
       "dueBy": "Due by",
-      "history": "Payment history"
+      "history": "Payment history",
+      "bills": "Tax bills",
+      "billNo": "Bill no.",
+      "receipt": "Receipt",
+      "viewBill": "View bill",
+      "noPayments": "No payments recorded yet.",
+      "paidInFull": "Paid in full"
     }
   },
   "dakhala": {
     "type": {
       "Residence": "Residence Certificate",
-      "Income": "Income Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
-      "Character": "Character Certificate",
+      "SevenTwelve": "7/12 & 8A Certificate",
       "Other": "Other Certificate"
     },
     "status": {
@@ -307,11 +368,8 @@
     },
     "field": {
       "fullName": "Full name",
-      "address": "Residential address",
-      "yearsOfResidence": "Years of residence",
+      "address": "Address",
       "purpose": "Purpose",
-      "annualIncome": "Annual income (₹)",
-      "occupation": "Occupation",
       "childName": "Child name",
       "dateOfBirth": "Date of birth",
       "placeOfBirth": "Place of birth",
@@ -320,8 +378,15 @@
       "deceasedName": "Name of deceased",
       "dateOfDeath": "Date of death",
       "placeOfDeath": "Place of death",
-      "relationToApplicant": "Relation to applicant",
-      "details": "Details"
+      "relationToApplicant": "Relation with applicant",
+      "surveyNumber": "Survey number",
+      "village": "Village",
+      "mobile": "Mobile number",
+      "gatNumber": "Gat number",
+      "taluka": "Taluka",
+      "district": "District",
+      "certificateTitle": "Certificate title",
+      "description": "Description"
     },
     "list": {
       "title": "My Certificates",
@@ -342,7 +407,9 @@
       "required": "This field is required",
       "submit": "Submit application",
       "submitted": "Application {{id}} submitted",
-      "failed": "Could not submit application"
+      "failed": "Could not submit application",
+      "chooseDocType": "Select document",
+      "missingDocs": "Please attach all required documents"
     },
     "detail": {
       "back": "Back to certificates",
@@ -353,7 +420,48 @@
       "timeline": "Status timeline",
       "download": "Download certificate",
       "downloadFailed": "Could not download certificate",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "progress": "Application progress"
+    },
+    "doc": {
+      "Aadhaar": "Aadhaar Card",
+      "PAN": "PAN Card",
+      "VoterId": "Voter ID",
+      "Passport": "Passport",
+      "DrivingLicence": "Driving Licence",
+      "RationCard": "Ration Card",
+      "ElectricityBill": "Electricity Bill",
+      "WaterBill": "Water Bill",
+      "PropertyTaxReceipt": "Property Tax Receipt",
+      "SelfDeclaration": "Self Declaration Form",
+      "HospitalBirthReport": "Hospital Birth Report",
+      "DoctorMedicalCertificate": "Doctor Medical Certificate",
+      "DoctorDeathCertificate": "Doctor Death Certificate",
+      "AadhaarOfRelative": "Aadhaar of Relative",
+      "Existing712": "Existing 7/12",
+      "Existing8A": "Existing 8A",
+      "PropertyRecord": "Property Record",
+      "Supporting": "Supporting Document"
+    },
+    "docGroup": {
+      "identity": "Identity proof",
+      "address": "Address proof",
+      "selfDeclaration": "Self declaration",
+      "birthProof": "Birth proof",
+      "parentIdentity": "Parent identity proof",
+      "parentAddress": "Parent address proof",
+      "deathProof": "Death proof",
+      "deceasedIdentity": "Deceased identity proof",
+      "addressProof": "Address proof",
+      "applicantIdentity": "Applicant identity",
+      "landProof": "Land proof",
+      "supporting": "Supporting documents"
+    },
+    "stage": {
+      "Submitted": "Submitted",
+      "UnderReview": "Under Review",
+      "Approved": "Approved",
+      "Download": "Download"
     }
   }
 }

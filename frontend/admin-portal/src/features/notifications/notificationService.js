@@ -13,6 +13,16 @@ export const notificationService = {
     const { data } = await apiClient.get('/admin/notifications/stats');
     return data.data;
   },
+  async listBroadcasts(params = {}) {
+    const { data } = await apiClient.get('/admin/notifications/broadcasts', { params });
+    return data.data;
+  },
+  async broadcastRecipients(broadcastId, params = {}) {
+    const { data } = await apiClient.get(`/admin/notifications/broadcasts/${broadcastId}`, {
+      params,
+    });
+    return data.data;
+  },
   async broadcast(payload) {
     const { data } = await apiClient.post('/admin/notifications/broadcast', payload);
     return data.data;

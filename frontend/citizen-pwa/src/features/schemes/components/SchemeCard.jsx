@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SafeImage } from '@/components/SafeImage';
 import { useTranslation } from 'react-i18next';
 import { Landmark } from 'lucide-react';
 
@@ -8,21 +9,21 @@ export function SchemeCard({ scheme }) {
   return (
     <Link
       to={`/schemes/${scheme.id}`}
-      className="flex flex-col overflow-hidden rounded-lg border border-border bg-card"
+      className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-xs transition-[box-shadow,transform] duration-150 hover:shadow-sm active:translate-y-px"
     >
       {scheme.imageUrl ? (
-        <img src={scheme.imageUrl} alt="" className="h-28 w-full object-cover" />
+        <SafeImage src={scheme.imageUrl} loading="lazy" className="h-28 w-full object-cover" />
       ) : (
-        <div className="flex h-28 w-full items-center justify-center bg-muted">
-          <Landmark className="h-8 w-8 text-muted-foreground/40" />
+        <div className="flex h-28 w-full items-center justify-center bg-primary-subtle">
+          <Landmark className="h-8 w-8 text-primary/40" aria-hidden="true" />
         </div>
       )}
-      <div className="flex-1 p-3">
-        <p className="text-sm font-medium text-foreground">{scheme.title}</p>
+      <div className="flex flex-1 flex-col p-3">
+        <p className="text-body font-medium text-foreground">{scheme.title}</p>
         {scheme.summary ? (
-          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{scheme.summary}</p>
+          <p className="mt-1 line-clamp-2 text-caption text-muted-foreground">{scheme.summary}</p>
         ) : null}
-        <span className="mt-2 inline-block rounded-full bg-secondary px-2 py-0.5 text-[11px] text-secondary-foreground">
+        <span className="mt-2.5 inline-block w-fit rounded-full bg-secondary px-2.5 py-0.5 text-caption font-medium text-secondary-foreground ring-1 ring-inset ring-border">
           {t(`scheme.category.${scheme.category}`, scheme.category)}
         </span>
       </div>
