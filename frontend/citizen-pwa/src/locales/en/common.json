@@ -175,7 +175,18 @@
     "editProfile": "Edit details",
     "memberSince": "Member since",
     "identifier": "Email or mobile number",
-    "identifierInvalid": "Enter a valid mobile number or email address"
+    "identifierInvalid": "Enter a valid mobile number or email address",
+    "subtitle": "Smart Village Digital Services",
+    "tabVillager": "Villager Login",
+    "tabOfficer": "Officer Login",
+    "citizenLoginTitle": "Citizen Login",
+    "citizenLoginDesc": "Login to access complaints, certificates, notices, schemes and tax records.",
+    "officerLoginTitle": "Officer Login",
+    "officerLoginDesc": "Authorized Panchayat officials only.",
+    "officerEmail": "Officer email",
+    "officerWarning": "Only authorized Gram Panchayat officials can access this portal.",
+    "forgot": "Forgot password?",
+    "forgotHint": "Please contact your Gram Panchayat office to reset your password."
   },
   "complaint": {
     "category": {
