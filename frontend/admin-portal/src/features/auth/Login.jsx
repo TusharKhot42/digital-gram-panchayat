@@ -1,29 +1,24 @@
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Landmark } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { LoginForm } from './LoginForm';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
+const LOGIN_URL = `${import.meta.env.VITE_CITIZEN_URL || 'http://localhost:5173'}/login`;
+
+/**
+ * There is one login page for the whole system, hosted by the citizen app. This route
+ * only forwards to it: officers sign in there and are handed back to /auth/callback
+ * with their token. An already-authenticated officer skips straight to the dashboard.
+ */
 export function Login() {
-  const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, ready } = useAuth();
 
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  useEffect(() => {
+    if (ready && !isAuthenticated) {
+      window.location.replace(LOGIN_URL);
+    }
+  }, [ready, isAuthenticated]);
 
-  return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8 shadow-sm">
-        <div className="mb-6 flex flex-col items-center gap-3 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Landmark className="h-6 w-6" aria-hidden="true" />
-          </span>
-          <div>
-            <h1 className="text-title text-foreground">{t('appName')}</h1>
-            <p className="mt-1 text-body text-muted-foreground">{t('auth.officerSignIn')}</p>
-          </div>
-        </div>
-        <LoginForm />
-      </div>
-    </div>
-  );
+  if (ready && isAuthenticated) return <Navigate to="/" replace />;
+  return <LoadingScreen />;
 }

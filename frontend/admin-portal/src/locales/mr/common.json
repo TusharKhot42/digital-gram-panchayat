@@ -570,5 +570,34 @@
     "emailInvalid": "वैध ईमेल प्रविष्ट करा",
     "loginSuccess": "साइन इन झाले",
     "loginFailed": "अवैध क्रेडेन्शियल्स"
+  },
+  "reports": {
+    "title": "अहवाल",
+    "loadError": "अहवाल लोड होऊ शकला नाही",
+    "generatedAt": "तयार केले",
+    "exportCsv": "CSV",
+    "exportExcel": "Excel",
+    "exportPdf": "PDF",
+    "total": "एकूण",
+    "assessed": "आकारणी",
+    "collected": "वसूल",
+    "outstanding": "थकबाकी",
+    "published": "प्रकाशित",
+    "byStatus": "स्थितीनुसार",
+    "byCategory": "श्रेणीनुसार",
+    "byType": "प्रकारानुसार",
+    "col": {
+      "section": "विभाग",
+      "metric": "मापदंड",
+      "value": "मूल्य"
+    },
+    "section": {
+      "complaints": "तक्रारी",
+      "certificates": "दाखले",
+      "tax": "कर",
+      "users": "नागरिक",
+      "schemes": "योजना",
+      "notices": "सूचना"
+    }
   }
 }

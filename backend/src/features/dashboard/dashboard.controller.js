@@ -13,3 +13,7 @@ export const charts = asyncHandler(async (_req, res) => {
 export const activity = asyncHandler(async (_req, res) => {
   res.status(200).json(successResponse(await dashboardService.getActivity()));
 });
+
+export const report = asyncHandler(async (_req, res) => {
+  res.status(200).json(successResponse(await dashboardService.getReport()));
+});

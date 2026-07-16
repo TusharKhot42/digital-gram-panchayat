@@ -106,7 +106,7 @@ export function ComplaintDetail() {
                     aria-label={`${t('complaint.detail.photos')} ${i + 1}`}
                     className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
                   >
-                    <img src={src} alt="" loading="lazy" className="h-28 w-28 object-cover" />
+                    <img src={src} alt="" className="h-28 w-28 object-cover" />
                   </button>
                 ))}
               </CardContent>

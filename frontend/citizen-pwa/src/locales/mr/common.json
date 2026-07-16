@@ -173,7 +173,9 @@
     "recentActivity": "अलीकडील क्रिया",
     "noActivity": "अद्याप काहीही नाही.",
     "editProfile": "तपशील संपादित करा",
-    "memberSince": "सदस्य कधीपासून"
+    "memberSince": "सदस्य कधीपासून",
+    "identifier": "ईमेल किंवा मोबाईल क्रमांक",
+    "identifierInvalid": "वैध मोबाईल क्रमांक किंवा ईमेल पत्ता प्रविष्ट करा"
   },
   "complaint": {
     "category": {

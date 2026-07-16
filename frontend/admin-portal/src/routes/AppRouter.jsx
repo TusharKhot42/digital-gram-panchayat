@@ -10,6 +10,7 @@ const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: 
 const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/Login'), 'Login');
+const AuthCallback = lazyNamed(() => import('@/features/auth/AuthCallback'), 'AuthCallback');
 const ComplaintsList = lazyNamed(
   () => import('@/features/complaints/ComplaintsList'),
   'ComplaintsList',
@@ -47,11 +48,14 @@ const BroadcastForm = lazyNamed(
   () => import('@/features/notifications/BroadcastForm'),
   'BroadcastForm',
 );
+const ReportsPage = lazyNamed(() => import('@/features/reports/ReportsPage'), 'ReportsPage');
 
 const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
 
 const router = createBrowserRouter([
   { path: '/login', element: page(<Login />) },
+  // Shared-login hand-off target: receives the officer JWT in the URL fragment.
+  { path: '/auth/callback', element: page(<AuthCallback />) },
   {
     element: <ProtectedRoute />,
     children: [
@@ -78,6 +82,7 @@ const router = createBrowserRouter([
           { path: 'notifications', element: page(<NotificationsList />) },
           { path: 'notifications/broadcast', element: page(<BroadcastForm />) },
           { path: 'notifications/:id', element: page(<NotificationDetail />) },
+          { path: 'reports', element: page(<ReportsPage />) },
           { path: '*', element: page(<NotFound />) },
         ],
       },

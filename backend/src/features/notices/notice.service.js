@@ -33,6 +33,28 @@ async function attach(file) {
 }
 
 /**
+ * An expiry chosen from a date picker arrives as midnight ("2026-07-15" parses to
+ * 00:00:00 UTC), and the visibility filter is `expiryDate >= now` — so the notice
+ * disappeared the moment its expiry DAY began, sometimes before it was even published.
+ * A human picking "15 July" means "visible through 15 July": roll date-only values to
+ * the end of that day. Exact timestamps (non-midnight) pass through untouched.
+ */
+function normalizeExpiry(value) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value; // let schema validation reject it
+  if (
+    d.getUTCHours() === 0 &&
+    d.getUTCMinutes() === 0 &&
+    d.getUTCSeconds() === 0 &&
+    d.getUTCMilliseconds() === 0
+  ) {
+    d.setUTCHours(23, 59, 59, 999);
+  }
+  return d;
+}
+
+/**
  * @param {{ officerId: string, body: object, file?: object }} params
  */
 export async function createNotice({ officerId, body, file }) {
@@ -58,7 +80,7 @@ export async function createNotice({ officerId, body, file }) {
     attachmentUrl: attachment?.url,
     attachmentType: attachment?.type,
     publishDate: published ? body.publishDate || new Date() : body.publishDate || undefined,
-    expiryDate: body.expiryDate || undefined,
+    expiryDate: normalizeExpiry(body.expiryDate),
     isPublished: published,
     createdBy: officerId,
   });
@@ -82,6 +104,7 @@ export async function updateNotice(id, officerId, body, file) {
   for (const key of fields) {
     if (body[key] !== undefined) notice[key] = body[key] || undefined;
   }
+  if (body.expiryDate !== undefined) notice.expiryDate = normalizeExpiry(body.expiryDate);
 
   const attachment = await attach(file);
   if (attachment) {

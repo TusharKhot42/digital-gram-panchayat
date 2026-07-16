@@ -311,8 +311,9 @@ export async function stats() {
  * notifications are excluded — the citizen notification centre is unaffected.
  */
 export async function listBroadcasts(query = {}) {
-  const page = query.page || 1;
-  const limit = query.limit || 20;
+  // Query params arrive as strings; $skip/$limit reject non-numbers outright.
+  const page = Math.max(1, Number(query.page) || 1);
+  const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
   const [rows, ids] = await Promise.all([
     Notification.aggregate([
       { $match: { broadcastId: { $ne: null } } },

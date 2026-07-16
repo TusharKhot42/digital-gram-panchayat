@@ -10,12 +10,21 @@ import { test, expect } from '@playwright/test';
 const EMAIL = process.env.E2E_ADMIN_EMAIL || 'admin@dgp.local';
 const PASSWORD = process.env.E2E_ADMIN_PASSWORD || 'Admin@123';
 
+const API_URL = process.env.E2E_API_URL || 'http://localhost:5000/api/v1';
+
+/**
+ * The admin portal no longer hosts its own login form — the shared login page (citizen app)
+ * authenticates and hands the token over via /auth/callback. Journeys here authenticate
+ * against the API directly and enter the portal through that same hand-off route, which
+ * also exercises the callback + boot-verification path.
+ */
 async function login(page) {
   await page.addInitScript(() => localStorage.setItem('dgp_language', 'en'));
-  await page.goto('/login');
-  await page.getByLabel(/email/i).fill(EMAIL);
-  await page.getByLabel(/password/i).fill(PASSWORD);
-  await page.getByRole('button', { name: /sign in|log in/i }).click();
+  const res = await page.request.post(`${API_URL}/auth/session`, {
+    data: { identifier: EMAIL, password: PASSWORD },
+  });
+  const body = await res.json();
+  await page.goto(`/auth/callback#token=${encodeURIComponent(body.data.token)}`);
   await expect(page).toHaveURL(/\/$/);
 }
 

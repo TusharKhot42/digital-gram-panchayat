@@ -71,7 +71,7 @@ export function ComplaintDetail() {
                 aria-label={`${t('complaint.detail.photo')} ${i + 1}`}
                 className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
               >
-                <img src={src} alt="" loading="lazy" className="h-24 w-full object-cover" />
+                <img src={src} alt="" className="h-24 w-full object-cover" />
               </button>
             ))}
           </div>

@@ -25,6 +25,17 @@ export const officerLoginValidation = [
   body('password').notEmpty().withMessage('Password is required'),
 ];
 
+/** Shared login page: one field holding either a mobile number or an email address. */
+export const unifiedLoginValidation = [
+  body('identifier')
+    .trim()
+    .custom((value) => {
+      if (VALIDATION.MOBILE_REGEX.test(value) || VALIDATION.EMAIL_REGEX.test(value)) return true;
+      throw new Error('Enter a valid mobile number or email address');
+    }),
+  body('password').notEmpty().withMessage('Password is required'),
+];
+
 export const updateProfileValidation = [
   body('fullName')
     .trim()

@@ -104,7 +104,6 @@ export function CertificateReview() {
                           <img
                             src={d.url}
                             alt={d.name || ''}
-                            loading="lazy"
                             className="h-24 w-full object-cover"
                           />
                         </button>

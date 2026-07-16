@@ -95,3 +95,91 @@ export async function getActivity(limit = 15) {
     at: l.at,
   }));
 }
+
+/**
+ * Reports module: per-module breakdowns behind the officer Reports page. Groupings run as
+ * parallel aggregations; the same 60s production cache as the other dashboard endpoints.
+ */
+export async function getReport() {
+  return cached('report', async () => {
+    const group = (Model, field, match = {}) =>
+      Model.aggregate([
+        { $match: match },
+        { $group: { _id: `$${field}`, value: { $sum: 1 } } },
+        { $project: { _id: 0, label: '$_id', value: 1 } },
+        { $sort: { value: -1 } },
+      ]);
+
+    const [
+      complaintsByStatus,
+      complaintsByCategory,
+      certificatesByStatus,
+      certificatesByType,
+      taxByStatus,
+      taxTotals,
+      usersByActive,
+      schemesByPublished,
+      noticesByCategory,
+      noticesPublished,
+      totalComplaints,
+      totalCertificates,
+      totalTaxRecords,
+      totalCitizens,
+      totalSchemes,
+      totalNotices,
+    ] = await Promise.all([
+      group(Complaint, 'status'),
+      group(Complaint, 'category'),
+      group(CertificateApplication, 'status', { isActive: true }),
+      group(CertificateApplication, 'certificateType', { isActive: true }),
+      group(TaxRecord, 'paymentStatus', { isActive: true }),
+      TaxRecord.aggregate([
+        { $match: { isActive: true } },
+        {
+          $group: {
+            _id: null,
+            assessed: { $sum: '$amount' },
+            collected: { $sum: '$amountPaid' },
+            outstanding: { $sum: '$balance' },
+          },
+        },
+      ]),
+      group(User, 'isActive', { role: 'citizen' }),
+      group(Scheme, 'isPublished', { isActive: true }),
+      group(Notice, 'category', { isActive: true }),
+      Notice.countDocuments({ isActive: true, isPublished: true }),
+      Complaint.countDocuments({}),
+      CertificateApplication.countDocuments({ isActive: true }),
+      TaxRecord.countDocuments({ isActive: true }),
+      User.countDocuments({ role: 'citizen' }),
+      Scheme.countDocuments({ isActive: true }),
+      Notice.countDocuments({ isActive: true }),
+    ]);
+
+    const totals = taxTotals[0] ?? { assessed: 0, collected: 0, outstanding: 0 };
+
+    return {
+      generatedAt: new Date().toISOString(),
+      complaints: {
+        total: totalComplaints,
+        byStatus: complaintsByStatus,
+        byCategory: complaintsByCategory,
+      },
+      certificates: {
+        total: totalCertificates,
+        byStatus: certificatesByStatus,
+        byType: certificatesByType,
+      },
+      tax: {
+        total: totalTaxRecords,
+        assessed: totals.assessed,
+        collected: totals.collected,
+        outstanding: totals.outstanding,
+        byStatus: taxByStatus,
+      },
+      users: { total: totalCitizens, byActive: usersByActive },
+      schemes: { total: totalSchemes, byPublished: schemesByPublished },
+      notices: { total: totalNotices, published: noticesPublished, byCategory: noticesByCategory },
+    };
+  });
+}

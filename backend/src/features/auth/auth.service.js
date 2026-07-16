@@ -49,6 +49,27 @@ export async function loginCitizen({ mobile, password }) {
 }
 
 /**
+ * Single shared login: one identifier field that may hold a mobile number (citizen) or an
+ * email address (officer or citizen with email). Finds the account whichever way the user
+ * identifies themselves, verifies the password, and returns the JWT plus role — the shared
+ * login page routes the browser to the right app from the role. The role-specific endpoints
+ * above stay untouched for backward compatibility.
+ * @param {{ identifier: string, password: string }} input
+ */
+export async function loginUnified({ identifier, password }) {
+  const id = String(identifier || '').trim();
+  const query = /^[6-9]\d{9}$/.test(id) ? { mobile: id } : { email: id.toLowerCase() };
+  const user = await User.findOne(query).select('+passwordHash');
+  await assertActiveCredentials(user, password);
+
+  user.lastLogin = new Date();
+  await user.save();
+
+  const token = signToken({ id: user.id, role: user.role });
+  return { user: user.toJSON(), token };
+}
+
+/**
  * Log an officer (admin portal) in with email + password.
  * @param {{ email: string, password: string }} input
  */

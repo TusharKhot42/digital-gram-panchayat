@@ -173,7 +173,9 @@
     "recentActivity": "Recent activity",
     "noActivity": "Nothing here yet.",
     "editProfile": "Edit details",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "identifier": "Email or mobile number",
+    "identifierInvalid": "Enter a valid mobile number or email address"
   },
   "complaint": {
     "category": {

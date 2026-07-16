@@ -570,5 +570,34 @@
     "emailInvalid": "Enter a valid email",
     "loginSuccess": "Signed in",
     "loginFailed": "Invalid credentials"
+  },
+  "reports": {
+    "title": "Reports",
+    "loadError": "Could not load the report",
+    "generatedAt": "Generated",
+    "exportCsv": "CSV",
+    "exportExcel": "Excel",
+    "exportPdf": "PDF",
+    "total": "Total",
+    "assessed": "Assessed",
+    "collected": "Collected",
+    "outstanding": "Outstanding",
+    "published": "Published",
+    "byStatus": "By status",
+    "byCategory": "By category",
+    "byType": "By type",
+    "col": {
+      "section": "Section",
+      "metric": "Metric",
+      "value": "Value"
+    },
+    "section": {
+      "complaints": "Complaints",
+      "certificates": "Certificates",
+      "tax": "Tax",
+      "users": "Citizens",
+      "schemes": "Schemes",
+      "notices": "Notices"
+    }
   }
 }

@@ -9,6 +9,7 @@ import {
   registerValidation,
   loginValidation,
   officerLoginValidation,
+  unifiedLoginValidation,
   updateProfileValidation,
 } from './auth.validation.js';
 
@@ -17,6 +18,15 @@ export const citizenAuthRouter = Router();
 
 citizenAuthRouter.post('/register', authLimiter, registerValidation, validate, controller.register);
 citizenAuthRouter.post('/login', authLimiter, loginValidation, validate, controller.login);
+// Shared login page: identifier (mobile or email) + password, any role. The role-specific
+// /auth/login and /admin/login endpoints stay for backward compatibility.
+citizenAuthRouter.post(
+  '/session',
+  authLimiter,
+  unifiedLoginValidation,
+  validate,
+  controller.unifiedLogin,
+);
 citizenAuthRouter.get('/profile', authenticate, authorize(ROLES.CITIZEN), controller.profile);
 citizenAuthRouter.put(
   '/profile',

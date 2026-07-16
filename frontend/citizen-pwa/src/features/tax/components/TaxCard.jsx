@@ -126,7 +126,7 @@ export function TaxCard({ record }) {
                   aria-label={t('tax.card.viewBill')}
                   className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
                 >
-                  <img src={b.url} alt="" loading="lazy" className="h-16 w-16 object-cover" />
+                  <img src={b.url} alt="" className="h-16 w-16 object-cover" />
                 </button>
               ) : (
                 <a
