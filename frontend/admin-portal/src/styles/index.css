@@ -4,70 +4,78 @@
 
 /**
  * Digital Gram Panchayat design tokens.
- * Government digital-service language: green primary, slate neutrals, a very light grey page
- * behind white cards, semantic colours for status. Components never hardcode a hex — every
+ *
+ * Government digital-service language, modelled on DigiLocker / UMANG / Passport Seva:
+ * a navy-blue primary, teal + amber accents used sparingly, slate neutrals, and a very
+ * light blue-grey page behind white cards. Colour carries meaning only where it must —
+ * hierarchy comes from type, spacing and elevation. Components never hardcode a hex; every
  * value resolves to a token here. Shared verbatim with the officer portal so both apps read
  * as one product.
  */
 @layer base {
   :root {
-    /* Surfaces — page #F8FAFC, cards #FFFFFF, secondary surface #F1F5F9. */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%; /* #0F172A */
+    /* Surfaces — page #F4F6F9, cards #FFFFFF, secondary surface / hover #EEF2F7. */
+    --background: 216 29% 97%; /* #F4F6F9 */
+    --foreground: 217 33% 17%; /* #1E293B */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 217 33% 17%;
 
-    /* Brand — #166534 base, #15803D hover, #DCFCE7 light. */
-    --primary: 142 64% 24%;
-    --primary-hover: 142 72% 29%;
+    /* Brand — navy #1E3A5F, hover #16324F, light tint #E8F1FF (also the selected-row wash). */
+    --primary: 214 52% 25%; /* #1E3A5F */
+    --primary-hover: 211 55% 20%; /* #16324F */
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 141 84% 93%;
+    --primary-subtle: 214 100% 95%; /* #E8F1FF */
 
-    /* Neutrals — #334155 slate, #F1F5F9 surface-secondary, #475569/#64748B text. */
-    --secondary: 210 40% 96%;
+    /* Neutrals — #334155 slate, #EEF2F7 surface-secondary, #475569/#64748B text. */
+    --secondary: 213 36% 95%; /* #EEF2F7 */
     --secondary-foreground: 215 25% 27%;
-    --slate: 215 25% 27%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%; /* #64748B — 4.8:1 on white */
+    --slate: 215 25% 27%; /* #334155 */
+    --muted: 213 36% 95%;
+    --muted-foreground: 215 16% 47%; /* #64748B — 4.6:1 on white */
     --body-foreground: 215 19% 35%; /* #475569 — 7.4:1, for body copy */
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 213 36% 95%; /* #EEF2F7 — hover surface */
+    --accent-foreground: 217 33% 17%;
+
+    /* Teal — the secondary accent (#0F766E). Used for a few informational highlights only. */
+    --teal: 175 77% 26%;
+    --teal-foreground: 0 0% 100%;
 
     /* Semantic. `*-subtle` = chip/callout background, `*-strong` = AA-safe text on it. */
     --destructive: 0 72% 51%; /* #DC2626 */
     --destructive-foreground: 0 0% 100%;
     --destructive-subtle: 0 86% 97%;
     --destructive-strong: 0 74% 42%;
-    --success: 142 76% 36%; /* #16A34A */
+    --success: 142 72% 29%; /* #15803D */
     --success-foreground: 0 0% 100%;
-    --success-subtle: 141 84% 93%;
-    --success-strong: 142 72% 29%;
-    --warning: 38 92% 50%; /* #F59E0B — fills/icons only, 2.1:1 as text */
-    --warning-foreground: 222 47% 11%;
-    --warning-subtle: 48 96% 89%;
-    --warning-strong: 26 90% 37%; /* #B45309 — 4.7:1, used for warning text */
+    --success-subtle: 141 78% 92%;
+    --success-strong: 142 72% 26%;
+    --warning: 32 95% 44%; /* #D97706 — amber accent, fills/icons */
+    --warning-foreground: 0 0% 100%;
+    --warning-subtle: 40 96% 90%;
+    --warning-strong: 26 90% 37%; /* #B45309 — 4.7:1, for warning text */
     --info: 221 83% 53%; /* #2563EB */
     --info-foreground: 0 0% 100%;
     --info-subtle: 214 95% 93%;
     --info-strong: 224 76% 42%;
     --pending: 32 95% 44%; /* #D97706 */
 
-    --border: 214 32% 91%; /* #E2E8F0 */
-    --input: 214 32% 88%;
-    --ring: 142 64% 24%;
-    --radius: 0.75rem; /* 12px — sm 8, md 10, lg 12, xl 16 */
+    --border: 215 22% 87%; /* #D6DCE5 */
+    --input: 215 22% 82%;
+    --ring: 221 83% 53%; /* #2563EB — focus ring is deliberately blue, not brand navy */
+    --radius: 0.625rem; /* 10px — sm 6, md 8, lg 10, xl 14 */
   }
 
   :root[data-theme='dark'] {
-    --background: 222 47% 8%;
+    --background: 217 33% 9%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
+    --card: 217 33% 12%;
     --card-foreground: 210 40% 98%;
 
-    --primary: 142 60% 45%;
-    --primary-hover: 142 60% 52%;
-    --primary-foreground: 222 47% 8%;
-    --primary-subtle: 142 40% 16%;
+    /* Navy is too dark to read on a dark canvas — lift the brand to a legible blue. */
+    --primary: 213 70% 62%;
+    --primary-hover: 213 72% 70%;
+    --primary-foreground: 217 45% 10%;
+    --primary-subtle: 214 45% 20%;
 
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 90%;
@@ -78,27 +86,30 @@
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
 
+    --teal: 175 55% 48%;
+    --teal-foreground: 217 45% 10%;
+
     --destructive: 0 72% 58%;
-    --destructive-foreground: 222 47% 8%;
+    --destructive-foreground: 217 45% 10%;
     --destructive-subtle: 0 50% 16%;
     --destructive-strong: 0 84% 72%;
     --success: 142 60% 45%;
-    --success-foreground: 222 47% 8%;
+    --success-foreground: 217 45% 10%;
     --success-subtle: 142 40% 16%;
     --success-strong: 142 60% 60%;
     --warning: 38 92% 60%;
-    --warning-foreground: 222 47% 8%;
+    --warning-foreground: 217 45% 10%;
     --warning-subtle: 38 50% 16%;
     --warning-strong: 43 96% 70%;
     --info: 213 90% 65%;
-    --info-foreground: 222 47% 8%;
+    --info-foreground: 217 45% 10%;
     --info-subtle: 213 50% 18%;
     --info-strong: 213 94% 75%;
     --pending: 38 92% 60%;
 
     --border: 217 33% 20%;
     --input: 217 33% 24%;
-    --ring: 142 60% 45%;
+    --ring: 213 90% 65%;
   }
 
   * {
@@ -107,13 +118,16 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    /* Inter/Noto Sans render English and Marathi cleanly; system-ui is the graceful
+       fallback if the web fonts are unavailable (e.g. first paint before load). */
     font-family:
+      'Inter',
+      'Noto Sans',
+      'Noto Sans Devanagari',
       system-ui,
       -apple-system,
       'Segoe UI',
       Roboto,
-      'Noto Sans',
-      'Noto Sans Devanagari',
       sans-serif;
     /* Devanagari needs a little more leading than Latin at body size. */
     line-height: 1.55;

@@ -27,6 +27,11 @@ export default {
           foreground: 'hsl(var(--secondary-foreground))',
         },
         slate: { DEFAULT: 'hsl(var(--slate))' },
+        // Teal — sparing secondary accent for informational highlights.
+        teal: {
+          DEFAULT: 'hsl(var(--teal))',
+          foreground: 'hsl(var(--teal-foreground))',
+        },
         // Body copy sits a step darker than muted for long-form readability.
         body: { foreground: 'hsl(var(--body-foreground))' },
         pending: { DEFAULT: 'hsl(var(--pending))' },
@@ -69,22 +74,23 @@ export default {
         },
       },
       borderRadius: {
-        xl: 'calc(var(--radius) + 4px)', // 16px — hero/media surfaces
-        lg: 'var(--radius)', // 12px — cards
-        md: 'calc(var(--radius) - 2px)', // 10px — controls
-        sm: 'calc(var(--radius) - 4px)', // 8px — chips, inner elements
+        xl: 'calc(var(--radius) + 4px)', // 14px — hero/media surfaces
+        lg: 'var(--radius)', // 10px — cards, buttons
+        md: 'calc(var(--radius) - 2px)', // 8px — controls
+        sm: 'calc(var(--radius) - 4px)', // 6px — chips, inner elements
       },
-      // Type scale — one ramp, used by every screen.
+      // Type scale — one ramp, used by every screen. Government-portal proportions:
+      // a large display, a clear page heading, then a 16px reading body.
       fontSize: {
         display: [
-          '1.75rem',
-          { lineHeight: '2.125rem', fontWeight: '700', letterSpacing: '-0.02em' },
+          '2.125rem',
+          { lineHeight: '2.5rem', fontWeight: '700', letterSpacing: '-0.02em' },
         ],
-        title: ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600', letterSpacing: '-0.01em' }],
-        section: ['1rem', { lineHeight: '1.5rem', fontWeight: '600' }],
-        body: ['0.875rem', { lineHeight: '1.375rem' }],
-        label: ['0.8125rem', { lineHeight: '1.125rem', fontWeight: '500' }],
-        caption: ['0.75rem', { lineHeight: '1rem' }],
+        title: ['1.5rem', { lineHeight: '2rem', fontWeight: '600', letterSpacing: '-0.01em' }],
+        section: ['1.125rem', { lineHeight: '1.625rem', fontWeight: '600' }],
+        body: ['1rem', { lineHeight: '1.5rem' }],
+        label: ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
+        caption: ['0.8125rem', { lineHeight: '1.125rem' }],
       },
       // Elevation — flat by default; depth only where it means "floating".
       boxShadow: {

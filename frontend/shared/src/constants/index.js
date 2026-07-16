@@ -63,10 +63,10 @@ export const CERT_TYPES = ['Residence', 'Birth', 'Death', 'SevenTwelve', 'Other'
 export const DAKHALA_STATUSES = ['Submitted', 'UnderReview', 'Approved', 'Rejected'];
 
 export const DAKHALA_STATUS_COLOR_MAP = {
-  Submitted: 'red',
+  Submitted: 'orange',
   UnderReview: 'orange',
-  Approved: 'green',
-  Rejected: 'grey',
+  Approved: 'blue',
+  Rejected: 'red',
 };
 
 // Dynamic per-type application fields. Backend validates required keys against these;
@@ -186,11 +186,11 @@ export const MAX_CERT_DOCUMENTS = 5;
  * series beyond the semantic four.
  */
 export const CHART_COLORS = [
-  '#166534', // primary
-  '#F59E0B', // warning
-  '#DC2626', // danger
-  '#2563EB', // info
-  '#334155', // secondary (slate)
+  '#1E3A5F', // primary navy
+  '#0F766E', // teal
+  '#D97706', // amber
+  '#2563EB', // info blue
+  '#334155', // slate
   '#64748B', // muted
 ];
 
@@ -216,13 +216,13 @@ export const NOTIFICATION_TYPE_COLOR_MAP = {
 };
 
 export const STATUS_COLOR_MAP = {
-  Pending: 'red',
-  Submitted: 'red',
+  Pending: 'orange',
+  Submitted: 'orange',
   InProgress: 'orange',
   UnderReview: 'orange',
   Resolved: 'green',
-  Approved: 'green',
-  Rejected: 'grey',
+  Approved: 'blue',
+  Rejected: 'red',
 };
 
 // ---- PWA / Offline (M10) ----

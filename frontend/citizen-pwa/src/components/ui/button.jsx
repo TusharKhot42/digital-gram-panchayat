@@ -7,12 +7,13 @@ import { cn } from '@/utils/cn';
 /**
  * The one button. Every action uses a variant of this — no bespoke <button> styling elsewhere.
  * States are deliberate and quiet: hover darkens, press settles 1px, focus shows the standard
- * ring, `loading` swaps in a spinner and blocks input. Touch targets are 44px (WCAG 2.5.5).
+ * ring, `loading` swaps in a spinner and blocks input. Primary actions are 48px tall
+ * (government-portal standard); the dense `sm` size stays ≥40px for comfortable tapping.
  */
 const buttonVariants = cva(
   [
-    'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md',
-    'text-sm font-medium transition-[background-color,box-shadow,transform] duration-150',
+    'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg',
+    'text-[0.9375rem] font-medium transition-[background-color,box-shadow,transform] duration-150',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
     'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
     'active:translate-y-px disabled:pointer-events-none disabled:opacity-50',
@@ -29,9 +30,9 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-11 px-4 py-2',
-        sm: 'h-9 px-3 text-[0.8125rem]',
-        lg: 'h-12 px-6 text-base',
+        default: 'h-12 px-5 py-2',
+        sm: 'h-10 px-3.5 text-[0.8125rem]',
+        lg: 'h-[3.25rem] px-6 text-base',
         icon: 'h-11 w-11',
       },
     },
