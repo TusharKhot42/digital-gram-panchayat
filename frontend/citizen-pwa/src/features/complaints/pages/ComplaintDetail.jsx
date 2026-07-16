@@ -9,6 +9,7 @@ import { Lightbox } from '@/components/Lightbox';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader, SectionHeader } from '@/components/PageHeader';
 import { Stepper } from '@/components/Stepper';
+import { SafeImage } from '@/components/SafeImage';
 import { StatusTimeline } from '../components/StatusTimeline';
 import { useComplaint } from '../hooks';
 
@@ -71,7 +72,7 @@ export function ComplaintDetail() {
                 aria-label={`${t('complaint.detail.photo')} ${i + 1}`}
                 className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
               >
-                <img src={src} alt="" className="h-24 w-full object-cover" />
+                <SafeImage src={src} className="h-24 w-full object-cover" />
               </button>
             ))}
           </div>

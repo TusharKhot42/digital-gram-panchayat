@@ -37,12 +37,53 @@ function normalizeDocs(value) {
   return [];
 }
 
-/** @param {{ officerId: string, body: object, file?: object }} params */
-export async function createScheme({ officerId, body, file }) {
+/**
+ * A date-only expiry ("2026-08-01") parses to midnight UTC, and the citizen filter is
+ * `expiryDate >= now` — so the scheme would vanish the moment its expiry DAY began.
+ * Roll date-only values to the end of that day (same rule the notice module uses).
+ */
+function normalizeExpiry(value) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value; // let schema validation reject it
+  if (
+    d.getUTCHours() === 0 &&
+    d.getUTCMinutes() === 0 &&
+    d.getUTCSeconds() === 0 &&
+    d.getUTCMilliseconds() === 0
+  ) {
+    d.setUTCHours(23, 59, 59, 999);
+  }
+  return d;
+}
+
+/** Multer `.fields()` output → { image?, attachments[] }, with `image` forced to be an image. */
+function pickSchemeFiles(files) {
+  const image = files?.image?.[0];
+  if (image && !image.mimetype.startsWith('image/')) {
+    throw new AppError(400, 'INVALID_FILE_TYPE', 'The banner must be an image');
+  }
+  return { image, extra: files?.attachments ?? [] };
+}
+
+async function uploadExtras(extra) {
+  const out = [];
+  for (const file of extra) {
+    // Sequential on purpose: local disk store, tiny counts (≤5), keeps ordering stable.
+    const up = await uploadAttachment(file, 'schemes');
+    out.push({ url: up.url, type: up.type, name: file.originalname });
+  }
+  return out;
+}
+
+/** @param {{ officerId: string, body: object, files?: object }} params */
+export async function createScheme({ officerId, body, files }) {
   const year = new Date().getFullYear();
   const seq = await getNextSequence(`scheme-${year}`);
 
-  const image = file ? await uploadAttachment(file, 'schemes') : null;
+  const { image: imageFile, extra } = pickSchemeFiles(files);
+  const image = imageFile ? await uploadAttachment(imageFile, 'schemes') : null;
+  const attachments = await uploadExtras(extra);
   const published = body.isPublished === true || body.isPublished === 'true';
 
   const scheme = await Scheme.create({
@@ -57,8 +98,9 @@ export async function createScheme({ officerId, body, file }) {
     applicationProcess: body.applicationProcess || undefined,
     officialWebsite: body.officialWebsite || undefined,
     imageUrl: image?.url,
+    attachments,
     publishDate: published ? body.publishDate || new Date() : body.publishDate || undefined,
-    expiryDate: body.expiryDate || undefined,
+    expiryDate: normalizeExpiry(body.expiryDate),
     isPublished: published,
     createdBy: officerId,
   });
@@ -67,8 +109,13 @@ export async function createScheme({ officerId, body, file }) {
   return scheme.toJSON();
 }
 
-/** @param {string} id @param {string} officerId @param {object} body @param {object} [file] */
-export async function updateScheme(id, officerId, body, file) {
+/**
+ * In-place edit — the same document is saved, never a copy, so the schemeId and the
+ * citizen-facing URL stay stable and no duplicate can appear in either portal.
+ *
+ * @param {string} id @param {string} officerId @param {object} body @param {object} [files]
+ */
+export async function updateScheme(id, officerId, body, files) {
   const scheme = await Scheme.findOne({ _id: id, isActive: true }).catch(() => null);
   if (!scheme) throw new AppError(404, 'SCHEME_NOT_FOUND', 'Scheme not found');
 
@@ -83,18 +130,46 @@ export async function updateScheme(id, officerId, body, file) {
     'applicationProcess',
     'officialWebsite',
     'publishDate',
-    'expiryDate',
   ];
   for (const key of textFields) {
     if (body[key] !== undefined) scheme[key] = body[key] || undefined;
   }
+  if (body.expiryDate !== undefined) {
+    scheme.expiryDate = normalizeExpiry(body.expiryDate);
+  }
   if (body.requiredDocuments !== undefined) {
     scheme.requiredDocuments = normalizeDocs(body.requiredDocuments);
   }
-  if (file) {
-    const image = await uploadAttachment(file, 'schemes');
-    scheme.imageUrl = image.url;
+
+  // The edit form's publish toggle must actually take effect (multipart sends strings).
+  if (body.isPublished !== undefined) {
+    const published = body.isPublished === true || body.isPublished === 'true';
+    scheme.isPublished = published;
+    if (published && !scheme.publishDate) scheme.publishDate = new Date();
   }
+
+  // Banner image: replace when a new file arrives, clear when explicitly asked.
+  const { image: imageFile, extra } = pickSchemeFiles(files);
+  if (imageFile) {
+    const image = await uploadAttachment(imageFile, 'schemes');
+    scheme.imageUrl = image.url;
+  } else if (body.removeImage === 'true' || body.removeImage === true) {
+    scheme.imageUrl = undefined;
+  }
+
+  // Attachments: existing ones survive unless their URL is listed for removal; new
+  // uploads append. (Officer-only route, so deletion here is admin-only by construction.)
+  if (body.removeAttachments) {
+    const remove = new Set(
+      String(body.removeAttachments)
+        .split('\n')
+        .map((u) => u.trim())
+        .filter(Boolean),
+    );
+    scheme.attachments = (scheme.attachments || []).filter((a) => !remove.has(a.url));
+  }
+  const added = await uploadExtras(extra);
+  if (added.length) scheme.attachments = [...(scheme.attachments || []), ...added];
 
   await scheme.save();
   await audit(officerId, 'scheme.update', scheme, before, { title: scheme.title });

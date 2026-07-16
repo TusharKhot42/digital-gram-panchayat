@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/PageHeader';
 import { Timeline } from '@/components/Timeline';
 import { Lightbox } from '@/components/Lightbox';
+import { SafeImage } from '@/components/SafeImage';
 import { DakhalaStatusBadge } from './DakhalaStatusBadge';
 import { useApplication, useReviewMutations } from './hooks';
 import { RejectDialog } from './RejectDialog';
@@ -101,7 +102,7 @@ export function CertificateReview() {
                           title={t('dakhala.review.zoom')}
                           className="block w-full transition-opacity duration-150 hover:opacity-90"
                         >
-                          <img
+                          <SafeImage
                             src={d.url}
                             alt={d.name || ''}
                             className="h-24 w-full object-cover"

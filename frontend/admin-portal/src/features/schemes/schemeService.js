@@ -1,16 +1,26 @@
 import { apiClient } from '@/services/api-client';
 
-function toFormData(values, file) {
+/**
+ * Multipart body builder. Empty strings ARE sent — that's how an edit clears a field
+ * (the backend maps '' to unset); dropping them would silently keep the old value.
+ * `files` = { image?, attachments?: File[], removeAttachments?: string[], removeImage?: bool }.
+ */
+function toFormData(values, files = {}) {
   const form = new FormData();
   Object.entries(values).forEach(([k, v]) => {
-    if (v === undefined || v === null || v === '') return;
+    if (v === undefined || v === null) return;
     if (k === 'requiredDocuments' && Array.isArray(v)) {
       form.append(k, v.join('\n'));
     } else {
       form.append(k, v);
     }
   });
-  if (file) form.append('image', file);
+  if (files.image) form.append('image', files.image);
+  (files.attachments || []).forEach((f) => form.append('attachments', f));
+  if (files.removeAttachments?.length) {
+    form.append('removeAttachments', files.removeAttachments.join('\n'));
+  }
+  if (files.removeImage) form.append('removeImage', 'true');
   return form;
 }
 
@@ -23,12 +33,12 @@ export const schemeService = {
     const { data } = await apiClient.get(`/admin/schemes/${id}`);
     return data.data;
   },
-  async create(values, file) {
-    const { data } = await apiClient.post('/admin/schemes', toFormData(values, file));
+  async create(values, files) {
+    const { data } = await apiClient.post('/admin/schemes', toFormData(values, files));
     return data.data;
   },
-  async update(id, values, file) {
-    const { data } = await apiClient.put(`/admin/schemes/${id}`, toFormData(values, file));
+  async update(id, values, files) {
+    const { data } = await apiClient.put(`/admin/schemes/${id}`, toFormData(values, files));
     return data.data;
   },
   async publish(id) {

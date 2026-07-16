@@ -16,6 +16,13 @@ const schemeSchema = new Schema(
     applicationProcess: { type: String, trim: true },
     officialWebsite: { type: String, trim: true },
     imageUrl: { type: String },
+    // Optional supporting files (PDF forms, circulars) — additive, absent on older docs.
+    // NB: `type` must be declared as `{ type: String }` or mongoose reads it as the
+    // array's type declaration ("Cast to [string] failed").
+    attachments: {
+      type: [{ url: String, type: { type: String }, name: String, _id: false }],
+      default: [],
+    },
     publishDate: { type: Date },
     expiryDate: { type: Date },
     isPublished: { type: Boolean, default: false, index: true },

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Home, Droplets, FileText, CheckCircle2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
 import { Lightbox } from '@/components/Lightbox';
+import { SafeImage } from '@/components/SafeImage';
 import { PaymentStatusBadge } from './PaymentStatusBadge';
 
 /**
@@ -126,7 +127,7 @@ export function TaxCard({ record }) {
                   aria-label={t('tax.card.viewBill')}
                   className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
                 >
-                  <img src={b.url} alt="" className="h-16 w-16 object-cover" />
+                  <SafeImage src={b.url} className="h-16 w-16 object-cover" />
                 </button>
               ) : (
                 <a

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SafeImage } from '@/components/SafeImage';
 import { useTranslation } from 'react-i18next';
 import { Landmark } from 'lucide-react';
 
@@ -11,7 +12,7 @@ export function SchemeCard({ scheme }) {
       className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-xs transition-[box-shadow,transform] duration-150 hover:shadow-sm active:translate-y-px"
     >
       {scheme.imageUrl ? (
-        <img src={scheme.imageUrl} alt="" loading="lazy" className="h-28 w-full object-cover" />
+        <SafeImage src={scheme.imageUrl} loading="lazy" className="h-28 w-full object-cover" />
       ) : (
         <div className="flex h-28 w-full items-center justify-center bg-primary-subtle">
           <Landmark className="h-8 w-8 text-primary/40" aria-hidden="true" />

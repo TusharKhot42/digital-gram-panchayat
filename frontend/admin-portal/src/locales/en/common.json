@@ -347,7 +347,19 @@
       "save": "Save scheme",
       "created": "Scheme created",
       "updated": "Scheme updated",
-      "failed": "Could not save scheme"
+      "failed": "Could not save scheme",
+      "expiry": "Expiry date",
+      "expiryHint": "Scheme stays visible to villagers until the end of this day.",
+      "attachments": "Attachments (PDF or image)",
+      "addAttachments": "Add files",
+      "currentImage": "Current banner",
+      "removeImage": "Remove banner",
+      "undoRemove": "Undo",
+      "markedRemove": "Will be removed on save",
+      "attachmentsHint": "Up to 5 files, 5MB each. Existing files stay unless you remove them.",
+      "preview": "Preview",
+      "download": "Download",
+      "removeFile": "Remove"
     },
     "delete": {
       "title": "Delete scheme?",

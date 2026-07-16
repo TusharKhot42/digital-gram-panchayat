@@ -186,7 +186,9 @@
     "officerEmail": "Officer email",
     "officerWarning": "Only authorized Gram Panchayat officials can access this portal.",
     "forgot": "Forgot password?",
-    "forgotHint": "Please contact your Gram Panchayat office to reset your password."
+    "forgotHint": "Please contact your Gram Panchayat office to reset your password.",
+    "wrongTabOfficer": "This account is registered as an Officer. Please use Officer Login.",
+    "wrongTabVillager": "This account is not authorized for Officer Portal."
   },
   "complaint": {
     "category": {
@@ -313,7 +315,10 @@
       "requiredDocuments": "Required documents",
       "benefits": "Benefits",
       "applicationProcess": "How to apply",
-      "officialSite": "Official website"
+      "officialSite": "Official website",
+      "attachments": "Documents & forms",
+      "open": "Open",
+      "download": "Download"
     }
   },
   "tax": {

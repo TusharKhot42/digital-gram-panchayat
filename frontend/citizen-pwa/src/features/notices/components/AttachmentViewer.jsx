@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { FileText, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SafeImage } from '@/components/SafeImage';
 
 /**
  * Shows an image inline or a PDF link, with a download button. Uses the browser's native
@@ -14,7 +15,7 @@ export function AttachmentViewer({ url, type }) {
     <div className="rounded-lg border border-border bg-card p-3">
       {type === 'image' ? (
         <a href={url} target="_blank" rel="noopener noreferrer">
-          <img src={url} alt="" className="max-h-64 w-full rounded-md object-contain" />
+          <SafeImage src={url} className="max-h-64 min-h-24 w-full rounded-md object-contain" />
         </a>
       ) : (
         <div className="flex items-center gap-2 text-sm text-foreground">

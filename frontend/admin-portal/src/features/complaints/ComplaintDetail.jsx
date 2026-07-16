@@ -12,6 +12,7 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import { MapView } from '@/components/MapView';
 import { Lightbox } from '@/components/Lightbox';
 import { PageHeader } from '@/components/PageHeader';
+import { SafeImage } from '@/components/SafeImage';
 
 import { useComplaint, useUpdateComplaintStatus } from './hooks';
 
@@ -106,7 +107,7 @@ export function ComplaintDetail() {
                     aria-label={`${t('complaint.detail.photos')} ${i + 1}`}
                     className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
                   >
-                    <img src={src} alt="" className="h-28 w-28 object-cover" />
+                    <SafeImage src={src} className="h-28 w-28 object-cover" />
                   </button>
                 ))}
               </CardContent>

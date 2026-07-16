@@ -38,8 +38,21 @@ export function LoginForm({ mode = 'villager' }) {
   const onSubmit = async (values) => {
     try {
       const { user, token } = await authService.loginSession(values);
+      const isOfficerAccount = user.role === ROLES.OFFICER;
 
-      if (user.role === ROLES.OFFICER) {
+      // The tab must match the account's role. On a mismatch the issued token is simply
+      // discarded — nothing is stored, no session starts, the user is told which door
+      // to use. (Same endpoint either way; this is a UI gate, not an auth change.)
+      if (isOfficerAccount && !officer) {
+        toast.error(t('auth.wrongTabOfficer'));
+        return;
+      }
+      if (!isOfficerAccount && officer) {
+        toast.error(t('auth.wrongTabVillager'));
+        return;
+      }
+
+      if (isOfficerAccount) {
         // Officer: this app never stores the session — hand it to the admin portal.
         window.location.replace(`${ADMIN_URL}/auth/callback#token=${encodeURIComponent(token)}`);
         return;

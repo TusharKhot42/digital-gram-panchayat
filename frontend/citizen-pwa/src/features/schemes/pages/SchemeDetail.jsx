@@ -1,9 +1,19 @@
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ExternalLink, Landmark, FileText, CheckCircle2, Gift, ListOrdered } from 'lucide-react';
+import {
+  ExternalLink,
+  Landmark,
+  FileText,
+  CheckCircle2,
+  Gift,
+  ListOrdered,
+  Paperclip,
+  Download,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/PageHeader';
+import { SafeImage } from '@/components/SafeImage';
 import { useScheme } from '../hooks';
 
 /** One titled block of scheme copy. Renders nothing when the field is empty. */
@@ -42,9 +52,8 @@ export function SchemeDetail() {
 
       {/* Hero */}
       {s.imageUrl ? (
-        <img
+        <SafeImage
           src={s.imageUrl}
-          alt=""
           className="mb-4 h-44 w-full rounded-lg border border-border object-cover"
         />
       ) : (
@@ -89,6 +98,40 @@ export function SchemeDetail() {
 
       <Section title={t('scheme.detail.applicationProcess')} icon={ListOrdered}>
         {s.applicationProcess ? <p className={proseClass}>{s.applicationProcess}</p> : null}
+      </Section>
+
+      {/* Downloadable forms/circulars the officer attached to the scheme. */}
+      <Section title={t('scheme.detail.attachments')} icon={Paperclip}>
+        {s.attachments?.length ? (
+          <ul className="space-y-2">
+            {s.attachments.map((a) => (
+              <li key={a.url} className="flex items-center gap-2">
+                <FileText className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                <span className="min-w-0 flex-1 truncate text-body text-foreground">
+                  {a.name || a.url.split('/').pop()}
+                </span>
+                <a
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md px-2 py-1 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+                >
+                  {t('scheme.detail.open')}
+                </a>
+                <a
+                  href={a.url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('scheme.detail.download')}
+                  className="rounded p-1.5 text-muted-foreground transition-colors duration-150 hover:text-foreground"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </Section>
 
       {s.officialWebsite ? (
