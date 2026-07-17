@@ -2,7 +2,7 @@ import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
 import { Notice } from './notice.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
-import { uploadAttachment } from '../../utils/upload.js';
+import { uploadAttachment, deleteAsset } from '../../utils/upload.js';
 import { translateFields } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { broadcastNotice } from '../notifications/notification.service.js';
@@ -108,8 +108,10 @@ export async function updateNotice(id, officerId, body, file) {
 
   const attachment = await attach(file);
   if (attachment) {
+    const previous = notice.attachmentUrl;
     notice.attachmentUrl = attachment.url;
     notice.attachmentType = attachment.type;
+    await deleteAsset(previous); // release the replaced file
   }
 
   // Refresh bilingual versions from the updated fields.

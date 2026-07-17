@@ -237,7 +237,8 @@
       "gps_denied": "Location permission denied.",
       "gps_unavailable": "Location is unavailable on this device.",
       "gps_timeout": "Location request timed out.",
-      "gps_error": "Could not get your location."
+      "gps_error": "Could not get your location.",
+      "dragPin": "Drag the pin or tap the map to correct the location."
     },
     "history": {
       "title": "My complaints",
@@ -463,5 +464,11 @@
       "Approved": "Approved",
       "Download": "Download"
     }
+  },
+  "doc": {
+    "open": "Open in new tab",
+    "download": "Download",
+    "fullscreen": "View fullscreen",
+    "preview": "Preview"
   }
 }

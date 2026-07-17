@@ -2,7 +2,8 @@ import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
 import { Scheme } from './scheme.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
-import { uploadAttachment } from '../../utils/upload.js';
+import { uploadAttachment, deleteAsset, deleteAssets } from '../../utils/upload.js';
+import { translateFields } from '../translation/translation.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 
 function buildSchemeId(year, seq) {
@@ -86,6 +87,20 @@ export async function createScheme({ officerId, body, files }) {
   const attachments = await uploadExtras(extra);
   const published = body.isPublished === true || body.isPublished === 'true';
 
+  // Auto-translate the human-authored fields into both languages (source auto-detected),
+  // matching the notice module. Additive — never throws; original fields remain the source.
+  const i18n = await translateFields(
+    {
+      title: body.title,
+      summary: body.summary,
+      description: body.description,
+      eligibility: body.eligibility,
+      benefits: body.benefits,
+      applicationProcess: body.applicationProcess,
+    },
+    body.lang,
+  );
+
   const scheme = await Scheme.create({
     schemeId: buildSchemeId(year, seq),
     title: body.title,
@@ -98,6 +113,7 @@ export async function createScheme({ officerId, body, files }) {
     applicationProcess: body.applicationProcess || undefined,
     officialWebsite: body.officialWebsite || undefined,
     imageUrl: image?.url,
+    i18n,
     attachments,
     publishDate: published ? body.publishDate || new Date() : body.publishDate || undefined,
     expiryDate: normalizeExpiry(body.expiryDate),
@@ -148,13 +164,18 @@ export async function updateScheme(id, officerId, body, files) {
     if (published && !scheme.publishDate) scheme.publishDate = new Date();
   }
 
-  // Banner image: replace when a new file arrives, clear when explicitly asked.
+  // Banner image: replace when a new file arrives, clear when explicitly asked. The old
+  // asset is destroyed (Cloudinary) or dropped from disk (mock) so nothing is orphaned.
   const { image: imageFile, extra } = pickSchemeFiles(files);
   if (imageFile) {
+    const previous = scheme.imageUrl;
     const image = await uploadAttachment(imageFile, 'schemes');
     scheme.imageUrl = image.url;
+    await deleteAsset(previous);
   } else if (body.removeImage === 'true' || body.removeImage === true) {
+    const previous = scheme.imageUrl;
     scheme.imageUrl = undefined;
+    await deleteAsset(previous);
   }
 
   // Attachments: existing ones survive unless their URL is listed for removal; new
@@ -166,10 +187,25 @@ export async function updateScheme(id, officerId, body, files) {
         .map((u) => u.trim())
         .filter(Boolean),
     );
+    const dropped = (scheme.attachments || []).filter((a) => remove.has(a.url));
     scheme.attachments = (scheme.attachments || []).filter((a) => !remove.has(a.url));
+    await deleteAssets(dropped.map((a) => a.url));
   }
   const added = await uploadExtras(extra);
   if (added.length) scheme.attachments = [...(scheme.attachments || []), ...added];
+
+  // Keep the bilingual block in step with any edited text fields.
+  scheme.i18n = await translateFields(
+    {
+      title: scheme.title,
+      summary: scheme.summary,
+      description: scheme.description,
+      eligibility: scheme.eligibility,
+      benefits: scheme.benefits,
+      applicationProcess: scheme.applicationProcess,
+    },
+    body.lang,
+  );
 
   await scheme.save();
   await audit(officerId, 'scheme.update', scheme, before, { title: scheme.title });

@@ -8,8 +8,8 @@ import {
   Gift,
   ListOrdered,
   Paperclip,
-  Download,
 } from 'lucide-react';
+import { DocumentViewer } from '@/components/DocumentViewer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/PageHeader';
@@ -105,29 +105,8 @@ export function SchemeDetail() {
         {s.attachments?.length ? (
           <ul className="space-y-2">
             {s.attachments.map((a) => (
-              <li key={a.url} className="flex items-center gap-2">
-                <FileText className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                <span className="min-w-0 flex-1 truncate text-body text-foreground">
-                  {a.name || a.url.split('/').pop()}
-                </span>
-                <a
-                  href={a.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-md px-2 py-1 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
-                >
-                  {t('scheme.detail.open')}
-                </a>
-                <a
-                  href={a.url}
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={t('scheme.detail.download')}
-                  className="rounded p-1.5 text-muted-foreground transition-colors duration-150 hover:text-foreground"
-                >
-                  <Download className="h-4 w-4" aria-hidden="true" />
-                </a>
+              <li key={a.url}>
+                <DocumentViewer variant="row" doc={a} />
               </li>
             ))}
           </ul>
