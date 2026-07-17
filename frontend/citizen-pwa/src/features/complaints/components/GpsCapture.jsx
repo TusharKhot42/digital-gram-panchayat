@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
  * GPS capture control. Optional by design — if denied/unavailable the citizen still
  * submits (blueprint: "Not Available", proceed).
  */
-export function GpsCapture({ coords, status, onRequest }) {
+export function GpsCapture({ coords, status, address, onRequest }) {
   const { t } = useTranslation();
 
   return (
@@ -37,9 +37,13 @@ export function GpsCapture({ coords, status, onRequest }) {
           })}
           {coords.accuracy ? ` (±${Math.round(coords.accuracy)}m)` : ''}
         </p>
-      ) : status === 'loading' ? (
+      ) : null}
+
+      {coords && address ? <p className="text-xs text-muted-foreground">{address}</p> : null}
+
+      {!coords && status === 'loading' ? (
         <p className="text-xs text-muted-foreground">{t('complaint.form.gpsFetching')}</p>
-      ) : status !== 'idle' ? (
+      ) : !coords && status !== 'idle' ? (
         <div className="space-y-1">
           <p className="text-xs text-destructive">{t(`complaint.form.gps_${status}`)}</p>
           <button

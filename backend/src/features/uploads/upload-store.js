@@ -44,6 +44,13 @@ export function getFile(key) {
   return { buffer, contentType: meta.contentType, filename: meta.filename };
 }
 
+/** Delete a stored file (and its sidecar) by key. Safe to call with an unknown key. */
+export function removeFile(key) {
+  if (!KEY_PATTERN.test(key || '')) return;
+  fs.rmSync(path.join(UPLOAD_DIR, key), { force: true });
+  fs.rmSync(path.join(UPLOAD_DIR, `${key}.json`), { force: true });
+}
+
 export function clearStore() {
   if (!fs.existsSync(UPLOAD_DIR)) return;
   for (const entry of fs.readdirSync(UPLOAD_DIR)) {

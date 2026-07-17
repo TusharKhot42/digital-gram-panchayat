@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { generateIdempotencyKey } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import { MapView } from '@/components/MapView';
 import { enqueueComplaint } from '@/services/offline-queue';
 import { CategorySelect } from '../components/CategorySelect';
 import { PhotoUploader } from '../components/PhotoUploader';
@@ -17,7 +18,7 @@ export function NewComplaint() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [images, setImages] = useState([]);
-  const { coords, status, request } = useGeolocation();
+  const { coords, status, address, request, setManual } = useGeolocation();
   const createMutation = useCreateComplaint();
 
   const {
@@ -111,7 +112,21 @@ export function NewComplaint() {
         </FormRow>
 
         <PhotoUploader files={images} onChange={setImages} />
-        <GpsCapture coords={coords} status={status} onRequest={request} />
+        <GpsCapture coords={coords} status={status} address={address} onRequest={request} />
+
+        {/* Once a fix exists, show it on a map and let the citizen drag the pin (or tap)
+            to correct an imprecise reading. Movable — accuracy resets to a manual point. */}
+        {coords ? (
+          <div className="space-y-1">
+            <MapView
+              latitude={coords.latitude}
+              longitude={coords.longitude}
+              height={200}
+              onMove={setManual}
+            />
+            <p className="text-xs text-muted-foreground">{t('complaint.form.dragPin')}</p>
+          </div>
+        ) : null}
 
         <Button type="submit" className="w-full" disabled={createMutation.isPending}>
           {createMutation.isPending ? t('common.loading') : t('complaint.form.submit')}

@@ -337,3 +337,50 @@ describe('scheme editing — attachments, expiry, publish toggle (stabilization)
     expect(res.body.error.code).toBe('INVALID_FILE_TYPE');
   });
 });
+
+describe('scheme bilingual + asset cleanup (production improvements)', () => {
+  test('create auto-translates fields into en+mr', async () => {
+    const token = await officerToken();
+    const res = await request(app)
+      .post('/api/v1/admin/schemes')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Clean Water Scheme')
+      .field('description', 'Piped water for every household')
+      .field('category', 'Other');
+    expect(res.status).toBe(201);
+    expect(res.body.data.i18n).toBeDefined();
+    expect(res.body.data.i18n.title.en).toBe('Clean Water Scheme');
+    expect(res.body.data.i18n.title.mr).toContain('Clean Water Scheme');
+    // both language slots populated
+    expect(res.body.data.i18n.description.mr).toBeTruthy();
+  });
+
+  test('replacing the banner removes the old mock asset from the store', async () => {
+    const token = await officerToken();
+    const created = await request(app)
+      .post('/api/v1/admin/schemes')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Banner Swap Scheme')
+      .field('description', 'Testing banner replacement cleanup')
+      .field('category', 'Other')
+      .attach('image', PNG, 'old-banner.png');
+    const id = created.body.data.id;
+    const oldUrl = created.body.data.imageUrl;
+    expect(oldUrl).toMatch(/\/api\/v1\/uploads\//);
+    // old asset currently served
+    expect((await request(app).get(new URL(oldUrl).pathname)).status).toBe(200);
+
+    // Replace the banner.
+    const updated = await request(app)
+      .put(`/api/v1/admin/schemes/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .attach('image', PNG, 'new-banner.png');
+    expect(updated.status).toBe(200);
+    expect(updated.body.data.imageUrl).not.toBe(oldUrl);
+
+    // Old asset is gone (deleteAsset dropped it from the disk store).
+    expect((await request(app).get(new URL(oldUrl).pathname)).status).toBe(404);
+    // New one resolves.
+    expect((await request(app).get(new URL(updated.body.data.imageUrl).pathname)).status).toBe(200);
+  });
+});

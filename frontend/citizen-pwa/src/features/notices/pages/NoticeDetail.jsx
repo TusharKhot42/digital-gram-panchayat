@@ -4,7 +4,7 @@ import { Radio } from 'lucide-react';
 import { formatDateTime, pickLocale } from '@dgp/shared';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader, SectionHeader } from '@/components/PageHeader';
-import { AttachmentViewer } from '../components/AttachmentViewer';
+import { DocumentViewer } from '@/components/DocumentViewer';
 import { useNotice } from '../hooks';
 
 export function NoticeDetail() {
@@ -64,9 +64,14 @@ export function NoticeDetail() {
       {n.attachmentUrl ? (
         <>
           <SectionHeader title={t('notice.detail.attachment')} />
-          <Card className="overflow-hidden">
-            <AttachmentViewer url={n.attachmentUrl} type={n.attachmentType} />
-          </Card>
+          <DocumentViewer
+            variant="row"
+            doc={{
+              url: n.attachmentUrl,
+              type: n.attachmentType,
+              name: t('notice.detail.attachment'),
+            }}
+          />
         </>
       ) : null}
     </div>

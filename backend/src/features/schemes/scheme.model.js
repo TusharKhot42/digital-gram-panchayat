@@ -16,6 +16,9 @@ const schemeSchema = new Schema(
     applicationProcess: { type: String, trim: true },
     officialWebsite: { type: String, trim: true },
     imageUrl: { type: String },
+    // Original fields above stay the source of truth; citizens read i18n by selected language.
+    // Absent on older documents — pickLocale() falls back to the plain field.
+    i18n: { type: Schema.Types.Mixed },
     // Optional supporting files (PDF forms, circulars) — additive, absent on older docs.
     // NB: `type` must be declared as `{ type: String }` or mongoose reads it as the
     // array's type declaration ("Cast to [string] failed").

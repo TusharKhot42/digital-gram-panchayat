@@ -611,5 +611,11 @@
       "schemes": "Schemes",
       "notices": "Notices"
     }
+  },
+  "doc": {
+    "open": "Open in new tab",
+    "download": "Download",
+    "fullscreen": "View fullscreen",
+    "preview": "Preview"
   }
 }
