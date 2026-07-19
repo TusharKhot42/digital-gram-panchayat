@@ -9,12 +9,19 @@ import { env } from '../config/env.js';
  *
  * @param {{ windowMs?: number, max: number, code?: string, message?: string }} opts
  */
-export function createRateLimiter({ windowMs = env.RATE_LIMIT_WINDOW_MS, max, code, message }) {
+export function createRateLimiter({
+  windowMs = env.RATE_LIMIT_WINDOW_MS,
+  max,
+  code,
+  message,
+  keyGenerator,
+}) {
   return rateLimit({
     windowMs,
     max,
     standardHeaders: true,
     legacyHeaders: false,
+    ...(keyGenerator ? { keyGenerator } : {}),
     skip: () => env.NODE_ENV === 'test',
     handler(_req, res) {
       res
@@ -35,6 +42,23 @@ export const authLimiter = createRateLimiter({
   max: 20,
   code: 'AUTH_RATE_LIMITED',
   message: 'Too many attempts. Please wait a few minutes and try again.',
+});
+
+/**
+ * Per-account login throttle, layered on top of the IP-based authLimiter. Keys by the
+ * submitted identifier (mobile/email) as well as the IP, so a single account can't be
+ * brute-forced even from rotating IPs, and one IP can't spray many accounts. Falls back to
+ * IP-only when no identifier is present. Runs after body parsing, so req.body is available.
+ */
+export const loginThrottle = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  code: 'AUTH_RATE_LIMITED',
+  message: 'Too many attempts for this account. Please wait a few minutes and try again.',
+  keyGenerator(req) {
+    const id = req.body?.identifier || req.body?.email || req.body?.mobile || '';
+    return `${req.ip}:${String(id).toLowerCase()}`;
+  },
 });
 
 // Complaint submission — medium.

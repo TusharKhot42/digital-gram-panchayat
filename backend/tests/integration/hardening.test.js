@@ -72,6 +72,12 @@ describe('security headers (helmet + cache)', () => {
     expect(res.headers['cache-control']).toBe('no-store');
     expect(res.headers['x-response-time']).toMatch(/ms$/);
   });
+
+  test('sends a locked-down Content-Security-Policy for the JSON API', async () => {
+    const res = await request(app).get('/api/v1/health');
+    expect(res.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+  });
 });
 
 describe('CORS allowlist', () => {

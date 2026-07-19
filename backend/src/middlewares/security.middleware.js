@@ -5,15 +5,28 @@ import { env } from '../config/env.js';
 import { AppError } from '../utils/app-error.js';
 
 /**
- * Helmet tuned for a JSON API (no HTML is served from here, so CSP is unnecessary and would
- * only risk breaking clients). HSTS is enabled in production; images/attachments live on a
- * CDN, so cross-origin resource sharing is allowed.
+ * Helmet tuned for a JSON API. The API serves no HTML, so a maximally-restrictive CSP is
+ * both safe and correct: should any response ever be rendered as a document (an error page,
+ * a mistaken direct navigation), it may load nothing at all. HSTS is enabled in production so
+ * browsers pin HTTPS; images/attachments live on a CDN, so cross-origin resource sharing is
+ * allowed.
  */
 export function securityHeaders() {
   return helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+        baseUri: ["'none'"],
+        formAction: ["'none'"],
+      },
+    },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-    hsts: env.NODE_ENV === 'production',
+    hsts:
+      env.NODE_ENV === 'production'
+        ? { maxAge: 15552000, includeSubDomains: true, preload: true }
+        : false,
   });
 }
 

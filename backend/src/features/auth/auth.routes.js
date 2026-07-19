@@ -3,7 +3,7 @@ import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
-import { authLimiter } from '../../middlewares/rate-limit.middleware.js';
+import { authLimiter, loginThrottle } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './auth.controller.js';
 import {
   registerValidation,
@@ -17,12 +17,20 @@ import {
 export const citizenAuthRouter = Router();
 
 citizenAuthRouter.post('/register', authLimiter, registerValidation, validate, controller.register);
-citizenAuthRouter.post('/login', authLimiter, loginValidation, validate, controller.login);
+citizenAuthRouter.post(
+  '/login',
+  authLimiter,
+  loginThrottle,
+  loginValidation,
+  validate,
+  controller.login,
+);
 // Shared login page: identifier (mobile or email) + password, any role. The role-specific
 // /auth/login and /admin/login endpoints stay for backward compatibility.
 citizenAuthRouter.post(
   '/session',
   authLimiter,
+  loginThrottle,
   unifiedLoginValidation,
   validate,
   controller.unifiedLogin,
@@ -44,6 +52,7 @@ export const adminAuthRouter = Router();
 adminAuthRouter.post(
   '/login',
   authLimiter,
+  loginThrottle,
   officerLoginValidation,
   validate,
   controller.officerLogin,
