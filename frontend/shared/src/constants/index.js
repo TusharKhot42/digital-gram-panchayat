@@ -186,7 +186,7 @@ export const MAX_CERT_DOCUMENTS = 5;
  * series beyond the semantic four.
  */
 export const CHART_COLORS = [
-  '#1E3A5F', // primary navy
+  '#1E3A8A', // primary royal blue
   '#0F766E', // teal
   '#D97706', // amber
   '#2563EB', // info blue
