@@ -21,6 +21,30 @@ export default defineConfig({
   fullyParallel: false,
   retries: 0,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'e2e/report' }]],
+  // In CI, boot the full stack; locally, reuse whatever the developer already has running.
+  // Backend env (MONGODB_URI, JWT_SECRET) is provided by the CI job.
+  webServer: process.env.CI
+    ? [
+        {
+          command: 'npm run dev:server',
+          url: 'http://localhost:5000/api/v1/health',
+          timeout: 60_000,
+          reuseExistingServer: false,
+        },
+        {
+          command: 'npm run dev:citizen',
+          url: CITIZEN_URL,
+          timeout: 60_000,
+          reuseExistingServer: false,
+        },
+        {
+          command: 'npm run dev:admin',
+          url: ADMIN_URL,
+          timeout: 60_000,
+          reuseExistingServer: false,
+        },
+      ]
+    : undefined,
   use: {
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',

@@ -42,8 +42,11 @@ export function previewUrl(url, width = 1000) {
  */
 export function documentKind({ type, url, name } = {}) {
   if (type === 'image' || type === 'pdf') return type;
-  const s = `${name || ''} ${url || ''}`.toLowerCase();
-  if (/\.(png|jpe?g|webp|gif|bmp|svg)(\?|$)/.test(s)) return 'image';
-  if (/\.pdf(\?|$)/.test(s)) return 'pdf';
+  // Test name and url independently — concatenating them broke the end-anchor when only
+  // one was present (a trailing space left "report.pdf " which never matches `\.pdf$`).
+  const candidates = [name, url].filter(Boolean).map((s) => s.toLowerCase());
+  const matches = (re) => candidates.some((s) => re.test(s));
+  if (matches(/\.(png|jpe?g|webp|gif|bmp|svg)(\?|$)/)) return 'image';
+  if (matches(/\.pdf(\?|$)/)) return 'pdf';
   return 'file';
 }
