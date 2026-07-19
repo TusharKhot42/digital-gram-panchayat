@@ -1,0 +1,26 @@
+# Normalize line endings so Windows checkouts stop rewriting LF↔CRLF on every commit.
+# Text files are stored with LF in the repo; Git converts on checkout per the platform.
+* text=auto eol=lf
+
+# Explicitly text (LF) — source, config, docs.
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.svg   text eol=lf
+
+# Binary — never touch.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.pdf   binary
