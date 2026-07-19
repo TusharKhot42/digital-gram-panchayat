@@ -6,12 +6,12 @@ deliberate and noted below.
 
 ## 1. Where the system lives
 
-| Layer        | File                                                       | Role                                                                        |
-| ------------ | ---------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Tokens       | `frontend/{citizen-pwa,admin-portal}/src/styles/index.css` | CSS variables for colour, radius, focus, motion. Light + dark.              |
-| Token bridge | `frontend/{citizen-pwa,admin-portal}/tailwind.config.js`   | Exposes tokens as Tailwind utilities (`bg-primary`, `text-body`, …).        |
-| Primitives   | `src/components/ui/*`                                      | Button, Card, Input/Select/Textarea, Field, Chip, Table, Dialog.            |
-| Patterns     | `src/components/*`                                         | PageHeader, EmptyState, Stepper, Timeline, Lightbox, Pagination, FilterBar. |
+| Layer        | File                                                       | Role                                                                                                   |
+| ------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Tokens       | `frontend/{citizen-pwa,admin-portal}/src/styles/index.css` | CSS variables for colour, radius, focus, motion. Light + dark.                                         |
+| Token bridge | `frontend/{citizen-pwa,admin-portal}/tailwind.config.js`   | Exposes tokens as Tailwind utilities (`bg-primary`, `text-body`, …).                                   |
+| Primitives   | `src/components/ui/*`                                      | Button, Card, Input/Select/Textarea, Field, Chip, Table, Dialog.                                       |
+| Patterns     | `src/components/*`                                         | PageHeader, EmptyState, Stepper, Timeline, Lightbox, Pagination, FilterBar, DocumentViewer, SafeImage. |
 
 The two `index.css` files are identical except for the `.dgp-page` rule: `max-w-md` with its
 own gutters on the citizen PWA (a phone column), `max-w-7xl` on the admin portal (a desk,
@@ -22,24 +22,29 @@ palette can change in one file. This is enforced by convention plus the audit in
 
 ## 2. Colour palette
 
-| Role              | Hex       | Token                | Used for                                   |
-| ----------------- | --------- | -------------------- | ------------------------------------------ |
-| Primary           | `#166534` | `--primary`          | Brand, primary buttons, active nav, links  |
-| Primary hover     | `#15803D` | `--primary-hover`    | Primary button/link hover                  |
-| Primary light     | `#DCFCE7` | `--primary-subtle`   | Icon discs, active pills, soft brand fills |
-| Secondary         | `#334155` | `--slate`            | Dense neutral text                         |
-| Background        | `#F8FAFC` | `--background`       | Page canvas                                |
-| Surface           | `#FFFFFF` | `--card`             | Cards, tables, dialogs                     |
-| Surface secondary | `#F1F5F9` | `--secondary`        | Table headers, bill strips, inset rows     |
-| Border            | `#E2E8F0` | `--border`           | Hairlines, dividers                        |
-| Text primary      | `#0F172A` | `--foreground`       | Headings, values                           |
-| Text secondary    | `#475569` | `--body-foreground`  | Long-form prose                            |
-| Muted             | `#64748B` | `--muted-foreground` | Labels, captions, metadata                 |
-| Success           | `#16A34A` | `--success`          | Paid, delivered, resolved                  |
-| Warning           | `#F59E0B` | `--warning`          | Offline, cost warnings                     |
-| Danger            | `#DC2626` | `--destructive`      | Errors, delete, dues                       |
-| Info              | `#2563EB` | `--info`             | Queued, informational                      |
-| Pending           | `#D97706` | `--pending`          | Awaiting-action states                     |
+Current palette — government royal blue (retuned from the earlier green/navy revisions;
+the token seam meant the swap touched only `index.css` + the chart hex list).
+
+| Role              | Hex       | Token                | Used for                                |
+| ----------------- | --------- | -------------------- | --------------------------------------- |
+| Primary           | `#1E3A8A` | `--primary`          | Brand, primary buttons, active nav      |
+| Primary hover     | `#1B3378` | `--primary-hover`    | Primary button/link hover               |
+| Primary light     | `#DBEAFE` | `--primary-subtle`   | Icon discs, active pills, selected rows |
+| Secondary / link  | `#2563EB` | `--info`             | Links, secondary accent, focus ring     |
+| Accent            | `#F59E0B` | `--warning`          | Amber accent, offline/cost warnings     |
+| Background        | `#F8FAFC` | `--background`       | Page canvas                             |
+| Surface           | `#FFFFFF` | `--card`             | Cards, tables, dialogs                  |
+| Surface secondary | `#F1F5F9` | `--secondary`        | Table headers, bill strips, inset rows  |
+| Border            | `#E2E8F0` | `--border`           | Hairlines, dividers                     |
+| Text primary      | `#0F172A` | `--foreground`       | Headings, values                        |
+| Text secondary    | `#475569` | `--body-foreground`  | Long-form prose                         |
+| Muted             | `#64748B` | `--muted-foreground` | Labels, captions, metadata              |
+| Success           | `#16A34A` | `--success`          | Paid, delivered, resolved               |
+| Danger            | `#DC2626` | `--destructive`      | Errors, delete, dues                    |
+| Focus ring        | `#2563EB` | `--ring`             | The deliberately-blue focus ring        |
+
+> The focus ring is intentionally the secondary blue, not the primary — it stays visible
+> against navy/blue primary controls.
 
 ### The `-strong` variants exist for a reason
 
