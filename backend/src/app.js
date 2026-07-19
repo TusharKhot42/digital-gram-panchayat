@@ -18,6 +18,7 @@ import {
   adminNotificationRouter,
 } from './features/notifications/notification.routes.js';
 import { securityHeaders, strictCors, noStore } from './middlewares/security.middleware.js';
+import { requestId } from './middlewares/request-id.middleware.js';
 import { requestTiming } from './middlewares/request-timing.middleware.js';
 import { generalLimiter } from './middlewares/rate-limit.middleware.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
@@ -44,6 +45,7 @@ export function createApp() {
   app.use(mongoSanitize());
 
   // --- Observability ---
+  app.use(requestId); // correlation id first, so timing/morgan/errors can reference it
   app.use(requestTiming);
   app.use(morgan(env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 

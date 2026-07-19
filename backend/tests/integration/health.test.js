@@ -55,3 +55,22 @@ describe('health / liveness / readiness / metrics', () => {
     await mongoose.connect(mongo.getUri()); // restore for afterAll
   });
 });
+
+describe('request correlation id', () => {
+  test('generates an X-Request-Id when the client sends none', async () => {
+    const res = await request(app).get('/api/v1/health');
+    expect(res.headers['x-request-id']).toMatch(/^[0-9a-f-]{36}$/);
+  });
+
+  test('honours a client-supplied X-Request-Id', async () => {
+    const res = await request(app).get('/api/v1/health').set('X-Request-Id', 'trace-abc-123');
+    expect(res.headers['x-request-id']).toBe('trace-abc-123');
+  });
+
+  test('rejects a malformed id and generates its own', async () => {
+    const res = await request(app)
+      .get('/api/v1/health')
+      .set('X-Request-Id', 'bad id with spaces!!');
+    expect(res.headers['x-request-id']).toMatch(/^[0-9a-f-]{36}$/);
+  });
+});

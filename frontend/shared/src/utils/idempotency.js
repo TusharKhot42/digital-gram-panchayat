@@ -14,3 +14,7 @@ export function generateIdempotencyKey(prefix = 'idem') {
 
 // Header name the backend middleware reads. Single source for client + server.
 export const IDEMPOTENCY_HEADER = 'Idempotency-Key';
+
+// Correlation id echoed on every response and threaded through server logs. Clients may
+// send their own; otherwise the server generates one. Single source for client + server.
+export const REQUEST_ID_HEADER = 'X-Request-Id';

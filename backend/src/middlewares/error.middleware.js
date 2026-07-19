@@ -31,7 +31,7 @@ export function errorMiddleware(err, req, res, _next) {
   }
 
   const error = err instanceof Error ? err : new Error('Unknown error');
-  reportError(error, { path: req.path, method: req.method });
+  reportError(error, { path: req.path, method: req.method, requestId: req.id });
 
   res
     .status(500)

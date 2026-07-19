@@ -15,6 +15,7 @@ export function requestTiming(req, res, next) {
   res.on('finish', () => {
     const ms = elapsed();
     const line = {
+      requestId: req.id,
       method: req.method,
       path: req.originalUrl,
       status: res.statusCode,

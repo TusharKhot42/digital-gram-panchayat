@@ -1,6 +1,6 @@
 import helmet from 'helmet';
 import cors from 'cors';
-import { IDEMPOTENCY_HEADER } from '@dgp/shared';
+import { IDEMPOTENCY_HEADER, REQUEST_ID_HEADER } from '@dgp/shared';
 import { env } from '../config/env.js';
 import { AppError } from '../utils/app-error.js';
 
@@ -33,7 +33,8 @@ export function strictCors() {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', IDEMPOTENCY_HEADER],
+    allowedHeaders: ['Content-Type', 'Authorization', IDEMPOTENCY_HEADER, REQUEST_ID_HEADER],
+    exposedHeaders: [REQUEST_ID_HEADER], // let the SPA read the id for support/debugging
     maxAge: 600,
   });
 }
