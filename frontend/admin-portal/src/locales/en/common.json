@@ -20,7 +20,8 @@
     "schemes": "Schemes",
     "users": "Users",
     "notifications": "Notifications",
-    "reports": "Reports"
+    "reports": "Reports",
+    "audit": "Audit"
   },
   "ntf": {
     "title": "Notifications",
@@ -617,5 +618,34 @@
     "download": "Download",
     "fullscreen": "View fullscreen",
     "preview": "Preview"
+  },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "Every create, update and delete recorded across the system.",
+    "actionFilter": "Filter by action…",
+    "allEntities": "All modules",
+    "loadError": "Could not load the audit log",
+    "empty": "No audit entries yet.",
+    "total": "{{total}} entries",
+    "col": {
+      "when": "When",
+      "actor": "Actor",
+      "action": "Action",
+      "entity": "Module"
+    },
+    "role": {
+      "officer": "Officer",
+      "citizen": "Citizen",
+      "system": "System"
+    },
+    "entity": {
+      "complaints": "Complaints",
+      "notices": "Notices",
+      "schemes": "Schemes",
+      "taxrecords": "Tax",
+      "certificateapplications": "Certificates",
+      "users": "Users",
+      "notifications": "Notifications"
+    }
   }
 }

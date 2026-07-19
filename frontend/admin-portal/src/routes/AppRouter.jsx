@@ -49,6 +49,7 @@ const BroadcastForm = lazyNamed(
   'BroadcastForm',
 );
 const ReportsPage = lazyNamed(() => import('@/features/reports/ReportsPage'), 'ReportsPage');
+const AuditLogPage = lazyNamed(() => import('@/features/audit/AuditLogPage'), 'AuditLogPage');
 
 const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
 
@@ -83,6 +84,7 @@ const router = createBrowserRouter([
           { path: 'notifications/broadcast', element: page(<BroadcastForm />) },
           { path: 'notifications/:id', element: page(<NotificationDetail />) },
           { path: 'reports', element: page(<ReportsPage />) },
+          { path: 'audit', element: page(<AuditLogPage />) },
           { path: '*', element: page(<NotFound />) },
         ],
       },

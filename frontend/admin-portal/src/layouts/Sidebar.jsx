@@ -10,6 +10,7 @@ import {
   Users,
   BarChart3,
   Bell,
+  ScrollText,
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -26,6 +27,7 @@ const items = [
   { to: '/users', label: 'nav.users', icon: Users },
   { to: '/notifications', label: 'nav.notifications', icon: Bell },
   { to: '/reports', label: 'nav.reports', icon: BarChart3 },
+  { to: '/audit', label: 'nav.audit', icon: ScrollText },
 ];
 
 export function Sidebar() {

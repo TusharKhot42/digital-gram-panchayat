@@ -13,6 +13,7 @@ import { taxRouter, adminTaxRouter } from './features/tax/tax.routes.js';
 import { dakhalaRouter, adminDakhalaRouter } from './features/certificates/certificate.routes.js';
 import { adminDashboardRouter } from './features/dashboard/dashboard.routes.js';
 import { adminUserRouter } from './features/users/user.routes.js';
+import { adminAuditRouter } from './features/audit/audit.routes.js';
 import {
   notificationRouter,
   adminNotificationRouter,
@@ -71,6 +72,7 @@ export function createApp() {
   apiRouter.use('/admin/dakhala', adminDakhalaRouter);
   apiRouter.use('/admin/dashboard', adminDashboardRouter);
   apiRouter.use('/admin/users', adminUserRouter);
+  apiRouter.use('/admin/audit', adminAuditRouter);
   apiRouter.use('/notifications', notificationRouter);
   apiRouter.use('/admin/notifications', adminNotificationRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);

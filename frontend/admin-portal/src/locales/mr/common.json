@@ -20,7 +20,8 @@
     "schemes": "योजना",
     "users": "वापरकर्ते",
     "notifications": "सूचना",
-    "reports": "अहवाल"
+    "reports": "अहवाल",
+    "audit": "ऑडिट"
   },
   "ntf": {
     "title": "सूचना",
@@ -617,5 +618,34 @@
     "download": "डाउनलोड",
     "fullscreen": "पूर्ण स्क्रीन पहा",
     "preview": "पूर्वावलोकन"
+  },
+  "audit": {
+    "title": "ऑडिट नोंद",
+    "subtitle": "प्रणालीतील प्रत्येक निर्मिती, बदल आणि हटवणे नोंदवलेले.",
+    "actionFilter": "क्रियेनुसार फिल्टर करा…",
+    "allEntities": "सर्व विभाग",
+    "loadError": "ऑडिट नोंद लोड करता आली नाही",
+    "empty": "अद्याप कोणतीही ऑडिट नोंद नाही.",
+    "total": "{{total}} नोंदी",
+    "col": {
+      "when": "कधी",
+      "actor": "कर्ता",
+      "action": "क्रिया",
+      "entity": "विभाग"
+    },
+    "role": {
+      "officer": "अधिकारी",
+      "citizen": "नागरिक",
+      "system": "प्रणाली"
+    },
+    "entity": {
+      "complaints": "तक्रारी",
+      "notices": "सूचना",
+      "schemes": "योजना",
+      "taxrecords": "कर",
+      "certificateapplications": "दाखले",
+      "users": "वापरकर्ते",
+      "notifications": "सूचना"
+    }
   }
 }
