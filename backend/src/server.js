@@ -1,6 +1,7 @@
 import { createApp } from './app.js';
 import { env } from './config/env.js';
 import { connectDatabase, disconnectDatabase } from './config/db.js';
+import { logStartupDiagnostics } from './config/diagnostics.js';
 import { logger } from './utils/logger.js';
 import { reportError } from './utils/error-reporter.js';
 
@@ -9,6 +10,7 @@ const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 async function bootstrap() {
   await connectDatabase();
+  logStartupDiagnostics();
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {
