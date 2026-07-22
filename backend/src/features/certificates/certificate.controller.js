@@ -40,8 +40,20 @@ export const review = asyncHandler(async (req, res) => {
 });
 
 export const approve = asyncHandler(async (req, res) => {
-  const app = await service.approve(req.params.id, req.user.id);
+  const app = await service.approve(req.params.id, req.user.id, {
+    applicationData: req.body?.applicationData,
+    officerRemarks: req.body?.officerRemarks,
+  });
   res.status(200).json(successResponse(app));
+});
+
+// ---- Public (no auth) ----
+export const verify = asyncHandler(async (req, res) => {
+  const result = await service.verifyCertificate({
+    verificationId: req.query.verificationId,
+    certificateNumber: req.query.certificateNumber,
+  });
+  res.status(200).json(successResponse(result));
 });
 
 export const reject = asyncHandler(async (req, res) => {

@@ -4,7 +4,7 @@ import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { uploadCertificateDocuments } from '../../middlewares/upload.middleware.js';
-import { certificateLimiter } from '../../middlewares/rate-limit.middleware.js';
+import { certificateLimiter, generalLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './certificate.controller.js';
 import {
   applyValidation,
@@ -12,6 +12,13 @@ import {
   rejectValidation,
   listQueryValidation,
 } from './certificate.validation.js';
+
+/**
+ * Public certificate verification — no auth. Mounted at /api/v1/certificates.
+ * Rate-limited to blunt certificate-number enumeration.
+ */
+export const certificateVerifyRouter = Router();
+certificateVerifyRouter.get('/verify', generalLimiter, controller.verify);
 
 /** Citizen certificate routes — mounted at /api/v1/dakhala. */
 export const dakhalaRouter = Router();

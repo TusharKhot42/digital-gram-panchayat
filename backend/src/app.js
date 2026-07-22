@@ -10,7 +10,11 @@ import { complaintRouter, adminComplaintRouter } from './features/complaints/com
 import { noticeRouter, adminNoticeRouter } from './features/notices/notice.routes.js';
 import { schemeRouter, adminSchemeRouter } from './features/schemes/scheme.routes.js';
 import { taxRouter, adminTaxRouter } from './features/tax/tax.routes.js';
-import { dakhalaRouter, adminDakhalaRouter } from './features/certificates/certificate.routes.js';
+import {
+  dakhalaRouter,
+  adminDakhalaRouter,
+  certificateVerifyRouter,
+} from './features/certificates/certificate.routes.js';
 import { adminDashboardRouter } from './features/dashboard/dashboard.routes.js';
 import { adminUserRouter } from './features/users/user.routes.js';
 import { adminAuditRouter } from './features/audit/audit.routes.js';
@@ -72,6 +76,7 @@ export function createApp() {
   apiRouter.use('/admin/tax', adminTaxRouter);
   apiRouter.use('/dakhala', dakhalaRouter);
   apiRouter.use('/admin/dakhala', adminDakhalaRouter);
+  apiRouter.use('/certificates', certificateVerifyRouter);
   apiRouter.use('/admin/dashboard', adminDashboardRouter);
   apiRouter.use('/admin/users', adminUserRouter);
   apiRouter.use('/admin/audit', adminAuditRouter);

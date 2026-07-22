@@ -7,16 +7,45 @@ import {
 } from '@dgp/shared';
 import { CertificateApplication } from './certificate.model.js';
 import { generateCertificatePdf } from './pdf.service.js';
+import { generateVerificationId, generateQrPngBuffer } from './qr.service.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { uploadAttachments, uploadPdfBuffer } from '../../utils/upload.js';
 import { translateToBoth } from '../translation/translation.service.js';
+import { getPublicProfile } from '../village/village.service.js';
 import { writeAudit } from '../audit/audit.service.js';
 import { notifyDakhalaStatus } from '../notifications/notification.service.js';
 
 function buildApplicationId(year, seq) {
   return `DKH-${year}-${String(seq).padStart(6, '0')}`;
+}
+
+// Short per-type code for the human-facing certificate serial.
+const CERT_TYPE_CODE = {
+  Residence: 'RES',
+  Birth: 'BIR',
+  Death: 'DEA',
+  SevenTwelve: '712',
+  Other: 'OTH',
+};
+
+/** Build a unique certificate serial, distinct from the applicationId. */
+async function buildCertificateNumber(type, year) {
+  const seq = await getNextSequence(`certno-${type}-${year}`);
+  return `CERT-${CERT_TYPE_CODE[type] || 'GEN'}-${year}-${String(seq).padStart(6, '0')}`;
+}
+
+/** Public shape returned by the certificate verification page. */
+function toVerification(app) {
+  return {
+    valid: app.status === 'Approved' && Boolean(app.certificateNumber),
+    status: app.status,
+    certificateType: app.certificateType,
+    certificateNumber: app.certificateNumber || null,
+    applicantName: app.applicationData?.fullName || app.applicationData?.childName || null,
+    issuedAt: app.issuedAt || null,
+  };
 }
 
 function escapeRegex(str) {
@@ -192,7 +221,13 @@ export async function getCertificate(id, user) {
   if (app.status !== 'Approved' || !app.pdfUrl) {
     throw new AppError(404, 'CERTIFICATE_NOT_READY', 'Certificate is not available yet');
   }
-  return { applicationId: app.applicationId, pdfUrl: app.pdfUrl };
+  return {
+    applicationId: app.applicationId,
+    pdfUrl: app.pdfUrl,
+    certificateNumber: app.certificateNumber || null,
+    verificationId: app.verificationId || null,
+    issuedAt: app.issuedAt || null,
+  };
 }
 
 /** @param {object} query */
@@ -244,11 +279,28 @@ export async function review(id, officerId) {
   return app.toJSON();
 }
 
+/** Village Profile is optional branding — never let its absence block issuance. */
+async function loadVillageSafe() {
+  try {
+    return await getPublicProfile();
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Approve: generate the PDF certificate, store it, mark Approved, notify + audit.
- * @param {string} id @param {string} officerId
+ * Approve: optionally apply officer edits, then generate the official certificate (number,
+ * verification id, QR, PDF), store it, mark Approved, notify + audit.
+ *
+ * `edits` is optional and backward compatible — an approve with no body behaves exactly as
+ * before. Supported edits (all optional): `applicationData` (merged over the existing data and
+ * re-validated for the type) and `officerRemarks` (printed on the certificate).
+ *
+ * @param {string} id
+ * @param {string} officerId
+ * @param {{ applicationData?: object, officerRemarks?: string }} [edits]
  */
-export async function approve(id, officerId) {
+export async function approve(id, officerId, edits = {}) {
   const app = await findActive(id);
   if (app.status === 'Approved') {
     // Idempotent — already approved.
@@ -258,24 +310,57 @@ export async function approve(id, officerId) {
     throw new AppError(409, 'ALREADY_REJECTED', 'A rejected application cannot be approved');
   }
 
-  const [citizen, officer] = await Promise.all([
+  // Officer edits before finalizing.
+  const editData = parseApplicationData(edits.applicationData);
+  if (Object.keys(editData).length > 0) {
+    app.applicationData = { ...app.applicationData, ...editData };
+    validateApplicationData(app.certificateType, app.applicationData);
+    app.markModified('applicationData');
+  }
+  if (typeof edits.officerRemarks === 'string') {
+    app.officerRemarks = edits.officerRemarks.trim() || undefined;
+  }
+
+  const [citizen, officer, village] = await Promise.all([
     User.findById(app.citizenId).select('fullName mobile village'),
     User.findById(officerId).select('fullName'),
+    loadVillageSafe(),
   ]);
 
-  const pdfBuffer = await generateCertificatePdf({ application: app.toJSON(), citizen, officer });
+  const year = new Date().getFullYear();
+  const certificateNumber = await buildCertificateNumber(app.certificateType, year);
+  const verificationId = generateVerificationId();
+  const issuedAt = new Date();
+  const qrBuffer = await generateQrPngBuffer(verificationId).catch(() => null);
+
+  const pdfBuffer = await generateCertificatePdf({
+    application: app.toJSON(),
+    citizen,
+    officer,
+    village,
+    qrBuffer,
+    certificateNumber,
+    verificationId,
+    issuedAt,
+  });
   const pdfUrl = await uploadPdfBuffer(pdfBuffer, 'certificates/pdf');
 
   const before = { status: app.status };
   app.status = 'Approved';
   app.pdfUrl = pdfUrl;
+  app.certificateNumber = certificateNumber;
+  app.verificationId = verificationId;
+  app.issuedAt = issuedAt;
   app.reviewedBy = officerId;
   app.updatedBy = officerId;
   app.rejectionReason = undefined;
-  app.history.push({ status: 'Approved', by: officerId, at: new Date() });
+  app.history.push({ status: 'Approved', by: officerId, at: issuedAt });
   await app.save();
 
-  await audit(officerId, ROLES.OFFICER, 'dakhala.approve', app, before, { status: 'Approved' });
+  await audit(officerId, ROLES.OFFICER, 'dakhala.approve', app, before, {
+    status: 'Approved',
+    certificateNumber,
+  });
   await notifyDakhalaStatus({
     recipientId: app.citizenId,
     mobile: citizen?.mobile,
@@ -328,6 +413,28 @@ export async function reject(id, officerId, reason) {
   });
 
   return app.toJSON();
+}
+
+/**
+ * Public certificate verification — no auth. Looks a certificate up by its opaque
+ * verificationId (from a scanned QR) or by its certificate number. Returns only the
+ * non-sensitive summary fields; if nothing matches, a "not valid" result (never a 404 leak).
+ * @param {{ verificationId?: string, certificateNumber?: string }} query
+ */
+export async function verifyCertificate({ verificationId, certificateNumber }) {
+  const filter = { isActive: true };
+  if (verificationId) filter.verificationId = verificationId;
+  else if (certificateNumber) filter.certificateNumber = certificateNumber.trim();
+  else
+    throw new AppError(
+      400,
+      'VALIDATION_ERROR',
+      'A verification id or certificate number is required',
+    );
+
+  const app = await CertificateApplication.findOne(filter).catch(() => null);
+  if (!app) return { valid: false };
+  return toVerification(app.toJSON());
 }
 
 /** Internal soft delete. @param {string} id @param {string} officerId */

@@ -39,6 +39,18 @@ const certificateSchema = new Schema(
     // Auto-generated bilingual { en, mr } of the rejection reason.
     rejectionReasonI18n: { type: Schema.Types.Mixed },
     pdfUrl: { type: String },
+
+    // ---- Issued-certificate fields (set on approval; all optional so pre-existing
+    // Approved applications created before this feature still load unchanged) ----
+    // Human-facing serial, distinct from applicationId, e.g. CERT-RES-2026-000123.
+    certificateNumber: { type: String },
+    // Opaque public token embedded in the QR code and used by the public verify page.
+    verificationId: { type: String },
+    issuedAt: { type: Date },
+    // Officer-authored remarks printed on the certificate (optional).
+    officerRemarks: { type: String },
+    // Increments each time an approved certificate is re-generated / re-issued.
+    reissueCount: { type: Number, default: 0 },
     history: { type: [statusEntrySchema], default: [] },
     reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     // Internal soft delete only — never exposed to citizens.
@@ -61,5 +73,8 @@ const certificateSchema = new Schema(
 );
 
 certificateSchema.index({ createdAt: -1 });
+// Sparse + unique: only issued certificates carry these, and each value is one-of-a-kind.
+certificateSchema.index({ certificateNumber: 1 }, { unique: true, sparse: true });
+certificateSchema.index({ verificationId: 1 }, { unique: true, sparse: true });
 
 export const CertificateApplication = model('CertificateApplication', certificateSchema);
