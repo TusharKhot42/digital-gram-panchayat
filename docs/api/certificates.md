@@ -70,12 +70,60 @@ notifies the citizen, audits. `409` if already Approved.
 Single source: `CERT_TYPE_FIELDS` in `@dgp/shared` — the citizen form renders from it and the
 backend validates against it.
 
+## Certificate issuance (on approve)
+
+Approving an application generates the official certificate. The service:
+
+1. applies optional officer edits — `PATCH /admin/dakhala/:id/approve` accepts an optional body
+   `{ applicationData?, officerRemarks? }`; `applicationData` is merged over the existing data
+   and re-validated for the type. An approve with no body behaves exactly as before.
+2. mints a unique **certificate number** `CERT-<TYPE>-<YEAR>-<seq>` (distinct from the
+   `applicationId`), an opaque **verificationId**, and an **issuedAt** timestamp;
+3. renders a **QR** PNG of the verification URL (`CORS_ORIGIN_CITIZEN/verify/<verificationId>`);
+4. loads the **Village Profile** for Gram Panchayat / village branding;
+5. generates the PDF and stores it, then marks Approved, notifies + audits.
+
+These fields are optional + sparse-unique on the model, so Approved applications created before
+this feature remain valid.
+
+## Public verification (no auth)
+
+### GET /certificates/verify?verificationId= | certificateNumber=
+
+Public, rate-limited. Looks a certificate up by its scanned `verificationId` or by
+`certificateNumber`. Returns only a non-sensitive summary and never leaks a 404:
+
+```json
+{
+  "valid": true,
+  "status": "Approved",
+  "certificateType": "Residence",
+  "certificateNumber": "CERT-RES-2026-000123",
+  "applicantName": "…",
+  "issuedAt": "…"
+}
+```
+
+Unknown values return `{ "valid": false }`; a request with neither param returns `400`. The
+citizen app serves this at `/verify` (manual number lookup) and `/verify/:id` (the QR target).
+
 ## PDF generation
 
 Isolated in `certificate/pdf.service.js` (PDFKit) → returns a Buffer, uploaded via the shared upload
-abstraction. Template: government header, Gram Panchayat name, certificate number, QR / signature /
-official-seal placeholders, applicant + officer details, issue date. A Devanagari TTF dropped at
+abstraction. Template: royal-blue government double border, faint diagonal watermark of the Gram
+Panchayat name, Government-of-Maharashtra header with the Village-Profile-driven panchayat/village
+names, certificate number, embedded QR, applicant + type-specific details, officer remarks,
+official-seal slot (the village logo when configured) + signature slot, and a verification footer
+(certificate number + verification id). All issued-certificate params are optional so callers
+passing only `application/citizen/officer` still work. A Devanagari TTF dropped at
 `backend/assets/fonts/` is auto-registered to enable Marathi rendering (English until then).
+
+### Adding a future certificate type
+
+Add the type to `CERT_TYPES` + its fields to `CERT_TYPE_FIELDS`/`CERT_DOC_REQUIREMENTS` in
+`@dgp/shared`, a title in `pdf.service.js` `TITLES`, and a code in `CERT_TYPE_CODE`
+(`certificate.service.js`). No other change — the apply form, validation, PDF, QR, and
+verification all derive from those maps.
 
 ## Notes
 
