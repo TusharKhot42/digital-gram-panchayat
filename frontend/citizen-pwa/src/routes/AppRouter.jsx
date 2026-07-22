@@ -11,6 +11,7 @@ const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: 
 
 const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
 const PublicHome = lazyNamed(() => import('@/pages/PublicHome'), 'PublicHome');
+const VerifyCertificate = lazyNamed(() => import('@/pages/VerifyCertificate'), 'VerifyCertificate');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
 const Register = lazyNamed(() => import('@/features/auth/pages/Register'), 'Register');
@@ -70,6 +71,9 @@ const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Susp
 const router = createBrowserRouter([
   // Public village landing — the entry point for signed-out visitors (no app shell).
   { path: '/welcome', element: page(<PublicHome />) },
+  // Public certificate verification (QR target + manual lookup) — no auth, no app shell.
+  { path: '/verify', element: page(<VerifyCertificate />) },
+  { path: '/verify/:id', element: page(<VerifyCertificate />) },
   // Public auth screens (no app shell / bottom nav).
   { path: '/login', element: page(<Login />) },
   { path: '/register', element: page(<Register />) },

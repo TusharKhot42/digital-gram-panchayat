@@ -424,6 +424,14 @@ export function PublicHome() {
               ))}
               <li>
                 <Link
+                  to="/verify"
+                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                >
+                  {t('verify.heading')}
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/login"
                   className="text-muted-foreground transition-colors duration-150 hover:text-primary"
                 >

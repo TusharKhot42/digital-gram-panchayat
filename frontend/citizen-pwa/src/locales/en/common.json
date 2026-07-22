@@ -494,5 +494,25 @@
       "state": "State",
       "pinCode": "PIN code"
     }
+  },
+  "verify": {
+    "title": "Certificate verification",
+    "home": "Home",
+    "heading": "Verify a certificate",
+    "intro": "Scan the QR code on a certificate or enter its certificate number to confirm it is genuine.",
+    "numberLabel": "Certificate number",
+    "numberPlaceholder": "e.g. CERT-RES-2026-000123",
+    "check": "Verify",
+    "checking": "Checking…",
+    "valid": "Certificate verified",
+    "genuine": "Genuine",
+    "invalid": "Not verified",
+    "invalidHint": "No genuine certificate matches this. Check the number, or contact the Gram Panchayat office.",
+    "field": {
+      "type": "Certificate type",
+      "applicant": "Applicant",
+      "number": "Certificate number",
+      "issued": "Issued on"
+    }
   }
 }
