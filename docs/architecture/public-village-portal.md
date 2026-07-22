@@ -43,6 +43,33 @@ New collections, new routes, new public page — no change to any existing API, 
 schema. The only routing change is the guest redirect target. Verified end-to-end: an officer
 edit to the village name/stats is immediately reflected by the public API and home page.
 
+## Initial content — Sakharale (seed)
+
+The profile ships empty; the deployment's real content is loaded once with an idempotent seed:
+
+```
+cd backend
+npm run seed:village            # seeds only if the profile is still blank
+npm run seed:village -- --force # re-apply the seeded sections
+```
+
+`scripts/seed-village.js` imports **Sakharale** (Walwa, Sangli, Maharashtra) from publicly
+available figures — population 9,144 (M 4,809 / F 4,335), 1,949 families, 1,213 ha, 72.13%
+literacy, SC 1,431 / ST 47, child population 1,034, sex ratio 901, bank & post office present,
+PIN 415414 — plus the national emergency helplines (100/101/108/112/1912). Facts the source
+does not publish (houses, voters, schools, hospitals, coordinates, leadership names, local
+office numbers) are left blank or stored as `"Not Available"`, never invented. After the seed
+the data lives in MongoDB and is edited **only** from Admin → Village Profile; the source site
+is never queried at runtime. The seed is exported as `SAKHARALE_SEED` for reference.
+
+## Home page sections
+
+The public `/welcome` page renders, in order and only when data exists: hero, **About** (narrative
+with a location-facts panel), statistics cards, service cards, latest notices/schemes, upcoming
+events, gallery, **Achievements** (`awards[]`), emergency contacts, location map, and a full
+**footer** (identity, in-page quick links, official Government of India / Maharashtra links, and
+the Gram Panchayat office address, timings, phone, email, and copyright).
+
 ## Deferred (model supports, UI to follow)
 
 - Admin management UI for `awards[]`, `gallery[]` (with categories/dates), `videos[]`, and
