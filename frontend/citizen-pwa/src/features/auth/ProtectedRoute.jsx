@@ -4,8 +4,9 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 
 /**
  * Guards citizen-only routes. While the persisted token is being verified we show a
- * loader; once ready, unauthenticated users are redirected to /login (remembering
- * where they were headed).
+ * loader; once ready, unauthenticated visitors are sent to the public village landing
+ * (`/welcome`) rather than straight to the login form — the app now opens on the public
+ * home page. The intended destination is remembered so login can return there.
  */
 export function ProtectedRoute() {
   const { isAuthenticated, ready } = useAuth();
@@ -13,7 +14,7 @@ export function ProtectedRoute() {
 
   if (!ready) return <LoadingScreen />;
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/welcome" replace state={{ from: location.pathname }} />;
   }
   return <Outlet />;
 }

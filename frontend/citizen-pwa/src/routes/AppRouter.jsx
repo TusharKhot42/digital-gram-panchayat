@@ -10,6 +10,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: m[name] })));
 
 const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
+const PublicHome = lazyNamed(() => import('@/pages/PublicHome'), 'PublicHome');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
 const Register = lazyNamed(() => import('@/features/auth/pages/Register'), 'Register');
@@ -67,6 +68,8 @@ const Settings = lazyNamed(() => import('@/features/settings/pages/Settings'), '
 const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
 
 const router = createBrowserRouter([
+  // Public village landing — the entry point for signed-out visitors (no app shell).
+  { path: '/welcome', element: page(<PublicHome />) },
   // Public auth screens (no app shell / bottom nav).
   { path: '/login', element: page(<Login />) },
   { path: '/register', element: page(<Register />) },

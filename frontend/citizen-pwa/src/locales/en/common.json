@@ -470,5 +470,17 @@
     "download": "Download",
     "fullscreen": "View fullscreen",
     "preview": "Preview"
+  },
+  "public": {
+    "enter": "Enter portal",
+    "tagline": "Digital services for our village — complaints, certificates, schemes, notices and tax, in one place.",
+    "stats": "Village at a glance",
+    "services": "Services",
+    "latestNotices": "Latest notices",
+    "latestSchemes": "Government schemes",
+    "events": "Upcoming events",
+    "gallery": "Village gallery",
+    "emergency": "Emergency contacts",
+    "location": "Location"
   }
 }
