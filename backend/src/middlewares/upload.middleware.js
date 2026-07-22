@@ -148,6 +148,32 @@ export function uploadTaxBills(req, res, next) {
 }
 
 /**
+ * Village profile media: one optional `logo` and one optional `banner` image. Both optional —
+ * a profile save that only edits text sends neither.
+ */
+export function uploadVillageImages(req, res, next) {
+  const handler = upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+  ]);
+  handler(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'Each image must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Image upload failed'));
+  });
+}
+
+/**
  * Scheme media: one optional banner image under `image` plus up to 5 optional PDF/image
  * attachments under `attachments`. Uses the attachment filter (PDF or image); the service
  * additionally requires the `image` field to actually be an image.
