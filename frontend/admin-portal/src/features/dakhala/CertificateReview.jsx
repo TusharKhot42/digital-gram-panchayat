@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Check, X, FileText, ExternalLink } from 'lucide-react';
+import { Check, X, FileText, ExternalLink, BadgeCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { formatDateTime } from '@dgp/shared';
+import { formatDateTime, formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { controlClass } from '@/components/ui/input';
 import { PageHeader } from '@/components/PageHeader';
 import { Timeline } from '@/components/Timeline';
 import { Lightbox } from '@/components/Lightbox';
 import { SafeImage } from '@/components/SafeImage';
+import { cn } from '@/utils/cn';
 import { DakhalaStatusBadge } from './DakhalaStatusBadge';
 import { useApplication, useReviewMutations } from './hooks';
 import { RejectDialog } from './RejectDialog';
@@ -32,6 +34,9 @@ export function CertificateReview() {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [confirmApprove, setConfirmApprove] = useState(false);
   const [preview, setPreview] = useState(null);
+  // Officer edits applied just before the certificate is generated.
+  const [edits, setEdits] = useState({});
+  const [remarks, setRemarks] = useState('');
 
   if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !a)
@@ -39,9 +44,15 @@ export function CertificateReview() {
 
   const pending = a.status === 'Submitted' || a.status === 'UnderReview';
 
+  const startApprove = () => {
+    setEdits({ ...(a.applicationData || {}) });
+    setRemarks(a.officerRemarks || '');
+    setConfirmApprove(true);
+  };
+
   const doApprove = async () => {
     try {
-      await m.approve.mutateAsync();
+      await m.approve.mutateAsync({ applicationData: edits, officerRemarks: remarks });
       toast.success(t('dakhala.review.approved'));
       setConfirmApprove(false);
     } catch (err) {
@@ -148,7 +159,29 @@ export function CertificateReview() {
 
           {a.status === 'Approved' && a.pdfUrl ? (
             <Panel title={t('dakhala.review.pdf')}>
-              <CardContent className="p-5">
+              <CardContent className="space-y-3 p-5">
+                {a.certificateNumber ? (
+                  <dl className="space-y-1.5">
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-caption text-muted-foreground">
+                        {t('dakhala.review.certNumber')}
+                      </dt>
+                      <dd className="text-caption font-medium tabular-nums text-foreground">
+                        {a.certificateNumber}
+                      </dd>
+                    </div>
+                    {a.issuedAt ? (
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-caption text-muted-foreground">
+                          {t('dakhala.review.issuedOn')}
+                        </dt>
+                        <dd className="text-caption font-medium text-foreground">
+                          {formatDate(a.issuedAt, locale)}
+                        </dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                ) : null}
                 <a
                   href={a.pdfUrl}
                   target="_blank"
@@ -178,15 +211,46 @@ export function CertificateReview() {
             <Panel title={t('dakhala.review.decision')}>
               <CardContent className="p-5">
                 {confirmApprove ? (
-                  <div className="space-y-2.5">
-                    <p className="text-body text-muted-foreground">
-                      {t('dakhala.review.approveConfirm', {
-                        type: t(`dakhala.type.${a.certificateType}`, a.certificateType),
-                      })}
+                  <div className="space-y-3">
+                    <p className="text-caption text-muted-foreground">
+                      {t('dakhala.review.reviewBeforeIssue')}
                     </p>
+                    <div className="space-y-2.5">
+                      {Object.keys(edits).length === 0 ? (
+                        <p className="text-caption text-muted-foreground">
+                          {t('dakhala.review.noFields')}
+                        </p>
+                      ) : (
+                        Object.entries(edits).map(([key, value]) => (
+                          <label key={key} className="block space-y-1">
+                            <span className="block text-label text-foreground">
+                              {t(`dakhala.field.${key}`, key)}
+                            </span>
+                            <input
+                              className={controlClass}
+                              value={value ?? ''}
+                              onChange={(e) => setEdits((p) => ({ ...p, [key]: e.target.value }))}
+                            />
+                          </label>
+                        ))
+                      )}
+                      <label className="block space-y-1">
+                        <span className="block text-label text-foreground">
+                          {t('dakhala.review.remarks')}
+                        </span>
+                        <textarea
+                          rows={2}
+                          className={cn(controlClass, 'h-auto min-h-16 py-2.5')}
+                          placeholder={t('dakhala.review.remarksHint')}
+                          value={remarks}
+                          onChange={(e) => setRemarks(e.target.value)}
+                        />
+                      </label>
+                    </div>
                     <div className="flex gap-2">
                       <Button size="sm" onClick={doApprove} loading={m.approve.isPending}>
-                        {t('dakhala.review.confirmApprove')}
+                        <BadgeCheck className="h-4 w-4" aria-hidden="true" />
+                        {t('dakhala.review.generateApprove')}
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => setConfirmApprove(false)}>
                         {t('dakhala.review.cancel')}
@@ -195,7 +259,7 @@ export function CertificateReview() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
-                    <Button onClick={() => setConfirmApprove(true)}>
+                    <Button onClick={startApprove}>
                       <Check className="h-4 w-4" aria-hidden="true" />
                       {t('dakhala.review.approve')}
                     </Button>

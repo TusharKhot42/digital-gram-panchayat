@@ -13,8 +13,10 @@ export const certificateService = {
     const { data } = await apiClient.patch(`/admin/dakhala/${id}/review`);
     return data.data;
   },
-  async approve(id) {
-    const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`);
+  async approve(id, edits = {}) {
+    // edits: optional { applicationData, officerRemarks } applied before the certificate is
+    // generated. Omitting it keeps the original behaviour (approve with no changes).
+    const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`, edits);
     return data.data;
   },
   async reject(id, reason) {

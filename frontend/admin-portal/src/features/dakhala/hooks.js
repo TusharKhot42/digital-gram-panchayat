@@ -29,7 +29,10 @@ export function useReviewMutations(id) {
     qc.invalidateQueries({ queryKey: ['admin-dakhala', 'list'] });
   };
   return {
-    approve: useMutation({ mutationFn: () => certificateService.approve(id), onSuccess }),
+    approve: useMutation({
+      mutationFn: (edits) => certificateService.approve(id, edits),
+      onSuccess,
+    }),
     reject: useMutation({
       mutationFn: (reason) => certificateService.reject(id, reason),
       onSuccess,
