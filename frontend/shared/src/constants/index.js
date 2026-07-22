@@ -48,6 +48,25 @@ export const SCHEME_CATEGORIES = [
   'Other',
 ];
 
+// Village event categories — single source for the model enum + both portals.
+export const EVENT_CATEGORIES = [
+  'RepublicDay',
+  'IndependenceDay',
+  'GramSabha',
+  'TreePlantation',
+  'HealthCamp',
+  'BloodDonation',
+  'Sports',
+  'FarmerWorkshop',
+  'SelfHelpGroup',
+  'GovernmentProgram',
+  'Festival',
+  'SchoolEvent',
+  'RoadInauguration',
+  'VillageDevelopment',
+  'Other',
+];
+
 export const TAX_TYPES = ['Property', 'Water'];
 
 export const PAYMENT_STATUSES = ['Unpaid', 'Partial', 'Paid'];

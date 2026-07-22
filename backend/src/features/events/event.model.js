@@ -1,24 +1,9 @@
 import mongoose from 'mongoose';
+import { EVENT_CATEGORIES } from '@dgp/shared';
 
 const { Schema, model } = mongoose;
 
-export const EVENT_CATEGORIES = [
-  'RepublicDay',
-  'IndependenceDay',
-  'GramSabha',
-  'TreePlantation',
-  'HealthCamp',
-  'BloodDonation',
-  'Sports',
-  'FarmerWorkshop',
-  'SelfHelpGroup',
-  'GovernmentProgram',
-  'Festival',
-  'SchoolEvent',
-  'RoadInauguration',
-  'VillageDevelopment',
-  'Other',
-];
+export { EVENT_CATEGORIES };
 
 /**
  * Village events shown on the public home page. A lightweight CRUD module — officers create

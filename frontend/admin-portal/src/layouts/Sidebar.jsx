@@ -11,6 +11,8 @@ import {
   BarChart3,
   Bell,
   ScrollText,
+  Home,
+  CalendarDays,
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -28,6 +30,8 @@ const items = [
   { to: '/notifications', label: 'nav.notifications', icon: Bell },
   { to: '/reports', label: 'nav.reports', icon: BarChart3 },
   { to: '/audit', label: 'nav.audit', icon: ScrollText },
+  { to: '/village', label: 'nav.village', icon: Home },
+  { to: '/events', label: 'nav.events', icon: CalendarDays },
 ];
 
 export function Sidebar() {
