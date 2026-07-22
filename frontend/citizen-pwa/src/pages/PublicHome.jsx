@@ -11,9 +11,11 @@ import {
   Megaphone,
   ShieldAlert,
   CalendarDays,
-  Users,
   Building2,
-  ArrowRight,
+  Award,
+  Clock,
+  Mail,
+  ExternalLink,
 } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import logo from '@/assets/logo.svg';
@@ -33,6 +35,24 @@ const DEFAULT_SERVICES = [
   { key: 'notices', icon: Megaphone },
   { key: 'emergency', icon: ShieldAlert },
 ];
+
+// In-page anchor links for the footer.
+const QUICK_LINKS = [
+  { href: '#services', key: 'public.services' },
+  { href: '#notices', key: 'public.latestNotices' },
+  { href: '#schemes', key: 'public.latestSchemes' },
+  { href: '#emergency', key: 'public.emergency' },
+];
+
+// Official Government of India / Maharashtra portals (public, static — not sourced data).
+const GOV_LINKS = [
+  { href: 'https://www.india.gov.in', label: 'India.gov.in' },
+  { href: 'https://www.maharashtra.gov.in', label: 'Maharashtra Govt.' },
+  { href: 'https://www.digitalindia.gov.in', label: 'Digital India' },
+];
+
+// Location facts shown in the About sidebar (keys map to i18n labels).
+const ABOUT_FACTS = ['taluka', 'district', 'state', 'pinCode'];
 
 function Section({ id, title, children, className = '' }) {
   return (
@@ -75,8 +95,22 @@ export function PublicHome() {
   const schemes = (schemesData?.data ?? []).slice(0, 5);
   const events = (eventsData?.data ?? []).slice(0, 4);
   const gallery = (profile?.gallery ?? []).slice(0, 6);
+  const awards = profile?.awards ?? [];
   const contacts = profile?.emergencyContacts ?? [];
   const hasMap = typeof g.latitude === 'number' && typeof g.longitude === 'number';
+
+  const lead = profile?.leadership ?? {};
+  const officeAddress = [
+    g.panchayatName || villageName,
+    g.taluka ? `Tal. ${g.taluka}` : '',
+    g.district ? `Dist. ${g.district}` : '',
+    g.state,
+    g.pinCode ? `PIN ${g.pinCode}` : '',
+  ]
+    .filter(Boolean)
+    .join(', ');
+  const aboutFacts = ABOUT_FACTS.map((k) => [k, g[k]]).filter(([, v]) => v);
+  const year = new Date().getFullYear();
 
   return (
     <div className="min-h-dvh bg-background">
@@ -128,6 +162,32 @@ export function PublicHome() {
           )}
         </div>
       </div>
+
+      {/* About the village */}
+      {g.description || g.history || aboutFacts.length ? (
+        <Section id="about" title={t('public.about')}>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="space-y-3 md:col-span-2">
+              {g.description ? (
+                <p className="text-body leading-relaxed text-foreground">{g.description}</p>
+              ) : null}
+              {g.history ? (
+                <p className="text-body leading-relaxed text-muted-foreground">{g.history}</p>
+              ) : null}
+            </div>
+            {aboutFacts.length ? (
+              <dl className="h-fit space-y-2 rounded-lg border border-border bg-card p-4 shadow-xs">
+                {aboutFacts.map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-3">
+                    <dt className="text-caption text-muted-foreground">{t(`public.field.${k}`)}</dt>
+                    <dd className="text-caption font-medium text-foreground">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+          </div>
+        </Section>
+      ) : null}
 
       {/* Statistics */}
       {stats.length ? (
@@ -262,6 +322,42 @@ export function PublicHome() {
         </Section>
       ) : null}
 
+      {/* Achievements */}
+      {awards.length ? (
+        <Section id="achievements" title={t('public.achievements')}>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {awards.map((a) => (
+              <article key={a.id} className="rounded-lg border border-border bg-card p-4 shadow-xs">
+                {a.image ? (
+                  <SafeImage
+                    src={a.image}
+                    alt=""
+                    loading="lazy"
+                    className="mb-3 h-32 w-full rounded object-cover"
+                  />
+                ) : (
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary-subtle text-primary">
+                    <Award className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                )}
+                <h3 className="text-section text-foreground">
+                  {a.name}
+                  {a.year ? (
+                    <span className="text-caption font-normal text-muted-foreground">
+                      {' '}
+                      · {a.year}
+                    </span>
+                  ) : null}
+                </h3>
+                {a.description ? (
+                  <p className="mt-1 text-caption text-muted-foreground">{a.description}</p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </Section>
+      ) : null}
+
       {/* Emergency contacts */}
       {contacts.length ? (
         <Section id="emergency" title={t('public.emergency')}>
@@ -298,24 +394,105 @@ export function PublicHome() {
 
       {/* Footer */}
       <footer className="border-t border-border bg-card">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 py-8 text-center">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-primary" aria-hidden="true" />
-            <p className="text-body font-medium text-foreground">
-              {g.panchayatName || villageName}
+        <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Identity */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <SafeImage src={g.logo || logo} alt="" className="h-8 w-8 rounded" />
+              <p className="text-body font-medium text-foreground">
+                {g.panchayatName || villageName}
+              </p>
+            </div>
+            <p className="text-caption leading-relaxed text-muted-foreground">
+              {t('public.tagline')}
             </p>
           </div>
-          {profile?.leadership?.officeEmail ? (
-            <p className="text-caption text-muted-foreground">{profile.leadership.officeEmail}</p>
-          ) : null}
-          <Link
-            to="/login"
-            className="mt-2 inline-flex items-center gap-1 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
-          >
-            {t('public.enter')}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
-          <p className="mt-3 text-caption text-muted-foreground">{t('appName')}</p>
+
+          {/* Quick links */}
+          <nav aria-label={t('public.quickLinks')} className="space-y-2">
+            <p className="text-label text-foreground">{t('public.quickLinks')}</p>
+            <ul className="space-y-1.5 text-caption">
+              {QUICK_LINKS.map((q) => (
+                <li key={q.href}>
+                  <a
+                    href={q.href}
+                    className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  >
+                    {t(q.key)}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <Link
+                  to="/login"
+                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                >
+                  {t('public.enter')}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Government links */}
+          <nav aria-label={t('public.govLinks')} className="space-y-2">
+            <p className="text-label text-foreground">{t('public.govLinks')}</p>
+            <ul className="space-y-1.5 text-caption">
+              {GOV_LINKS.map((l) => (
+                <li key={l.href}>
+                  <a
+                    href={l.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center gap-1 text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  >
+                    {l.label}
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Office */}
+          <div className="space-y-2">
+            <p className="text-label text-foreground">{t('public.office')}</p>
+            <address className="space-y-1.5 not-italic text-caption text-muted-foreground">
+              {officeAddress ? (
+                <p className="flex items-start gap-1.5">
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <span>{officeAddress}</span>
+                </p>
+              ) : null}
+              {lead.officeTimings ? (
+                <p className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  {lead.officeTimings}
+                </p>
+              ) : null}
+              {lead.contactNumbers ? (
+                <p className="flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <a href={`tel:${lead.contactNumbers}`} className="hover:text-primary">
+                    {lead.contactNumbers}
+                  </a>
+                </p>
+              ) : null}
+              {lead.officeEmail ? (
+                <p className="flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <a href={`mailto:${lead.officeEmail}`} className="hover:text-primary">
+                    {lead.officeEmail}
+                  </a>
+                </p>
+              ) : null}
+            </address>
+          </div>
+        </div>
+
+        <div className="border-t border-border">
+          <p className="mx-auto max-w-5xl px-4 py-4 text-center text-caption text-muted-foreground">
+            © {year} {g.panchayatName || villageName}. {t('public.rights')} · {t('appName')}
+          </p>
         </div>
       </footer>
     </div>
