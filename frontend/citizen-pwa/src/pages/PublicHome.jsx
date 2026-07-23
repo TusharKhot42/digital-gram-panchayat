@@ -21,6 +21,8 @@ import { formatDate } from '@dgp/shared';
 import logo from '@/assets/logo.svg';
 import { SafeImage } from '@/components/SafeImage';
 import { MapView } from '@/components/MapView';
+import { LanguageGate } from '@/components/LanguageGate';
+import { useLanguage } from '@/store';
 import { useVillageProfile, useVillageEvents } from '@/features/village/hooks';
 import { useNotices } from '@/features/notices/hooks';
 import { useSchemes } from '@/features/schemes/hooks';
@@ -82,6 +84,7 @@ function humanize(key) {
 export function PublicHome() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
+  const { language, toggleLanguage } = useLanguage();
   const { data: profile } = useVillageProfile();
   const { data: eventsData } = useVillageEvents();
   const { data: noticesData } = useNotices();
@@ -114,6 +117,7 @@ export function PublicHome() {
 
   return (
     <div className="min-h-dvh bg-background">
+      <LanguageGate />
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
@@ -126,13 +130,23 @@ export function PublicHome() {
               ) : null}
             </div>
           </div>
-          <Link
-            to="/login"
-            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 text-body font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary-hover"
-          >
-            <LogIn className="h-4 w-4" aria-hidden="true" />
-            {t('public.enter')}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-body font-medium text-foreground transition-colors duration-150 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+              aria-label={language === 'mr' ? 'Switch to English' : 'मराठीत बदला'}
+            >
+              {language === 'mr' ? 'English' : 'मराठी'}
+            </button>
+            <Link
+              to="/login"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-body font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary-hover"
+            >
+              <LogIn className="h-4 w-4" aria-hidden="true" />
+              {t('public.enter')}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -422,6 +436,14 @@ export function PublicHome() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/directory"
+                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                >
+                  {t('directory.heading')}
+                </Link>
+              </li>
               <li>
                 <Link
                   to="/verify"
