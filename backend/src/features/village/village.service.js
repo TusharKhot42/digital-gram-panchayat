@@ -52,7 +52,14 @@ export async function updateProfile(officerId, body, files = {}) {
   }
 
   // Array sections — replace wholesale (editor submits the complete list).
-  for (const section of ['awards', 'gallery', 'videos', 'services', 'emergencyContacts']) {
+  for (const section of [
+    'awards',
+    'gallery',
+    'videos',
+    'services',
+    'emergencyContacts',
+    'members',
+  ]) {
     if (body[section] !== undefined) doc[section] = parse(body[section]) || [];
   }
 

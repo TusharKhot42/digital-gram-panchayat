@@ -84,6 +84,40 @@ describe('village profile', () => {
       .field('general', JSON.stringify({ villageName: 'Hack' }));
     expect(res.status).toBe(403);
   });
+
+  test('officer sets directory members; public read returns them with defaults', async () => {
+    const token = await officerToken();
+    const members = [
+      {
+        name: 'Smt. A. Patil',
+        designation: 'Sarpanch',
+        mobile: '9876500010',
+        category: 'OfficeBearer',
+      },
+      {
+        name: 'Shri. B. More',
+        designation: 'Ward Member',
+        ward: '3',
+        category: 'WardMember',
+        status: 'Temporary',
+      },
+    ];
+    const res = await request(app)
+      .put('/api/v1/admin/village')
+      .set('Authorization', `Bearer ${token}`)
+      .field('members', JSON.stringify(members));
+    expect(res.status).toBe(200);
+    expect(res.body.data.members).toHaveLength(2);
+
+    const pub = await request(app).get('/api/v1/village');
+    expect(pub.body.data.members).toHaveLength(2);
+    const sarpanch = pub.body.data.members.find((m) => m.designation === 'Sarpanch');
+    expect(sarpanch.name).toBe('Smt. A. Patil');
+    expect(sarpanch.status).toBe('Active'); // schema default applied
+    const ward = pub.body.data.members.find((m) => m.category === 'WardMember');
+    expect(ward.status).toBe('Temporary');
+    expect(ward.ward).toBe('3');
+  });
 });
 
 describe('events', () => {

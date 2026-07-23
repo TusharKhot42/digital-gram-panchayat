@@ -67,6 +67,12 @@ export const EVENT_CATEGORIES = [
   'Other',
 ];
 
+// Gram Panchayat directory members — single source for the model enum + both portals.
+export const MEMBER_STATUSES = ['Active', 'Retired', 'Temporary'];
+
+// Category groups, in display priority: office bearers first, then ward, committee, others.
+export const MEMBER_CATEGORIES = ['OfficeBearer', 'WardMember', 'Committee', 'Other'];
+
 export const TAX_TYPES = ['Property', 'Water'];
 
 export const PAYMENT_STATUSES = ['Unpaid', 'Partial', 'Paid'];

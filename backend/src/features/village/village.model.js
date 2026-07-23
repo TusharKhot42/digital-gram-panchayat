@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { MEMBER_STATUSES, MEMBER_CATEGORIES } from '@dgp/shared';
 
 const { Schema, model } = mongoose;
 
@@ -32,6 +33,33 @@ const serviceSchema = new Schema(
 );
 
 const emergencyContactSchema = new Schema({ label: String, phone: String }, { _id: true });
+
+/**
+ * A Gram Panchayat official / directory member. Richer than the flat `leadership` object (which
+ * stays for backward compatibility): every field an official card needs, so the citizen
+ * directory and the dashboard "Officials" section render from one editable list. All fields are
+ * optional so a half-filled member still renders.
+ */
+const memberSchema = new Schema(
+  {
+    name: String,
+    designation: String,
+    ward: String,
+    photo: String,
+    mobile: String,
+    officePhone: String,
+    email: String,
+    officeHours: String,
+    officeAddress: String,
+    responsibilities: String,
+    termStart: Date,
+    termEnd: Date,
+    status: { type: String, enum: MEMBER_STATUSES, default: 'Active' },
+    category: { type: String, enum: MEMBER_CATEGORIES, default: 'OfficeBearer' },
+    order: { type: Number, default: 0 },
+  },
+  { _id: true },
+);
 
 const villageProfileSchema = new Schema(
   {
@@ -77,6 +105,7 @@ const villageProfileSchema = new Schema(
     videos: { type: [videoSchema], default: [] },
     services: { type: [serviceSchema], default: [] },
     emergencyContacts: { type: [emergencyContactSchema], default: [] },
+    members: { type: [memberSchema], default: [] },
 
     social: {
       facebook: { type: String, default: '' },
