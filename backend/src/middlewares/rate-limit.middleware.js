@@ -36,10 +36,14 @@ export function createRateLimiter({
   });
 }
 
+// Local development gets a much higher auth ceiling so repeated test logins aren't throttled.
+// Production and any non-development environment keep the strict limits unchanged.
+const isDev = env.NODE_ENV === 'development';
+
 // Authentication (login/register/lookup) — very strict; blunts credential stuffing.
 export const authLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: isDev ? 1000 : 20,
   code: 'AUTH_RATE_LIMITED',
   message: 'Too many attempts. Please wait a few minutes and try again.',
 });
@@ -52,7 +56,7 @@ export const authLimiter = createRateLimiter({
  */
 export const loginThrottle = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: isDev ? 1000 : 10,
   code: 'AUTH_RATE_LIMITED',
   message: 'Too many attempts for this account. Please wait a few minutes and try again.',
   keyGenerator(req) {
