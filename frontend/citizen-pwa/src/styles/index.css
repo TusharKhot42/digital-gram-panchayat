@@ -14,8 +14,8 @@
  */
 @layer base {
   :root {
-    /* Surfaces — page #F8FAFC, cards #FFFFFF, secondary surface / hover #F1F5F9. */
-    --background: 210 40% 98%; /* #F8FAFC */
+    /* Surfaces — page #F5F7FA, cards #FFFFFF, secondary surface / hover #F1F5F9. */
+    --background: 216 33% 97%; /* #F5F7FA */
     --foreground: 222 47% 11%; /* #0F172A */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -114,6 +114,13 @@
 
   * {
     @apply border-border;
+  }
+
+  /* Always reserve the scrollbar gutter so pages that fit and pages that overflow render at
+     the same width — this removes the few-pixel horizontal jump when navigating between
+     modules (a short page loses the scrollbar, a long one gains it). */
+  html {
+    scrollbar-gutter: stable;
   }
 
   body {
