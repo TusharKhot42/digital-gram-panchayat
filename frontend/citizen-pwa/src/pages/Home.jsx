@@ -28,6 +28,8 @@ import { useMyTax } from '@/features/tax/hooks';
 import { useNotices } from '@/features/notices/hooks';
 import { useSchemes } from '@/features/schemes/hooks';
 import { useVillageProfile, useVillageEvents } from '@/features/village/hooks';
+import { sortMembers } from '@/features/village/members';
+import { OfficialCard } from '@/features/village/OfficialCard';
 import { useUnreadCount } from '@/features/notifications/hooks';
 
 // Quick services — Directory and Emergency now sit alongside the core modules. Emergency
@@ -167,6 +169,7 @@ export function Home() {
   const latestSchemes = (schemes?.data ?? []).slice(0, 4);
   const nextEvent = (eventsData?.data ?? [])[0];
   const contacts = (profile?.emergencyContacts ?? []).slice(0, 6);
+  const officials = sortMembers(profile?.members ?? []).slice(0, 6);
 
   const firstName = user?.fullName?.split(' ')[0];
   const villageName = profile?.general?.villageName;
@@ -189,6 +192,44 @@ export function Home() {
 
       {/* Hero event — always above the fold. */}
       <EventHero event={nextEvent} locale={locale} t={t} />
+
+      {/* Gram Panchayat officials — between events and quick services. */}
+      <section aria-labelledby="officials-h">
+        <SectionHeader
+          id="officials-h"
+          title={t('directory.officials')}
+          action={
+            <Link
+              to="/directory"
+              className="rounded-md px-1 py-0.5 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
+            >
+              {t('directory.viewAll')}
+            </Link>
+          }
+        />
+        {officials.length ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {officials.map((m) => (
+              <OfficialCard key={m.id} member={m} variant="compact" />
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-subtle text-primary">
+                <Users className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <p className="text-body text-muted-foreground">{t('directory.willUpdate')}</p>
+              <Link
+                to="/directory"
+                className="text-caption font-medium text-primary hover:text-primary-hover"
+              >
+                {t('directory.viewAll')}
+              </Link>
+            </div>
+          </Card>
+        )}
+      </section>
 
       {/* Quick services */}
       <section aria-labelledby="qs-h">
