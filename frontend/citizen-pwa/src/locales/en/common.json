@@ -514,5 +514,21 @@
       "number": "Certificate number",
       "issued": "Issued on"
     }
+  },
+  "directory": {
+    "title": "Gram Panchayat directory",
+    "home": "Home",
+    "heading": "Gram Panchayat directory",
+    "intro": "Find the people who run the village and how to reach the Gram Panchayat office.",
+    "office": "Gram Panchayat office",
+    "empty": "Directory details will appear once the office adds them.",
+    "role": {
+      "sarpanch": "Sarpanch",
+      "deputySarpanch": "Deputy Sarpanch",
+      "gramSevak": "Gram Sevak",
+      "talathi": "Talathi",
+      "developmentOfficer": "Village Development Officer",
+      "policePatil": "Police Patil"
+    }
   }
 }

@@ -12,6 +12,7 @@ const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: 
 const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
 const PublicHome = lazyNamed(() => import('@/pages/PublicHome'), 'PublicHome');
 const VerifyCertificate = lazyNamed(() => import('@/pages/VerifyCertificate'), 'VerifyCertificate');
+const Directory = lazyNamed(() => import('@/pages/Directory'), 'Directory');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
 const Register = lazyNamed(() => import('@/features/auth/pages/Register'), 'Register');
@@ -74,6 +75,8 @@ const router = createBrowserRouter([
   // Public certificate verification (QR target + manual lookup) — no auth, no app shell.
   { path: '/verify', element: page(<VerifyCertificate />) },
   { path: '/verify/:id', element: page(<VerifyCertificate />) },
+  // Public Gram Panchayat directory (leadership + office contact) — no auth, no app shell.
+  { path: '/directory', element: page(<Directory />) },
   // Public auth screens (no app shell / bottom nav).
   { path: '/login', element: page(<Login />) },
   { path: '/register', element: page(<Register />) },
