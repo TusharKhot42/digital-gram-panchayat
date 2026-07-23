@@ -657,6 +657,19 @@
       "notifications": "Notifications"
     }
   },
+  "directory": {
+    "status": {
+      "Active": "Active",
+      "Retired": "Retired",
+      "Temporary": "Temporary"
+    },
+    "category": {
+      "OfficeBearer": "Office bearer",
+      "WardMember": "Ward member",
+      "Committee": "Committee",
+      "Other": "Other"
+    }
+  },
   "village": {
     "title": "Village Profile",
     "subtitle": "Public information shown on the home page. Only officers can edit this.",
@@ -676,6 +689,26 @@
     "contactLabel": "Service",
     "contactPhone": "Phone number",
     "addContact": "Add contact",
+    "members": "Directory members (officials)",
+    "member": "Member",
+    "addMember": "Add member",
+    "memberField": {
+      "name": "Name",
+      "designation": "Designation",
+      "ward": "Ward",
+      "mobile": "Mobile number",
+      "officePhone": "Office phone",
+      "email": "Email",
+      "officeHours": "Office hours",
+      "officeAddress": "Office address",
+      "photo": "Photo URL",
+      "termStart": "Term start",
+      "termEnd": "Term end",
+      "category": "Category",
+      "status": "Status",
+      "order": "Display order",
+      "responsibilities": "Responsibilities"
+    },
     "field": {
       "villageName": "Village name",
       "panchayatName": "Gram Panchayat name",

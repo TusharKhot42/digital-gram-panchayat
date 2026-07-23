@@ -657,6 +657,19 @@
       "notifications": "सूचना"
     }
   },
+  "directory": {
+    "status": {
+      "Active": "कार्यरत",
+      "Retired": "निवृत्त",
+      "Temporary": "तात्पुरते"
+    },
+    "category": {
+      "OfficeBearer": "पदाधिकारी",
+      "WardMember": "प्रभाग सदस्य",
+      "Committee": "समिती",
+      "Other": "इतर"
+    }
+  },
   "village": {
     "title": "गाव माहिती",
     "subtitle": "मुख्यपृष्ठावर दाखवली जाणारी सार्वजनिक माहिती. फक्त अधिकारी संपादित करू शकतात.",
@@ -676,6 +689,26 @@
     "contactLabel": "सेवा",
     "contactPhone": "दूरध्वनी क्रमांक",
     "addContact": "संपर्क जोडा",
+    "members": "निर्देशिका सदस्य (पदाधिकारी)",
+    "member": "सदस्य",
+    "addMember": "सदस्य जोडा",
+    "memberField": {
+      "name": "नाव",
+      "designation": "पद",
+      "ward": "प्रभाग",
+      "mobile": "मोबाइल क्रमांक",
+      "officePhone": "कार्यालय दूरध्वनी",
+      "email": "ईमेल",
+      "officeHours": "कार्यालय वेळ",
+      "officeAddress": "कार्यालय पत्ता",
+      "photo": "फोटो URL",
+      "termStart": "कार्यकाळ सुरू",
+      "termEnd": "कार्यकाळ समाप्त",
+      "category": "श्रेणी",
+      "status": "स्थिती",
+      "order": "क्रम",
+      "responsibilities": "जबाबदाऱ्या"
+    },
     "field": {
       "villageName": "गावाचे नाव",
       "panchayatName": "ग्रामपंचायतीचे नाव",

@@ -2,12 +2,30 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2, ImagePlus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { MEMBER_STATUSES, MEMBER_CATEGORIES } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { controlClass } from '@/components/ui/input';
 import { SafeImage } from '@/components/SafeImage';
 import { cn } from '@/utils/cn';
 import { useVillage, useVillageMutation } from './hooks';
+
+// Text fields for each directory member (status/category are selects, handled separately).
+const MEMBER_TEXT_FIELDS = [
+  'name',
+  'designation',
+  'ward',
+  'mobile',
+  'officePhone',
+  'email',
+  'officeHours',
+  'officeAddress',
+  'photo',
+  'termStart',
+  'termEnd',
+];
+const MEMBER_DATE_FIELDS = new Set(['termStart', 'termEnd']);
+const emptyMember = () => ({ status: 'Active', category: 'OfficeBearer', order: 0 });
 
 const GENERAL_FIELDS = [
   'villageName',
@@ -76,6 +94,7 @@ export function VillageProfilePage() {
   const [social, setSocial] = useState({});
   const [stats, setStats] = useState([]); // [{ key, value }]
   const [contacts, setContacts] = useState([]); // [{ label, phone }]
+  const [members, setMembers] = useState([]); // directory members
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
 
@@ -86,6 +105,13 @@ export function VillageProfilePage() {
     setSocial(profile.social ?? {});
     setStats(Object.entries(profile.statistics ?? {}).map(([key, value]) => ({ key, value })));
     setContacts(profile.emergencyContacts ?? []);
+    setMembers(
+      (profile.members ?? []).map((m) => ({
+        ...m,
+        termStart: m.termStart ? String(m.termStart).slice(0, 10) : '',
+        termEnd: m.termEnd ? String(m.termEnd).slice(0, 10) : '',
+      })),
+    );
   }, [profile]);
 
   if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
@@ -99,6 +125,15 @@ export function VillageProfilePage() {
       stats.filter((s) => s.key.trim()).map((s) => [s.key.trim(), s.value]),
     );
     const emergencyContacts = contacts.filter((c) => c.label?.trim() || c.phone?.trim());
+    // Keep only members with a name; blank date strings become undefined so Mongoose skips them.
+    const cleanMembers = members
+      .filter((mem) => mem.name?.trim())
+      .map((mem) => ({
+        ...mem,
+        order: Number(mem.order) || 0,
+        termStart: mem.termStart || undefined,
+        termEnd: mem.termEnd || undefined,
+      }));
     try {
       await m.mutateAsync({
         sections: {
@@ -111,6 +146,7 @@ export function VillageProfilePage() {
           social,
           statistics,
           emergencyContacts,
+          members: cleanMembers,
         },
         files: { logo, banner },
       });
@@ -280,6 +316,96 @@ export function VillageProfilePage() {
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             {t('village.addContact')}
+          </Button>
+        </div>
+      </SectionCard>
+
+      <SectionCard title={t('village.members')}>
+        <div className="space-y-4">
+          {members.map((mem, i) => {
+            const setMember = (k, v) =>
+              setMembers((p) => p.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
+            return (
+              <div key={i} className="rounded-lg border border-border p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-label text-foreground">
+                    {mem.name?.trim() || t('village.member')} {`#${i + 1}`}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t('village.remove')}
+                    onClick={() => setMembers((p) => p.filter((_, j) => j !== i))}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" />
+                  </Button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {MEMBER_TEXT_FIELDS.map((f) => (
+                    <Labeled key={f} label={t(`village.memberField.${f}`, f)}>
+                      <input
+                        type={MEMBER_DATE_FIELDS.has(f) ? 'date' : 'text'}
+                        className={controlClass}
+                        value={mem[f] ?? ''}
+                        onChange={(e) => setMember(f, e.target.value)}
+                      />
+                    </Labeled>
+                  ))}
+                  <Labeled label={t('village.memberField.category')}>
+                    <select
+                      className={controlClass}
+                      value={mem.category ?? 'OfficeBearer'}
+                      onChange={(e) => setMember('category', e.target.value)}
+                    >
+                      {MEMBER_CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {t(`directory.category.${c}`, c)}
+                        </option>
+                      ))}
+                    </select>
+                  </Labeled>
+                  <Labeled label={t('village.memberField.status')}>
+                    <select
+                      className={controlClass}
+                      value={mem.status ?? 'Active'}
+                      onChange={(e) => setMember('status', e.target.value)}
+                    >
+                      {MEMBER_STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {t(`directory.status.${s}`, s)}
+                        </option>
+                      ))}
+                    </select>
+                  </Labeled>
+                  <Labeled label={t('village.memberField.order')}>
+                    <input
+                      type="number"
+                      className={controlClass}
+                      value={mem.order ?? 0}
+                      onChange={(e) => setMember('order', e.target.value)}
+                    />
+                  </Labeled>
+                </div>
+                <Labeled label={t('village.memberField.responsibilities')}>
+                  <textarea
+                    rows={2}
+                    className={cn(controlClass, 'mt-1 h-auto min-h-16 py-2.5')}
+                    value={mem.responsibilities ?? ''}
+                    onChange={(e) => setMember('responsibilities', e.target.value)}
+                  />
+                </Labeled>
+              </div>
+            );
+          })}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setMembers((p) => [...p, emptyMember()])}
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            {t('village.addMember')}
           </Button>
         </div>
       </SectionCard>
