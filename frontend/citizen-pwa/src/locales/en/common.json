@@ -10,6 +10,8 @@
     "schemes": "Schemes",
     "tax": "Tax",
     "dakhala": "Certificates",
+    "directory": "Directory",
+    "emergency": "Emergency",
     "profile": "Profile"
   },
   "home": {
@@ -29,7 +31,9 @@
     "noEventsHint": "New Gram Panchayat events will show up here.",
     "eventToday": "Today",
     "eventTomorrow": "Tomorrow",
-    "eventInDays": "In {{count}} days"
+    "eventInDays": "In {{count}} days",
+    "statusTitle": "Your status",
+    "unread": "Unread alerts"
   },
   "notFound": {
     "title": "Page not found",

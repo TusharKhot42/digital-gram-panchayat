@@ -31,10 +31,12 @@ export function PageHeader({ title, subtitle, backTo, backLabel, action, classNa
 }
 
 /** Section heading inside a page, with an optional "see all"-style trailing link. */
-export function SectionHeader({ title, action, className }) {
+export function SectionHeader({ title, action, className, id }) {
   return (
     <div className={cn('mb-2 flex items-center justify-between gap-2', className)}>
-      <h2 className="text-section text-foreground">{title}</h2>
+      <h2 id={id} className="text-section text-foreground">
+        {title}
+      </h2>
       {action}
     </div>
   );
