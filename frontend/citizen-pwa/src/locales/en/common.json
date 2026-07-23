@@ -23,7 +23,13 @@
     "latestNotices": "Latest notices",
     "latestSchemes": "Latest schemes",
     "seeAll": "See all",
-    "services": "Services"
+    "services": "Services",
+    "upcomingEvents": "Upcoming events",
+    "noEvents": "No upcoming events",
+    "noEventsHint": "New Gram Panchayat events will show up here.",
+    "eventToday": "Today",
+    "eventTomorrow": "Tomorrow",
+    "eventInDays": "In {{count}} days"
   },
   "notFound": {
     "title": "Page not found",

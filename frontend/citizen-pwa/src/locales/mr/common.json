@@ -23,7 +23,13 @@
     "latestNotices": "नवीनतम सूचना",
     "latestSchemes": "नवीनतम योजना",
     "seeAll": "सर्व पहा",
-    "services": "सेवा"
+    "services": "सेवा",
+    "upcomingEvents": "आगामी कार्यक्रम",
+    "noEvents": "आगामी कार्यक्रम नाहीत",
+    "noEventsHint": "नवीन ग्रामपंचायत कार्यक्रम येथे दिसतील.",
+    "eventToday": "आज",
+    "eventTomorrow": "उद्या",
+    "eventInDays": "{{count}} दिवसांत"
   },
   "notFound": {
     "title": "पान सापडले नाही",
