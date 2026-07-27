@@ -124,7 +124,7 @@ export function NotificationCenter() {
   const unreadCount = unread.length;
 
   return (
-    <div className="dgp-page">
+    <div className="mx-auto w-full max-w-2xl px-4 py-5">
       <div className="mb-4 flex items-start justify-between gap-2">
         <div>
           <h1 className="text-title text-foreground">{t('notif.title')}</h1>

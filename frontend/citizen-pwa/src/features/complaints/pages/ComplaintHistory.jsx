@@ -17,7 +17,7 @@ export function ComplaintHistory() {
   const complaints = data?.data ?? [];
 
   return (
-    <div className="dgp-page">
+    <div className="dgp-page-wide">
       <div className="mb-5 flex items-center justify-between gap-2">
         <h1 className="text-title text-foreground">{t('complaint.history.title')}</h1>
         <Button asChild size="sm">
@@ -47,12 +47,12 @@ export function ComplaintHistory() {
           }
         />
       ) : (
-        <ul className="space-y-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {complaints.map((c) => (
             <li key={c.id}>
               <Link
                 to={`/complaints/${c.id}`}
-                className="group block rounded-lg border border-border bg-card p-4 shadow-xs transition-[box-shadow,transform] duration-150 hover:shadow-sm active:translate-y-px"
+                className="group block h-full rounded-xl border border-border bg-card p-4 shadow-sm transition-[box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md active:translate-y-0"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">

@@ -30,7 +30,7 @@ export function TaxSummary() {
   const settled = totalDues <= 0;
 
   return (
-    <div className="dgp-page">
+    <div className="dgp-page-wide">
       <h1 className="mb-5 text-title text-foreground">{t('tax.summary.title')}</h1>
 
       {isLoading ? (
@@ -47,7 +47,7 @@ export function TaxSummary() {
         <>
           {/* The one number this page exists to answer. */}
           <div
-            className={`mb-4 rounded-lg border p-5 text-center ${
+            className={`mb-4 rounded-xl border p-5 text-center sm:mx-auto sm:max-w-md ${
               settled
                 ? 'border-success/20 bg-success-subtle'
                 : 'border-primary/20 bg-primary-subtle'
@@ -66,7 +66,7 @@ export function TaxSummary() {
               value={financialYear}
               onChange={(e) => setFinancialYear(e.target.value)}
               aria-label={t('tax.summary.allYears')}
-              className="mb-4"
+              className="mb-4 sm:max-w-xs"
             >
               <option value="">{t('tax.summary.allYears')}</option>
               {years.map((y) => (
@@ -77,7 +77,7 @@ export function TaxSummary() {
             </Select>
           ) : null}
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {filtered.map((r) => (
               <TaxCard key={r.id} record={r} />
             ))}
