@@ -73,6 +73,9 @@ const certificateSchema = new Schema(
 );
 
 certificateSchema.index({ createdAt: -1 });
+// Serve the list queries (filter + newest-first) without scans.
+certificateSchema.index({ citizenId: 1, createdAt: -1 }); // citizen "my applications"
+certificateSchema.index({ status: 1, createdAt: -1 }); // officer status filter
 // Sparse + unique: only issued certificates carry these, and each value is one-of-a-kind.
 certificateSchema.index({ certificateNumber: 1 }, { unique: true, sparse: true });
 certificateSchema.index({ verificationId: 1 }, { unique: true, sparse: true });

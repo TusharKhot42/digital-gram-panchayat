@@ -63,6 +63,10 @@ const complaintSchema = new Schema(
 );
 
 complaintSchema.index({ createdAt: -1 });
+// Compound indexes serving the actual list queries (filter + sort by newest) so they never
+// fall back to a collection scan + in-memory sort at scale.
+complaintSchema.index({ citizenId: 1, createdAt: -1 }); // citizen "my complaints"
+complaintSchema.index({ status: 1, createdAt: -1 }); // officer status filter
 complaintSchema.index({ location: '2dsphere' });
 
 export const Complaint = model('Complaint', complaintSchema);

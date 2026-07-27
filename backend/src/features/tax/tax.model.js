@@ -77,5 +77,7 @@ const taxRecordSchema = new Schema(
 );
 
 taxRecordSchema.index({ createdAt: -1 });
+// Citizen "my taxes", newest first.
+taxRecordSchema.index({ citizenId: 1, createdAt: -1 });
 
 export const TaxRecord = model('TaxRecord', taxRecordSchema);

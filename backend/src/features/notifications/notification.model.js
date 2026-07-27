@@ -64,5 +64,7 @@ const notificationSchema = new Schema(
 
 notificationSchema.index({ recipientId: 1, readAt: 1 });
 notificationSchema.index({ createdAt: -1 });
+// The hot query: a recipient's feed, newest first.
+notificationSchema.index({ recipientId: 1, createdAt: -1 });
 
 export const Notification = model('Notification', notificationSchema);

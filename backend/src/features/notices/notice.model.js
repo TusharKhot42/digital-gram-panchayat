@@ -50,5 +50,7 @@ const noticeSchema = new Schema(
 );
 
 noticeSchema.index({ createdAt: -1 });
+// Public feed: published + active, newest first.
+noticeSchema.index({ isPublished: 1, isActive: 1, createdAt: -1 });
 
 export const Notice = model('Notice', noticeSchema);

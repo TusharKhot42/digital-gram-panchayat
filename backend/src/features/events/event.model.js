@@ -36,4 +36,7 @@ const eventSchema = new Schema(
   },
 );
 
+// Public "upcoming" query: active events ordered by start date.
+eventSchema.index({ isActive: 1, startDate: 1 });
+
 export const Event = model('Event', eventSchema);

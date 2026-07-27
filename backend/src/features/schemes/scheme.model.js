@@ -47,6 +47,8 @@ const schemeSchema = new Schema(
 );
 
 schemeSchema.index({ createdAt: -1 });
+// Public feed: published + active, newest first.
+schemeSchema.index({ isPublished: 1, isActive: 1, createdAt: -1 });
 // Text index for keyword search (blueprint 5.4). Regex search is used as the primary
 // path; this supports future $text queries without a migration.
 schemeSchema.index({ title: 'text', summary: 'text', description: 'text' });
