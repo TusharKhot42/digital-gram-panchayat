@@ -19,6 +19,9 @@
     --foreground: 222 47% 11%; /* #0F172A */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
+    /* Raised/sunken band between page and card — for section separation and inner wells,
+       so long pages read as layered surfaces (page → surface → card), never one flat sheet. */
+    --surface: 214 38% 95%; /* #EEF2F7 */
 
     /* Brand — royal blue #1E3A8A, hover #1B3378, light tint #DBEAFE (also selected-row wash). */
     --primary: 224 64% 33%; /* #1E3A8A */
@@ -70,6 +73,7 @@
     --foreground: 210 40% 98%;
     --card: 217 33% 12%;
     --card-foreground: 210 40% 98%;
+    --surface: 217 33% 15%; /* a hair above the page canvas for section bands */
 
     /* #1E3A8A is too dark to read on a dark canvas — lift the brand to a legible blue. */
     --primary: 221 83% 66%;

@@ -16,6 +16,7 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        surface: 'hsl(var(--surface))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           hover: 'hsl(var(--primary-hover))',
@@ -74,9 +75,10 @@ export default {
         },
       },
       borderRadius: {
-        xl: 'calc(var(--radius) + 4px)', // 14px — hero/media surfaces
-        lg: 'var(--radius)', // 10px — cards, buttons
-        md: 'calc(var(--radius) - 2px)', // 8px — controls
+        '2xl': 'calc(var(--radius) + 12px)', // 22px — hero / large media surfaces
+        xl: 'calc(var(--radius) + 4px)', // 14px — cards, media
+        lg: 'var(--radius)', // 10px — buttons, controls
+        md: 'calc(var(--radius) - 2px)', // 8px — inner controls
         sm: 'calc(var(--radius) - 4px)', // 6px — chips, inner elements
       },
       // Type scale — one ramp, used by every screen. Government-portal proportions:
@@ -92,12 +94,20 @@ export default {
         label: ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
         caption: ['0.8125rem', { lineHeight: '1.125rem' }],
       },
-      // Elevation — flat by default; depth only where it means "floating".
+      // Elevation — soft, layered, government-grade. Resting cards sit on `sm`; hover/raised
+      // uses `md`; popovers/menus `lg`; modals `overlay`. Never harsh, always double-layered.
       boxShadow: {
-        xs: '0 1px 2px 0 rgb(16 24 40 / 0.04)',
-        sm: '0 1px 3px 0 rgb(16 24 40 / 0.08), 0 1px 2px -1px rgb(16 24 40 / 0.04)',
-        md: '0 4px 12px -2px rgb(16 24 40 / 0.10), 0 2px 4px -2px rgb(16 24 40 / 0.04)',
-        overlay: '0 16px 40px -8px rgb(16 24 40 / 0.24)',
+        xs: '0 1px 2px 0 rgb(16 24 40 / 0.05)',
+        sm: '0 1px 2px 0 rgb(16 24 40 / 0.06), 0 1px 3px 0 rgb(16 24 40 / 0.09)',
+        md: '0 2px 4px -1px rgb(16 24 40 / 0.06), 0 6px 16px -2px rgb(16 24 40 / 0.12)',
+        lg: '0 8px 24px -4px rgb(16 24 40 / 0.14), 0 4px 8px -4px rgb(16 24 40 / 0.08)',
+        overlay: '0 16px 48px -8px rgb(16 24 40 / 0.28)',
+      },
+      keyframes: {
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
+      },
+      animation: {
+        shimmer: 'shimmer 1.6s infinite',
       },
       transitionDuration: { DEFAULT: '150ms' },
     },
