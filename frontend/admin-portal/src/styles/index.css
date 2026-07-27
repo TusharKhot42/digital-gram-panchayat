@@ -119,10 +119,13 @@
     @apply border-border;
   }
 
-  /* Reserve the scrollbar gutter so short and long pages render at the same width —
-     removes the horizontal jump when navigating between modules. */
-  html {
-    scrollbar-gutter: stable;
+  /* Reserve the scrollbar gutter so short and long pages render at the same width — removes
+     the horizontal jump when navigating between modules. Only where a classic scrollbar
+     exists; touch devices use overlay scrollbars, so reserving there just wastes space. */
+  @media (hover: hover) and (pointer: fine) {
+    html {
+      scrollbar-gutter: stable;
+    }
   }
 
   body {

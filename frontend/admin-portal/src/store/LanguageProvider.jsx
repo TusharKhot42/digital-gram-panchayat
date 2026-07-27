@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const LanguageContext = createContext(undefined);
@@ -7,6 +7,16 @@ const LanguageContext = createContext(undefined);
 export function LanguageProvider({ children }) {
   const { i18n } = useTranslation();
   const language = i18n.language || 'en';
+
+  // Keep <html lang> in step with the active language for assistive tech (WCAG 3.1.1).
+  useEffect(() => {
+    const apply = (lng) => {
+      document.documentElement.lang = lng;
+    };
+    apply(i18n.language);
+    i18n.on('languageChanged', apply);
+    return () => i18n.off('languageChanged', apply);
+  }, [i18n]);
 
   const value = useMemo(
     () => ({

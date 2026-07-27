@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@dgp/shared';
 
@@ -7,6 +7,18 @@ const LanguageContext = createContext(undefined);
 export function LanguageProvider({ children }) {
   const { i18n } = useTranslation();
   const language = i18n.language || 'mr';
+
+  // Keep <html lang> in step with the active language so assistive tech announces the page in
+  // the right language (WCAG 3.1.1). index.html ships a static default; this corrects it at
+  // runtime and on every switch.
+  useEffect(() => {
+    const apply = (lng) => {
+      document.documentElement.lang = lng;
+    };
+    apply(i18n.language);
+    i18n.on('languageChanged', apply);
+    return () => i18n.off('languageChanged', apply);
+  }, [i18n]);
 
   const value = useMemo(
     () => ({
