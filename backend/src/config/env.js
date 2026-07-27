@@ -13,6 +13,19 @@ const envSchema = z.object({
 
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required'),
 
+  // Connection pool + timeouts. maxPoolSize caps concurrent DB sockets per app instance; scale
+  // out by running more instances behind a load balancer rather than one huge pool.
+  DB_MAX_POOL_SIZE: z.coerce.number().int().positive().default(50),
+  DB_MIN_POOL_SIZE: z.coerce.number().int().nonnegative().default(5),
+  DB_SERVER_SELECTION_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
+  DB_SOCKET_TIMEOUT_MS: z.coerce.number().int().positive().default(45000),
+  // Build indexes on connect. Fine for fresh/small deployments; set false on large existing
+  // collections and run `npm run db:indexes` during a maintenance window instead.
+  DB_AUTO_INDEX: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
+
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   JWT_EXPIRY_CITIZEN: z.string().default('24h'),
   JWT_EXPIRY_OFFICER: z.string().default('8h'),

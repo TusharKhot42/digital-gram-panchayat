@@ -15,6 +15,7 @@
     "test:coverage": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage",
     "seed:admin": "node scripts/seed-admin.js",
     "seed:village": "node scripts/seed-village.js",
+    "db:indexes": "node scripts/sync-indexes.js",
     "clean": "echo \"nothing to clean\" && exit 0"
   },
   "dependencies": {
