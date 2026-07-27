@@ -1,6 +1,11 @@
 /** Content-shaped loading placeholders for admin screens. */
 export function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse rounded-md bg-muted ${className}`} aria-hidden="true" />;
+  // Soft base plus a sweeping highlight; the sweep is neutralised under prefers-reduced-motion.
+  return (
+    <div className={`relative overflow-hidden rounded-md bg-muted ${className}`} aria-hidden="true">
+      <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-card/60 to-transparent" />
+    </div>
+  );
 }
 
 /** Skeleton rows for a table/list while data loads. */
