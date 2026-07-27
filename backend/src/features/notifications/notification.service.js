@@ -1,11 +1,11 @@
 import {
   ROLES,
-  PAGINATION_DEFAULTS,
   NotificationPurpose,
   NotificationModule,
   NotificationType,
   NOTIFICATION_MAX_RETRIES,
 } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { randomUUID } from 'node:crypto';
 import { Notification } from './notification.model.js';
 import { getProvider } from './providers/index.js';
@@ -229,8 +229,7 @@ export async function retry(id, officerId) {
 
 // ---- Queries ----
 export async function listMine(userId, query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const filter = { recipientId: userId };
   if (query.unread === 'true') filter.readAt = null;
   if (query.module) filter.module = query.module;
@@ -240,10 +239,7 @@ export async function listMine(userId, query) {
   }
 
   const [items, total, unread] = await Promise.all([
-    Notification.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    Notification.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Notification.countDocuments(filter),
     Notification.countDocuments({ recipientId: userId, readAt: null }),
   ]);
@@ -263,8 +259,7 @@ export async function getMine(id, userId) {
 }
 
 export async function adminList(query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const filter = {};
   if (query.status) filter.status = query.status;
   if (query.channel) filter.channel = query.channel;
@@ -275,10 +270,7 @@ export async function adminList(query) {
   }
 
   const [items, total] = await Promise.all([
-    Notification.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    Notification.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Notification.countDocuments(filter),
   ]);
   return { data: items.map((n) => n.toJSON()), total, page, limit };
@@ -361,13 +353,12 @@ export async function listBroadcasts(query = {}) {
 
 /** Recipient-level breakdown for one broadcast (drill-in from the dashboard). */
 export async function broadcastRecipients(broadcastId, query = {}) {
-  const page = query.page || 1;
-  const limit = query.limit || 50;
+  const { page, limit, skip } = parsePagination(query);
   const [items, total] = await Promise.all([
     Notification.find({ broadcastId })
       .populate('recipientId', 'fullName mobile')
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
+      .skip(skip)
       .limit(limit),
     Notification.countDocuments({ broadcastId }),
   ]);

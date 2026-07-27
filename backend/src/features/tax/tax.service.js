@@ -1,4 +1,5 @@
-import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
+import { ROLES } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { TaxRecord } from './tax.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
@@ -218,13 +219,9 @@ function buildFilter(query) {
 }
 
 async function paginate(filter, query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const [items, total] = await Promise.all([
-    TaxRecord.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    TaxRecord.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     TaxRecord.countDocuments(filter),
   ]);
   return { data: items.map((r) => r.toJSON()), total, page, limit };

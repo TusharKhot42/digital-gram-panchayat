@@ -1,4 +1,5 @@
-import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
+import { ROLES } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
 import { writeAudit } from '../audit/audit.service.js';
@@ -12,8 +13,7 @@ function escapeRegex(str) {
  * @param {object} query
  */
 export async function listUsers(query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
 
   const filter = {};
   // Default to citizens (officers manage citizen accounts, blueprint 5.7).
@@ -26,10 +26,7 @@ export async function listUsers(query) {
   }
 
   const [items, total] = await Promise.all([
-    User.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     User.countDocuments(filter),
   ]);
   return { data: items.map((u) => u.toJSON()), total, page, limit };

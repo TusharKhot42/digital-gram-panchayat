@@ -1,10 +1,5 @@
-import {
-  ROLES,
-  PAGINATION_DEFAULTS,
-  CERT_TYPE_FIELDS,
-  CERT_DOC_REQUIREMENTS,
-  CERT_DOC_TYPES,
-} from '@dgp/shared';
+import { ROLES, CERT_TYPE_FIELDS, CERT_DOC_REQUIREMENTS, CERT_DOC_TYPES } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { CertificateApplication } from './certificate.model.js';
 import { generateCertificatePdf } from './pdf.service.js';
 import { generateVerificationId, generateQrPngBuffer } from './qr.service.js';
@@ -180,16 +175,12 @@ export async function apply({ citizenId, body, files }) {
 
 /** @param {string} citizenId @param {object} query */
 export async function listMine(citizenId, query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const filter = { citizenId, isActive: true };
   if (query.status) filter.status = query.status;
 
   const [items, total] = await Promise.all([
-    CertificateApplication.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    CertificateApplication.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     CertificateApplication.countDocuments(filter),
   ]);
   return { data: items.map((a) => a.toJSON()), total, page, limit };
@@ -232,8 +223,7 @@ export async function getCertificate(id, user) {
 
 /** @param {object} query */
 export async function adminList(query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const filter = { isActive: true };
   if (query.status) filter.status = query.status;
   if (query.certificateType) filter.certificateType = query.certificateType;
@@ -243,10 +233,7 @@ export async function adminList(query) {
   }
 
   const [items, total] = await Promise.all([
-    CertificateApplication.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    CertificateApplication.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     CertificateApplication.countDocuments(filter),
   ]);
   return { data: items.map((a) => a.toJSON()), total, page, limit };

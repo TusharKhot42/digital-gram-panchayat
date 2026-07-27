@@ -1,4 +1,5 @@
-import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
+import { ROLES } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { Notice } from './notice.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
@@ -165,13 +166,9 @@ function buildSearch(filter, query) {
 }
 
 async function paginate(filter, query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const [items, total] = await Promise.all([
-    Notice.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit),
+    Notice.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Notice.countDocuments(filter),
   ]);
   return { data: items.map((n) => n.toJSON()), total, page, limit };

@@ -1,4 +1,5 @@
-import { ROLES, PAGINATION_DEFAULTS } from '@dgp/shared';
+import { ROLES } from '@dgp/shared';
+import { parsePagination } from '../../utils/pagination.js';
 import { Scheme } from './scheme.model.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { AppError } from '../../utils/app-error.js';
@@ -245,8 +246,7 @@ function buildSearch(filter, query) {
 }
 
 async function paginate(filter, query) {
-  const page = query.page || PAGINATION_DEFAULTS.page;
-  const limit = query.limit || PAGINATION_DEFAULTS.limit;
+  const { page, limit, skip } = parsePagination(query);
   const sortField = ['createdAt', 'title', 'category'].includes(query.sortBy)
     ? query.sortBy
     : 'createdAt';
@@ -255,7 +255,7 @@ async function paginate(filter, query) {
   const [items, total] = await Promise.all([
     Scheme.find(filter)
       .sort({ [sortField]: sortDir })
-      .skip((page - 1) * limit)
+      .skip(skip)
       .limit(limit),
     Scheme.countDocuments(filter),
   ]);
