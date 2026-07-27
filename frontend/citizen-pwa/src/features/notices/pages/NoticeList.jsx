@@ -26,11 +26,11 @@ export function NoticeList() {
   };
 
   return (
-    <div className="dgp-page">
+    <div className="dgp-page-wide">
       <h1 className="mb-5 text-title text-foreground">{t('notice.list.title')}</h1>
 
-      <div className="mb-5 space-y-2.5">
-        <div className="relative">
+      <div className="mb-5 flex flex-col gap-2.5 sm:flex-row sm:items-center">
+        <div className="relative sm:max-w-sm sm:flex-1">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden="true"
@@ -57,6 +57,7 @@ export function NoticeList() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t('notice.list.allCategories')}
+          className="sm:w-56"
         >
           <option value="">{t('notice.list.allCategories')}</option>
           {NOTICE_CATEGORIES.map((c) => (
@@ -88,7 +89,7 @@ export function NoticeList() {
           }
         />
       ) : (
-        <ul className="space-y-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {notices.map((n) => (
             <li key={n.id}>
               <NoticeCard notice={n} />

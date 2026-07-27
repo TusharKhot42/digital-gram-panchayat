@@ -165,8 +165,15 @@
 }
 
 @layer components {
-  /* Standard content column: comfortable measure, safe gutters down to 320px. */
+  /* Standard content column: comfortable measure, safe gutters down to 320px. Use for
+     forms and detail/reading screens where a single narrow column is the right measure. */
   .dgp-page {
     @apply mx-auto w-full max-w-md px-4 py-5;
+  }
+
+  /* Adaptive content width for browse/list screens: a phone-width column that grows into a
+     multi-column workspace on tablet/desktop, so large screens aren't a lonely centred strip. */
+  .dgp-page-wide {
+    @apply mx-auto w-full max-w-5xl px-4 py-5;
   }
 }

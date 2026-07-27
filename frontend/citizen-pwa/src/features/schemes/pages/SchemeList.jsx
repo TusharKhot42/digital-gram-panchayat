@@ -26,11 +26,11 @@ export function SchemeList() {
   };
 
   return (
-    <div className="dgp-page">
+    <div className="dgp-page-wide">
       <h1 className="mb-5 text-title text-foreground">{t('scheme.list.title')}</h1>
 
-      <div className="mb-5 space-y-2.5">
-        <div className="relative">
+      <div className="mb-5 flex flex-col gap-2.5 sm:flex-row sm:items-center">
+        <div className="relative sm:max-w-sm sm:flex-1">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden="true"
@@ -57,6 +57,7 @@ export function SchemeList() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label={t('scheme.list.allCategories')}
+          className="sm:w-56"
         >
           <option value="">{t('scheme.list.allCategories')}</option>
           {SCHEME_CATEGORIES.map((c) => (
@@ -88,7 +89,7 @@ export function SchemeList() {
           }
         />
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {schemes.map((s) => (
             <SchemeCard key={s.id} scheme={s} />
           ))}
