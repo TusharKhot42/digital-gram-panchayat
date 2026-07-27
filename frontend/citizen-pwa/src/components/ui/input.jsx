@@ -7,10 +7,11 @@ import { cn } from '@/utils/cn';
  * is how the h-10/h-11 drift started.
  */
 export const controlClass =
-  'h-11 w-full rounded-md border border-input bg-background px-3 text-body text-foreground ' +
+  'h-11 w-full rounded-lg border border-input bg-background px-3 text-body text-foreground ' +
   'placeholder:text-muted-foreground outline-none transition-[border-color,box-shadow] duration-150 ' +
-  'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ' +
-  'focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
+  'hover:border-ring/50 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring ' +
+  'focus-visible:ring-offset-1 focus-visible:ring-offset-background ' +
+  'disabled:cursor-not-allowed disabled:opacity-60';
 
 export const Input = forwardRef(function Input({ className, invalid, ...props }, ref) {
   return (
