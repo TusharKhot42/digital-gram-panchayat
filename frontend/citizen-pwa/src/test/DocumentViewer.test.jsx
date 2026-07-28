@@ -12,20 +12,21 @@ describe('DocumentViewer', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('shows a PDF as a labelled tile with open + download links', () => {
+  it('shows a PDF as a labelled tile with an in-app View action + download link', () => {
     render(<DocumentViewer doc={{ url: 'https://x/form.pdf', type: 'pdf', name: 'Form A' }} />);
     expect(screen.getByText('Form A')).toBeInTheDocument();
-    // Open-in-new-tab and download are anchors to the file.
+    // View opens the in-app modal (a button, not a new-tab link).
+    expect(screen.getAllByRole('button', { name: 'doc.view' }).length).toBeGreaterThanOrEqual(1);
+    // Download stays a real anchor to the file.
     const links = screen.getAllByRole('link');
-    expect(links.length).toBeGreaterThanOrEqual(1);
     expect(links.some((a) => a.getAttribute('href') === 'https://x/form.pdf')).toBe(true);
     expect(links.some((a) => a.hasAttribute('download'))).toBe(true);
   });
 
-  it('shows an image as a fullscreen-openable button + a download link', () => {
+  it('shows an image with an in-app View action + a download link', () => {
     render(<DocumentViewer doc={{ url: 'https://x/photo.jpg', type: 'image', name: 'Photo' }} />);
-    // Image kind exposes a fullscreen button (not just links).
-    expect(screen.getByRole('button', { name: 'doc.fullscreen' })).toBeInTheDocument();
+    // Image opens in the in-app viewer via a View button (no external tab).
+    expect(screen.getAllByRole('button', { name: 'doc.view' }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByRole('link').some((a) => a.hasAttribute('download'))).toBe(true);
   });
 });
