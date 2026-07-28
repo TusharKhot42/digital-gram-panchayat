@@ -1,6 +1,7 @@
 import multer from 'multer';
 import { MAX_UPLOAD_SIZE_BYTES, MAX_COMPLAINT_PHOTOS } from '@dgp/shared';
 import { AppError } from '../utils/app-error.js';
+import { verifyUploadedFiles } from '../utils/file-signature.js';
 
 // Files held in memory, streamed to Cloudinary — never written to local disk.
 const storage = multer.memoryStorage();
@@ -27,7 +28,8 @@ export function uploadComplaintImages(req, res, next) {
   const handler = upload.array('images', MAX_COMPLAINT_PHOTOS);
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -79,7 +81,8 @@ export function uploadNoticeAttachment(req, res, next) {
   const handler = attachmentUpload.single('attachment');
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -101,7 +104,8 @@ export function uploadCertificateDocuments(req, res, next) {
   const handler = attachmentUpload.array('documents', 5);
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -128,7 +132,8 @@ export function uploadTaxBills(req, res, next) {
   const handler = attachmentUpload.array('bills', 5);
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -158,7 +163,8 @@ export function uploadVillageImages(req, res, next) {
   ]);
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -185,7 +191,8 @@ export function uploadSchemeFiles(req, res, next) {
   ]);
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
@@ -211,7 +218,8 @@ export function uploadSingleImage(req, res, next) {
   const handler = upload.single('image');
   handler(req, res, (err) => {
     if (!err) {
-      next();
+      // Client mimetype passed multer's filter; now confirm the real bytes match it.
+      verifyUploadedFiles(req, res, next);
       return;
     }
     if (err instanceof AppError) {
