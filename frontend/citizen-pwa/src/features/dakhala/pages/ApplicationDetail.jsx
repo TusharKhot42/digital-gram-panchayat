@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Download, FileText, ExternalLink } from 'lucide-react';
+import { Eye, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader, SectionHeader } from '@/components/PageHeader';
 import { Stepper } from '@/components/Stepper';
+import { DocModal } from '@/components/DocModal';
 import { DakhalaStatusBadge } from '../components/DakhalaStatusBadge';
 import { useApplication } from '../hooks';
 import { certificateService } from '../certificateService';
@@ -31,6 +32,7 @@ export function ApplicationDetail() {
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const { data: a, isLoading, isError } = useApplication(id);
   const [downloading, setDownloading] = useState(false);
+  const [preview, setPreview] = useState(null); // doc opened in the in-app viewer
 
   if (isLoading)
     return <p className="dgp-page text-body text-muted-foreground">{t('common.loading')}</p>;
@@ -39,11 +41,12 @@ export function ApplicationDetail() {
       <p className="dgp-page text-body text-destructive-strong">{t('dakhala.detail.notFound')}</p>
     );
 
-  const download = async () => {
+  const viewCertificate = async () => {
     setDownloading(true);
     try {
       const { pdfUrl } = await certificateService.getCertificate(a.id);
-      window.open(pdfUrl, '_blank', 'noopener');
+      // Open the generated certificate inside the app rather than a new browser tab.
+      setPreview({ url: pdfUrl, type: 'pdf', name: `${a.applicationId}.pdf` });
     } catch (err) {
       toast.error(err.response?.data?.error?.message || t('dakhala.detail.downloadFailed'));
     } finally {
@@ -76,9 +79,9 @@ export function ApplicationDetail() {
       </Card>
 
       {a.status === 'Approved' ? (
-        <Button className="mb-4 w-full" onClick={download} loading={downloading}>
-          <Download className="h-4 w-4" aria-hidden="true" />
-          {t('dakhala.detail.download')}
+        <Button className="mb-4 w-full" onClick={viewCertificate} loading={downloading}>
+          <Eye className="h-4 w-4" aria-hidden="true" />
+          {t('dakhala.detail.viewCertificate')}
         </Button>
       ) : null}
 
@@ -111,11 +114,10 @@ export function ApplicationDetail() {
             <ul className="divide-y divide-border">
               {a.uploadedDocuments.map((d, i) => (
                 <li key={`${d.url}-${i}`}>
-                  <a
-                    href={d.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex min-h-11 items-center gap-2.5 px-3 py-2.5 transition-colors duration-150 hover:bg-muted/40"
+                  <button
+                    type="button"
+                    onClick={() => setPreview(d)}
+                    className="flex min-h-11 w-full items-center gap-2.5 px-3 py-2.5 text-left transition-colors duration-150 hover:bg-muted/40"
                   >
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-subtle">
                       <FileText className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -132,11 +134,8 @@ export function ApplicationDetail() {
                         </span>
                       ) : null}
                     </span>
-                    <ExternalLink
-                      className="h-4 w-4 shrink-0 text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                  </a>
+                    <Eye className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -177,6 +176,8 @@ export function ApplicationDetail() {
           </ol>
         </CardContent>
       </Card>
+
+      <DocModal doc={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

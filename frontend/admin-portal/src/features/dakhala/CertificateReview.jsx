@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Check, X, FileText, ExternalLink, BadgeCheck } from 'lucide-react';
+import { Check, X, FileText, Eye, BadgeCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatDateTime, formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { controlClass } from '@/components/ui/input';
 import { PageHeader } from '@/components/PageHeader';
 import { Timeline } from '@/components/Timeline';
-import { Lightbox } from '@/components/Lightbox';
+import { DocModal } from '@/components/DocModal';
 import { SafeImage } from '@/components/SafeImage';
 import { cn } from '@/utils/cn';
 import { DakhalaStatusBadge } from './DakhalaStatusBadge';
@@ -106,29 +106,24 @@ export function CertificateReview() {
                       key={`${d.url}-${i}`}
                       className="w-40 overflow-hidden rounded-md border border-border"
                     >
-                      {d.type === 'image' ? (
-                        <button
-                          type="button"
-                          onClick={() => setPreview(d.url)}
-                          title={t('dakhala.review.zoom')}
-                          className="block w-full transition-opacity duration-150 hover:opacity-90"
-                        >
+                      <button
+                        type="button"
+                        onClick={() => setPreview(d)}
+                        title={t('doc.view')}
+                        className="block w-full transition-opacity duration-150 hover:opacity-90"
+                      >
+                        {d.type === 'image' ? (
                           <SafeImage
                             src={d.url}
                             alt={d.name || ''}
                             className="h-24 w-full object-cover"
                           />
-                        </button>
-                      ) : (
-                        <a
-                          href={d.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-24 w-full items-center justify-center bg-primary-subtle transition-opacity duration-150 hover:opacity-90"
-                        >
-                          <FileText className="h-8 w-8 text-primary" aria-hidden="true" />
-                        </a>
-                      )}
+                        ) : (
+                          <span className="flex h-24 w-full items-center justify-center bg-primary-subtle">
+                            <FileText className="h-8 w-8 text-primary" aria-hidden="true" />
+                          </span>
+                        )}
+                      </button>
                       <div className="border-t border-border p-2">
                         <p className="truncate text-caption font-medium text-foreground">
                           {d.docType ? t(`dakhala.doc.${d.docType}`, d.docType) : d.name || '—'}
@@ -138,15 +133,14 @@ export function CertificateReview() {
                             {t(`dakhala.docGroup.${d.group}`, d.group)}
                           </p>
                         ) : null}
-                        <a
-                          href={d.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() => setPreview(d)}
                           className="mt-1 inline-flex items-center gap-1 text-caption font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
                         >
-                          <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                          {t('dakhala.review.open')}
-                        </a>
+                          <Eye className="h-3 w-3" aria-hidden="true" />
+                          {t('doc.view')}
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -182,15 +176,20 @@ export function CertificateReview() {
                     ) : null}
                   </dl>
                 ) : null}
-                <a
-                  href={a.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPreview({
+                      url: a.pdfUrl,
+                      type: 'pdf',
+                      name: `${a.certificateNumber || a.applicationId}.pdf`,
+                    })
+                  }
                   className="inline-flex items-center gap-2 text-body font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
                 >
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  <Eye className="h-4 w-4" aria-hidden="true" />
                   {t('dakhala.review.openPdf')}
-                </a>
+                </button>
               </CardContent>
             </Panel>
           ) : null}
@@ -302,7 +301,7 @@ export function CertificateReview() {
         onClose={() => setRejectOpen(false)}
       />
 
-      <Lightbox src={preview} label={t('dakhala.review.zoom')} onClose={() => setPreview(null)} />
+      <DocModal doc={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

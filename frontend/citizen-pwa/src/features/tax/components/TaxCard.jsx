@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Home, Droplets, FileText, CheckCircle2 } from 'lucide-react';
+import { Home, Droplets, CheckCircle2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
-import { Lightbox } from '@/components/Lightbox';
-import { SafeImage } from '@/components/SafeImage';
+import { DocumentViewer } from '@/components/DocumentViewer';
 import { PaymentStatusBadge } from './PaymentStatusBadge';
 
 /**
@@ -14,7 +12,6 @@ import { PaymentStatusBadge } from './PaymentStatusBadge';
 export function TaxCard({ record }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const [receipt, setReceipt] = useState(null);
 
   const Icon = record.taxType === 'Water' ? Droplets : Home;
   const settled = record.balance <= 0;
@@ -113,40 +110,17 @@ export function TaxCard({ record }) {
         )}
       </section>
 
-      {/* Scanned bills / receipts */}
+      {/* Scanned bills / original tax documents — open inside the app (image or PDF). */}
       {record.bills?.length ? (
         <section className="border-t border-border px-4 py-3">
           <h3 className="mb-2 text-label text-foreground">{t('tax.card.bills')}</h3>
-          <div className="flex flex-wrap gap-2">
-            {record.bills.map((b) =>
-              b.type === 'image' ? (
-                <button
-                  key={b.url}
-                  type="button"
-                  onClick={() => setReceipt(b.url)}
-                  aria-label={t('tax.card.viewBill')}
-                  className="overflow-hidden rounded-md border border-border transition-opacity duration-150 hover:opacity-90"
-                >
-                  <SafeImage src={b.url} className="h-16 w-16 object-cover" />
-                </button>
-              ) : (
-                <a
-                  key={b.url}
-                  href={b.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-border px-3 text-body font-medium text-primary transition-colors duration-150 hover:bg-muted/40"
-                >
-                  <FileText className="h-3.5 w-3.5" aria-hidden="true" />
-                  {b.name || 'PDF'}
-                </a>
-              ),
-            )}
+          <div className="space-y-2">
+            {record.bills.map((b) => (
+              <DocumentViewer key={b.url} doc={b} variant="row" />
+            ))}
           </div>
         </section>
       ) : null}
-
-      <Lightbox src={receipt} label={t('tax.card.receipt')} onClose={() => setReceipt(null)} />
     </article>
   );
 }
