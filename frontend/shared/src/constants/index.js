@@ -300,7 +300,7 @@ export const ADMIN_USER_STORAGE_KEY = 'dgp_admin_user';
 export const VALIDATION = {
   MOBILE_REGEX: /^[6-9]\d{9}$/,
   MOBILE_MESSAGE: 'Enter a valid 10-digit Indian mobile number',
-  PASSWORD_MIN_LENGTH: 6,
+  PASSWORD_MIN_LENGTH: 8,
   FULLNAME_MIN_LENGTH: 2,
   FULLNAME_MAX_LENGTH: 100,
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
