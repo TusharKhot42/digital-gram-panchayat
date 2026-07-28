@@ -626,7 +626,8 @@
     "open": "Open in new tab",
     "download": "Download",
     "fullscreen": "View fullscreen",
-    "preview": "Preview"
+    "preview": "Preview",
+    "view": "View"
   },
   "audit": {
     "title": "Audit log",

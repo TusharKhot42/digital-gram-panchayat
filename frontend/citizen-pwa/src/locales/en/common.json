@@ -430,6 +430,7 @@
       "document": "Document",
       "timeline": "Status timeline",
       "download": "Download certificate",
+      "viewCertificate": "View certificate",
       "downloadFailed": "Could not download certificate",
       "rejected": "Rejected",
       "progress": "Application progress"
@@ -479,7 +480,8 @@
     "open": "Open in new tab",
     "download": "Download",
     "fullscreen": "View fullscreen",
-    "preview": "Preview"
+    "preview": "Preview",
+    "view": "View"
   },
   "public": {
     "enter": "Enter portal",
