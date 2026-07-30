@@ -31,7 +31,9 @@
     "noEventsHint": "नवीन ग्रामपंचायत कार्यक्रम येथे दिसतील.",
     "eventToday": "आज",
     "eventTomorrow": "उद्या",
-    "eventInDays": "{{count}} दिवसांत"
+    "eventInDays": "{{count}} दिवसांत",
+    "statusTitle": "तुमची स्थिती",
+    "unread": "न वाचलेल्या सूचना"
   },
   "notFound": {
     "title": "पान सापडले नाही",
