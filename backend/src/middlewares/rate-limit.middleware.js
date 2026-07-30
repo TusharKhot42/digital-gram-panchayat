@@ -2,10 +2,16 @@ import rateLimit from 'express-rate-limit';
 import { errorResponse } from '@dgp/shared';
 import { env } from '../config/env.js';
 
+// Rate limiting applies in production only. The integration suites must not be throttled, and
+// an ordinary local session — HMR reloads plus several public data fetches per page view —
+// otherwise exhausts the app-wide ceiling and surfaces "Too many requests" on the login and
+// welcome screens. Production keeps every limit exactly as configured.
+const LIMITS_DISABLED = env.NODE_ENV !== 'production';
+
 /**
- * Build a rate limiter that returns our uniform error envelope on 429. Limiting is skipped
- * under NODE_ENV=test so the integration suites aren't throttled; the limiter's behaviour is
- * covered by a dedicated test that constructs its own instance.
+ * Build a rate limiter that returns our uniform error envelope on 429. Skipped outside
+ * production; the limiter's behaviour is covered by a dedicated test that constructs its own
+ * instance with an explicit skip override.
  *
  * @param {{ windowMs?: number, max: number, code?: string, message?: string }} opts
  */
@@ -22,7 +28,7 @@ export function createRateLimiter({
     standardHeaders: true,
     legacyHeaders: false,
     ...(keyGenerator ? { keyGenerator } : {}),
-    skip: () => env.NODE_ENV === 'test',
+    skip: () => LIMITS_DISABLED,
     handler(_req, res) {
       res
         .status(429)
@@ -36,14 +42,10 @@ export function createRateLimiter({
   });
 }
 
-// Local development gets a much higher auth ceiling so repeated test logins aren't throttled.
-// Production and any non-development environment keep the strict limits unchanged.
-const isDev = env.NODE_ENV === 'development';
-
 // Authentication (login/register/lookup) — very strict; blunts credential stuffing.
 export const authLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: isDev ? 1000 : 20,
+  max: 20,
   code: 'AUTH_RATE_LIMITED',
   message: 'Too many attempts. Please wait a few minutes and try again.',
 });
@@ -56,7 +58,7 @@ export const authLimiter = createRateLimiter({
  */
 export const loginThrottle = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: isDev ? 1000 : 10,
+  max: 10,
   code: 'AUTH_RATE_LIMITED',
   message: 'Too many attempts for this account. Please wait a few minutes and try again.',
   keyGenerator(req) {
