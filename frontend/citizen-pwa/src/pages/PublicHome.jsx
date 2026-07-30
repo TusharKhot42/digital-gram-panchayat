@@ -242,45 +242,61 @@ export function PublicHome() {
         </div>
       </Section>
 
-      {/* Latest notices + schemes */}
-      <div className="grid gap-0 md:grid-cols-2">
-        {notices.length ? (
-          <Section id="notices" title={t('public.latestNotices')} className="py-8">
-            <ul className="space-y-2">
-              {notices.map((n) => (
-                <li
-                  key={n.id}
-                  className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
-                >
-                  <p className="truncate text-body font-medium text-foreground">{n.title}</p>
-                  <p className="mt-0.5 text-caption text-muted-foreground">
-                    {formatDate(n.publishDate || n.createdAt, locale)}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </Section>
-        ) : null}
-        {schemes.length ? (
-          <Section id="schemes" title={t('public.latestSchemes')} className="py-8">
-            <ul className="space-y-2">
-              {schemes.map((s) => (
-                <li
-                  key={s.id}
-                  className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
-                >
-                  <p className="truncate text-body font-medium text-foreground">{s.title}</p>
-                  {s.summary ? (
-                    <p className="mt-0.5 line-clamp-1 text-caption text-muted-foreground">
-                      {s.summary}
-                    </p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </Section>
-        ) : null}
-      </div>
+      {/* Latest notices + schemes. One page-level container (identical width to every other
+          section) holding a two-column inner grid — previously each list was its own centred
+          max-w-5xl Section nested inside the grid, so it centred within its column instead of
+          the page and rendered narrow and off-axis whenever only one list had content. */}
+      {notices.length || schemes.length ? (
+        <section
+          aria-labelledby={notices.length ? 'notices-h' : 'schemes-h'}
+          className="mx-auto w-full max-w-5xl px-4 py-8"
+        >
+          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+            {notices.length ? (
+              <div>
+                <h2 id="notices-h" className="mb-5 text-title text-foreground">
+                  {t('public.latestNotices')}
+                </h2>
+                <ul className="space-y-2">
+                  {notices.map((n) => (
+                    <li
+                      key={n.id}
+                      className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
+                    >
+                      <p className="truncate text-body font-medium text-foreground">{n.title}</p>
+                      <p className="mt-0.5 text-caption text-muted-foreground">
+                        {formatDate(n.publishDate || n.createdAt, locale)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {schemes.length ? (
+              <div>
+                <h2 id="schemes-h" className="mb-5 text-title text-foreground">
+                  {t('public.latestSchemes')}
+                </h2>
+                <ul className="space-y-2">
+                  {schemes.map((s) => (
+                    <li
+                      key={s.id}
+                      className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
+                    >
+                      <p className="truncate text-body font-medium text-foreground">{s.title}</p>
+                      {s.summary ? (
+                        <p className="mt-0.5 line-clamp-1 text-caption text-muted-foreground">
+                          {s.summary}
+                        </p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
 
       {/* Upcoming events */}
       {events.length ? (
