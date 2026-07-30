@@ -582,5 +582,47 @@
       "developmentOfficer": "Village Development Officer",
       "policePatil": "Police Patil"
     }
+  },
+  "help": {
+    "title": "Help Center",
+    "openCenter": "Open Help Center",
+    "intro": "Step-by-step guides for everything you can do on this portal.",
+    "count": "{{topics}} guides · {{faqs}} answers",
+    "search": "Search help",
+    "searchPlaceholder": "Search: complaint, certificate, tax…",
+    "allCategories": "All",
+    "noResults": "No guide matches your search.",
+    "noResultsHint": "Try a different word, or contact the Gram Panchayat office.",
+    "backToList": "All guides",
+    "takeMeThere": "Take me there",
+    "print": "Print / Save as PDF",
+    "share": "Share",
+    "minutes": "About {{count}} min",
+    "requirements": "What you need",
+    "steps": "Steps",
+    "notes": "Important notes",
+    "mistakes": "Common mistakes",
+    "faq": "Frequently asked questions",
+    "related": "Related guides",
+    "screenshots": "Screens you will see",
+    "category": {
+      "gettingStarted": "Getting started",
+      "registration": "Registration",
+      "login": "Login",
+      "language": "Language",
+      "theme": "Theme",
+      "complaints": "Complaints",
+      "certificates": "Certificates",
+      "tax": "Tax",
+      "schemes": "Schemes",
+      "notices": "Notices",
+      "events": "Events",
+      "directory": "Directory",
+      "emergency": "Emergency",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "officerGuides": "Officer guides"
+    }
   }
 }

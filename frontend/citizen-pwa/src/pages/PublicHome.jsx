@@ -454,6 +454,14 @@ export function PublicHome() {
               ))}
               <li>
                 <Link
+                  to="/help"
+                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                >
+                  {t('help.title')}
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/directory"
                   className="text-muted-foreground transition-colors duration-150 hover:text-primary"
                 >

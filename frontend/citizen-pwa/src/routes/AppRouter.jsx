@@ -13,6 +13,7 @@ const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
 const PublicHome = lazyNamed(() => import('@/pages/PublicHome'), 'PublicHome');
 const VerifyCertificate = lazyNamed(() => import('@/pages/VerifyCertificate'), 'VerifyCertificate');
 const Directory = lazyNamed(() => import('@/pages/Directory'), 'Directory');
+const Help = lazyNamed(() => import('@/pages/Help'), 'Help');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
 const Register = lazyNamed(() => import('@/features/auth/pages/Register'), 'Register');
@@ -105,6 +106,7 @@ const router = createBrowserRouter([
           { path: 'notifications/settings', element: page(<NotificationSettings />) },
           { path: 'notifications/:id', element: page(<NotificationDetail />) },
           { path: 'settings', element: page(<Settings />) },
+          { path: 'help', element: page(<Help />) },
           { path: 'profile', element: page(<Profile />) },
           { path: '*', element: page(<NotFound />) },
         ],

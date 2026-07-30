@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Wifi, WifiOff, Bell, Settings } from 'lucide-react';
+import { Moon, Sun, Wifi, WifiOff, Bell, Settings, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme, useLanguage } from '@/store';
 import { useOnline } from '@/hooks/useOnline';
@@ -43,6 +43,12 @@ export function Header() {
 
         <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
+
+        <Button asChild variant="ghost" size="icon" aria-label={t('help.title')}>
+          <Link to="/help">
+            <HelpCircle className="h-5 w-5" />
+          </Link>
         </Button>
 
         <Button asChild variant="ghost" size="icon" aria-label={t('settings.title')}>

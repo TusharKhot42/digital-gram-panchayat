@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Languages, Moon, Sun, Bell, HelpCircle, RotateCcw, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -111,6 +112,13 @@ export function Settings() {
 
       <Section icon={HelpCircle} title={t('settings.help')}>
         <p className="mb-2 text-body text-muted-foreground">{t('settings.helpBody')}</p>
+        <Link
+          to="/help"
+          className="mb-3 inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-body font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary-hover"
+        >
+          <HelpCircle className="h-4 w-4" aria-hidden="true" />
+          {t('help.openCenter')}
+        </Link>
         <div className="divide-y divide-border border-t border-border">
           {FAQ_KEYS.map((key) => (
             <FaqItem
