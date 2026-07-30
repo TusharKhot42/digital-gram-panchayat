@@ -23,7 +23,8 @@
     "reports": "अहवाल",
     "audit": "ऑडिट",
     "village": "गाव माहिती",
-    "events": "कार्यक्रम"
+    "events": "कार्यक्रम",
+    "help": "मदत"
   },
   "ntf": {
     "title": "सूचना",
@@ -781,6 +782,48 @@
       "RoadInauguration": "रस्ता उद्घाटन",
       "VillageDevelopment": "गाव विकास",
       "Other": "इतर"
+    }
+  },
+  "help": {
+    "title": "मदत केंद्र",
+    "openCenter": "मदत केंद्र उघडा",
+    "intro": "या पोर्टलवर करता येणाऱ्या प्रत्येक गोष्टीसाठी टप्प्याटप्प्याने मार्गदर्शन.",
+    "count": "{{topics}} मार्गदर्शिका · {{faqs}} उत्तरे",
+    "search": "मदत शोधा",
+    "searchPlaceholder": "शोधा: तक्रार, दाखला, कर…",
+    "allCategories": "सर्व",
+    "noResults": "तुमच्या शोधाशी जुळणारी मार्गदर्शिका नाही.",
+    "noResultsHint": "दुसरा शब्द वापरून पहा, किंवा ग्रामपंचायत कार्यालयाशी संपर्क साधा.",
+    "backToList": "सर्व मार्गदर्शिका",
+    "takeMeThere": "तेथे घेऊन जा",
+    "print": "छापा / PDF म्हणून जतन करा",
+    "share": "शेअर करा",
+    "minutes": "सुमारे {{count}} मिनिटे",
+    "requirements": "तुम्हाला काय लागेल",
+    "steps": "टप्पे",
+    "notes": "महत्त्वाच्या सूचना",
+    "mistakes": "नेहमीच्या चुका",
+    "faq": "वारंवार विचारले जाणारे प्रश्न",
+    "related": "संबंधित मार्गदर्शिका",
+    "screenshots": "तुम्हाला दिसणारी पाने",
+    "category": {
+      "gettingStarted": "सुरुवात",
+      "registration": "नोंदणी",
+      "login": "लॉगिन",
+      "language": "भाषा",
+      "theme": "रंगसंगती",
+      "complaints": "तक्रारी",
+      "certificates": "दाखले",
+      "tax": "कर",
+      "schemes": "योजना",
+      "notices": "सूचना",
+      "events": "कार्यक्रम",
+      "directory": "निर्देशिका",
+      "emergency": "आपत्कालीन",
+      "notifications": "सूचना",
+      "profile": "प्रोफाईल",
+      "settings": "सेटिंग्ज",
+      "officerGuides": "अधिकारी मार्गदर्शन"
     }
   }
 }

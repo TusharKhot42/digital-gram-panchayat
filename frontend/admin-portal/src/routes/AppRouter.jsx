@@ -50,6 +50,7 @@ const BroadcastForm = lazyNamed(
 );
 const ReportsPage = lazyNamed(() => import('@/features/reports/ReportsPage'), 'ReportsPage');
 const AuditLogPage = lazyNamed(() => import('@/features/audit/AuditLogPage'), 'AuditLogPage');
+const Help = lazyNamed(() => import('@/pages/Help'), 'Help');
 const VillageProfilePage = lazyNamed(
   () => import('@/features/village/VillageProfilePage'),
   'VillageProfilePage',
@@ -92,6 +93,7 @@ const router = createBrowserRouter([
           { path: 'audit', element: page(<AuditLogPage />) },
           { path: 'village', element: page(<VillageProfilePage />) },
           { path: 'events', element: page(<EventsPage />) },
+          { path: 'help', element: page(<Help />) },
           { path: '*', element: page(<NotFound />) },
         ],
       },

@@ -14,6 +14,7 @@ import {
   Home,
   CalendarDays,
   LogOut,
+  HelpCircle,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,6 +33,7 @@ const items = [
   { to: '/audit', label: 'nav.audit', icon: ScrollText },
   { to: '/village', label: 'nav.village', icon: Home },
   { to: '/events', label: 'nav.events', icon: CalendarDays },
+  { to: '/help', label: 'nav.help', icon: HelpCircle },
 ];
 
 export function Sidebar() {
