@@ -22,7 +22,10 @@ export function BottomNav() {
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-between px-1">
         {items.map(({ to, label, icon: Icon, end }) => (
-          <li key={to} className="flex-1">
+          // min-w-0 lets a cell shrink below its label's intrinsic width. Without it, flex
+          // items default to min-width:auto and a longer label (Marathi runs wider than the
+          // English one) pushes the whole bar past a 320px viewport.
+          <li key={to} className="min-w-0 flex-1">
             <NavLink
               to={to}
               end={end}
@@ -40,13 +43,13 @@ export function BottomNav() {
                   {/* Material-style active pill behind the icon — the only "selected" affordance. */}
                   <span
                     className={cn(
-                      'flex h-7 w-14 items-center justify-center rounded-full transition-colors duration-150',
+                      'flex h-7 w-full max-w-14 items-center justify-center rounded-full transition-colors duration-150',
                       isActive ? 'bg-primary-subtle' : 'group-hover:bg-accent',
                     )}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <span>{t(label)}</span>
+                  <span className="max-w-full truncate px-0.5">{t(label)}</span>
                 </>
               )}
             </NavLink>

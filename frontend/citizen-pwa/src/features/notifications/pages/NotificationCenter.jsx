@@ -125,8 +125,11 @@ export function NotificationCenter() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-5">
-      <div className="mb-4 flex items-start justify-between gap-2">
-        <div>
+      {/* The action group must be allowed to wrap and shrink: the Marathi "mark all as read"
+          label is far longer than the English one and, held rigid, pushed the page wider than a
+          320px viewport (which in turn stretched the fixed bottom nav to the document width). */}
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
           <h1 className="text-title text-foreground">{t('notif.title')}</h1>
           {unreadCount ? (
             <p className="mt-1 text-caption text-muted-foreground">
@@ -134,15 +137,16 @@ export function NotificationCenter() {
             </p>
           ) : null}
         </div>
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex min-w-0 items-center gap-1">
           <Button
             variant="ghost"
             size="sm"
+            className="min-w-0"
             onClick={() => markAll.mutate()}
             disabled={markAll.isPending || unreadCount === 0}
           >
-            <CheckCheck className="h-4 w-4" aria-hidden="true" />
-            {t('notif.markAll')}
+            <CheckCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="truncate">{t('notif.markAll')}</span>
           </Button>
           <Button asChild variant="ghost" size="icon" aria-label={t('notif.settings')}>
             <Link to="/notifications/settings">
