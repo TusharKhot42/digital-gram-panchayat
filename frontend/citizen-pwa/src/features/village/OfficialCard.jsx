@@ -55,9 +55,11 @@ function ContactButton({ href, icon: Icon, label, variant = 'primary' }) {
       ? 'bg-primary text-primary-foreground hover:bg-primary-hover'
       : 'border border-border text-foreground hover:bg-accent';
   return (
+    // min-h-11 (44px): calling an official is the primary action on this card and is used on a
+    // phone. It was 36px.
     <a
       href={href}
-      className={`inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-caption font-medium transition-colors duration-150 ${cls}`}
+      className={`inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-caption font-medium transition-colors duration-150 ${cls}`}
     >
       <Icon className="h-4 w-4" aria-hidden="true" />
       {label}
@@ -114,7 +116,7 @@ export function OfficialCard({ member, variant = 'full' }) {
               <button
                 type="button"
                 onClick={() => copy(member.mobile, t('directory.field.mobile'), t)}
-                className="ml-auto rounded p-1 hover:bg-accent"
+                className="ml-auto flex h-9 w-9 shrink-0 items-center justify-center rounded hover:bg-accent"
                 aria-label={t('directory.copyPhone')}
               >
                 <Copy className="h-3.5 w-3.5" aria-hidden="true" />
@@ -141,7 +143,7 @@ export function OfficialCard({ member, variant = 'full' }) {
               <button
                 type="button"
                 onClick={() => copy(member.email, t('directory.field.email'), t)}
-                className="ml-auto rounded p-1 hover:bg-accent"
+                className="ml-auto flex h-9 w-9 shrink-0 items-center justify-center rounded hover:bg-accent"
                 aria-label={t('directory.copyEmail')}
               >
                 <Copy className="h-3.5 w-3.5" aria-hidden="true" />

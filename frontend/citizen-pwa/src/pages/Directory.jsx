@@ -268,7 +268,8 @@ function FilterChip({ active, onClick, children }) {
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'rounded-full border px-3 py-1 text-caption font-medium transition-colors duration-150',
+        // min-h-9 keeps the chip clear of the 24px WCAG 2.5.8 target minimum with room to spare.
+        'inline-flex min-h-9 items-center rounded-full border px-3.5 text-caption font-medium transition-colors duration-150',
         active
           ? 'border-primary bg-primary text-primary-foreground'
           : 'border-border bg-card text-muted-foreground hover:bg-accent',
