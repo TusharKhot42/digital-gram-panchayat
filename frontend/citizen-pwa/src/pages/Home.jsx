@@ -88,6 +88,9 @@ function EventHero({ event, locale, t }) {
         <SafeImage
           src={event.banner}
           alt=""
+          // Above the fold and the largest paint on the dashboard — opt out of lazy loading.
+          loading="eager"
+          fetchpriority="high"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       ) : null}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { queryClient } from '@/services/query-client';
@@ -23,18 +24,25 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <LanguageProvider>
-            <AuthProvider>
-              {booting ? <Splash /> : <AppRouter />}
-              {!booting && onboardingOpen && <Onboarding onFinish={finishOnboarding} />}
-              <Toaster position="top-center" />
-              <PwaReloadPrompt />
-            </AuthProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      {/*
+       * reducedMotion="user" makes framer-motion honour prefers-reduced-motion. The global CSS
+       * rule in index.css cannot: framer animates through inline styles and rAF, not CSS
+       * transitions, so the page/splash/onboarding motion ignored the OS setting entirely.
+       */}
+      <MotionConfig reducedMotion="user">
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <LanguageProvider>
+              <AuthProvider>
+                {booting ? <Splash /> : <AppRouter />}
+                {!booting && onboardingOpen && <Onboarding onFinish={finishOnboarding} />}
+                <Toaster position="top-center" />
+                <PwaReloadPrompt />
+              </AuthProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </MotionConfig>
     </ErrorBoundary>
   );
 }

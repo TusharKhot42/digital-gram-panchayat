@@ -11,9 +11,8 @@ export function GpsCapture({ coords, status, address, onRequest }) {
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-foreground">
-        {t('complaint.form.location')}
-      </label>
+      {/* A heading, not a <label> — this block heads a button, not a form control. */}
+      <p className="block text-sm font-medium text-foreground">{t('complaint.form.location')}</p>
 
       <Button type="button" variant="outline" onClick={onRequest} disabled={status === 'loading'}>
         {status === 'loading' ? (

@@ -175,8 +175,11 @@ export function SchemeForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.title')}</label>
+          <label htmlFor="scheme-title" className="block text-label text-foreground">
+            {t('scheme.form.title')}
+          </label>
           <input
+            id="scheme-title"
             className={controlClass}
             {...register('title', { required: t('scheme.form.required') })}
           />
@@ -187,8 +190,10 @@ export function SchemeForm() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('scheme.form.category')}</label>
-            <select className={controlClass} {...register('category')}>
+            <label htmlFor="scheme-category" className="block text-label text-foreground">
+              {t('scheme.form.category')}
+            </label>
+            <select id="scheme-category" className={controlClass} {...register('category')}>
               {SCHEME_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
                   {t(`scheme.category.${c}`, c)}
@@ -197,8 +202,11 @@ export function SchemeForm() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('scheme.form.website')}</label>
+            <label htmlFor="scheme-officialWebsite" className="block text-label text-foreground">
+              {t('scheme.form.website')}
+            </label>
             <input
+              id="scheme-officialWebsite"
               className={controlClass}
               placeholder="https://…"
               {...register('officialWebsite')}
@@ -207,19 +215,36 @@ export function SchemeForm() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.expiry')}</label>
-          <input type="date" className={controlClass} {...register('expiryDate')} />
+          <label htmlFor="scheme-expiryDate" className="block text-label text-foreground">
+            {t('scheme.form.expiry')}
+          </label>
+          <input
+            id="scheme-expiryDate"
+            type="date"
+            className={controlClass}
+            {...register('expiryDate')}
+          />
           <p className="text-caption text-muted-foreground">{t('scheme.form.expiryHint')}</p>
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.summary')}</label>
-          <input className={controlClass} maxLength={300} {...register('summary')} />
+          <label htmlFor="scheme-summary" className="block text-label text-foreground">
+            {t('scheme.form.summary')}
+          </label>
+          <input
+            id="scheme-summary"
+            className={controlClass}
+            maxLength={300}
+            {...register('summary')}
+          />
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.description')}</label>
+          <label htmlFor="scheme-description" className="block text-label text-foreground">
+            {t('scheme.form.description')}
+          </label>
           <textarea
+            id="scheme-description"
             rows={5}
             className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('description', { required: t('scheme.form.required') })}
@@ -230,8 +255,11 @@ export function SchemeForm() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.eligibility')}</label>
+          <label htmlFor="scheme-eligibility" className="block text-label text-foreground">
+            {t('scheme.form.eligibility')}
+          </label>
           <textarea
+            id="scheme-eligibility"
             rows={3}
             className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('eligibility')}
@@ -239,10 +267,11 @@ export function SchemeForm() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">
+          <label htmlFor="scheme-requiredDocuments" className="block text-label text-foreground">
             {t('scheme.form.requiredDocuments')}
           </label>
           <textarea
+            id="scheme-requiredDocuments"
             rows={3}
             className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             placeholder={t('scheme.form.docsHint')}
@@ -251,8 +280,11 @@ export function SchemeForm() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('scheme.form.benefits')}</label>
+          <label htmlFor="scheme-benefits" className="block text-label text-foreground">
+            {t('scheme.form.benefits')}
+          </label>
           <textarea
+            id="scheme-benefits"
             rows={3}
             className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('benefits')}
@@ -260,10 +292,11 @@ export function SchemeForm() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-label text-foreground">
+          <label htmlFor="scheme-applicationProcess" className="block text-label text-foreground">
             {t('scheme.form.applicationProcess')}
           </label>
           <textarea
+            id="scheme-applicationProcess"
             rows={3}
             className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
             {...register('applicationProcess')}

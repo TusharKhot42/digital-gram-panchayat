@@ -62,8 +62,11 @@ export function BroadcastForm() {
 
       <form onSubmit={submit} className="space-y-4">
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('ntf.form.subject')}</label>
+          <label htmlFor="broadcast-subject" className="block text-label text-foreground">
+            {t('ntf.form.subject')}
+          </label>
           <input
+            id="broadcast-subject"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={160}
@@ -71,8 +74,11 @@ export function BroadcastForm() {
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('ntf.form.message')}</label>
+          <label htmlFor="broadcast-message" className="block text-label text-foreground">
+            {t('ntf.form.message')}
+          </label>
           <textarea
+            id="broadcast-message"
             rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -82,8 +88,15 @@ export function BroadcastForm() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('ntf.form.type')}</label>
-            <select value={type} onChange={(e) => setType(e.target.value)} className={controlClass}>
+            <label htmlFor="broadcast-type" className="block text-label text-foreground">
+              {t('ntf.form.type')}
+            </label>
+            <select
+              id="broadcast-type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className={controlClass}
+            >
               {NOTIFICATION_TYPES.map((ty) => (
                 <option key={ty} value={ty}>
                   {t(`ntf.type.${ty}`, ty)}
@@ -92,8 +105,11 @@ export function BroadcastForm() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('ntf.form.target')}</label>
+            <label htmlFor="broadcast-target" className="block text-label text-foreground">
+              {t('ntf.form.target')}
+            </label>
             <select
+              id="broadcast-target"
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               className={controlClass}

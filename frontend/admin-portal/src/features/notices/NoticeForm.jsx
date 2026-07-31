@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { NOTICE_CATEGORIES, SMS_SUMMARY_MAX_LENGTH } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { controlClass } from '@/components/ui/input';
+import { Field } from '@/components/ui/field';
 import { cn } from '@/utils/cn';
 import { useNotice, useNoticeMutations } from './hooks';
 
@@ -71,53 +72,63 @@ export function NoticeForm() {
       </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('notice.form.title')}</label>
-          <input
-            className={controlClass}
-            {...register('title', { required: t('notice.form.required') })}
-          />
-          {errors.title ? (
-            <p className="text-caption text-destructive-strong">{errors.title.message}</p>
-          ) : null}
-        </div>
+        {/*
+         * These fields used a bare <label> sibling with no htmlFor, so every control on this
+         * form had no accessible name. Field (components/ui/field.jsx) already wires
+         * label/htmlFor/id and points aria-describedby at the error — use it rather than
+         * hand-rolling the pairing again.
+         */}
+        <Field label={t('notice.form.title')} error={errors.title?.message}>
+          {({ id, 'aria-describedby': describedBy }) => (
+            <input
+              id={id}
+              aria-describedby={describedBy}
+              className={controlClass}
+              {...register('title', { required: t('notice.form.required') })}
+            />
+          )}
+        </Field>
 
-        <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('notice.form.summary')}</label>
-          <input
-            className={controlClass}
-            maxLength={SMS_SUMMARY_MAX_LENGTH}
-            {...register('summary')}
-          />
-        </div>
+        <Field label={t('notice.form.summary')}>
+          {({ id }) => (
+            <input
+              id={id}
+              className={controlClass}
+              maxLength={SMS_SUMMARY_MAX_LENGTH}
+              {...register('summary')}
+            />
+          )}
+        </Field>
 
-        <div className="space-y-1">
-          <label className="block text-label text-foreground">{t('notice.form.content')}</label>
-          <textarea
-            rows={6}
-            className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
-            {...register('content', { required: t('notice.form.required') })}
-          />
-          {errors.content ? (
-            <p className="text-caption text-destructive-strong">{errors.content.message}</p>
-          ) : null}
-        </div>
+        <Field label={t('notice.form.content')} error={errors.content?.message}>
+          {({ id, 'aria-describedby': describedBy }) => (
+            <textarea
+              id={id}
+              aria-describedby={describedBy}
+              rows={6}
+              className={cn(controlClass, 'h-auto min-h-24 py-2.5')}
+              {...register('content', { required: t('notice.form.required') })}
+            />
+          )}
+        </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('notice.form.category')}</label>
-            <select className={controlClass} {...register('category')}>
-              {NOTICE_CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {t(`notice.category.${c}`, c)}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label className="block text-label text-foreground">{t('notice.form.expiry')}</label>
-            <input type="date" className={controlClass} {...register('expiryDate')} />
-          </div>
+          <Field label={t('notice.form.category')}>
+            {({ id }) => (
+              <select id={id} className={controlClass} {...register('category')}>
+                {NOTICE_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {t(`notice.category.${c}`, c)}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+          <Field label={t('notice.form.expiry')}>
+            {({ id }) => (
+              <input id={id} type="date" className={controlClass} {...register('expiryDate')} />
+            )}
+          </Field>
         </div>
 
         <div className="space-y-1">

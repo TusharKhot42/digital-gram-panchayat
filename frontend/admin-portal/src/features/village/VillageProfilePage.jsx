@@ -223,6 +223,7 @@ export function VillageProfilePage() {
               <input
                 className={controlClass}
                 placeholder={t('village.statKey')}
+                aria-label={t('village.statKey')}
                 value={s.key}
                 onChange={(e) =>
                   setStats((p) => p.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))
@@ -231,6 +232,7 @@ export function VillageProfilePage() {
               <input
                 className={controlClass}
                 placeholder={t('village.statValue')}
+                aria-label={t('village.statValue')}
                 value={s.value ?? ''}
                 onChange={(e) =>
                   setStats((p) => p.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))
@@ -280,6 +282,7 @@ export function VillageProfilePage() {
               <input
                 className={controlClass}
                 placeholder={t('village.contactLabel')}
+                aria-label={t('village.contactLabel')}
                 value={c.label ?? ''}
                 onChange={(e) =>
                   setContacts((p) =>
@@ -290,6 +293,7 @@ export function VillageProfilePage() {
               <input
                 className={controlClass}
                 placeholder={t('village.contactPhone')}
+                aria-label={t('village.contactPhone')}
                 value={c.phone ?? ''}
                 onChange={(e) =>
                   setContacts((p) =>

@@ -49,9 +49,10 @@ export function PhotoUploader({ files, onChange }) {
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-foreground">
+      {/* A heading, not a <label> — the file inputs are hidden and driven by their own buttons. */}
+      <p className="block text-sm font-medium text-foreground">
         {t('complaint.form.photos')} ({files.length}/{MAX_COMPLAINT_PHOTOS})
-      </label>
+      </p>
 
       {previews.length ? (
         <div className="flex flex-wrap gap-2">
