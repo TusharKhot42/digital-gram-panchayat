@@ -13,6 +13,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
+import { cn } from '@/utils/cn';
 import { Skeleton } from '@/components/Skeleton';
 import { StatusBadge } from '@/components/StatusBadge';
 import { DakhalaStatusBadge } from '@/features/dakhala/DakhalaStatusBadge';
@@ -23,10 +24,25 @@ const DashboardCharts = lazy(() => import('@/features/dashboard/DashboardCharts'
 import { complaintService } from '@/features/complaints/complaintService';
 import { certificateService } from '@/features/dakhala/certificateService';
 
-function MetricCard({ icon: Icon, label, value }) {
-  return (
-    <div className="flex min-w-0 items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-xs transition-shadow duration-150 hover:shadow-sm">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-subtle text-primary">
+const TONES = {
+  brand: 'bg-primary-subtle text-primary',
+  pending: 'bg-warning-subtle text-warning-strong',
+  due: 'bg-destructive-subtle text-destructive-strong',
+};
+
+/**
+ * One figure on the dashboard. `to` makes it a link: these numbers are an officer's work
+ * queue, so "2 pending complaints" should open the pending complaints, not just report them.
+ */
+function MetricCard({ icon: Icon, label, value, to, tone = 'brand' }) {
+  const body = (
+    <>
+      <div
+        className={cn(
+          'flex h-11 w-11 shrink-0 items-center justify-center rounded-md',
+          TONES[tone],
+        )}
+      >
         <Icon className="h-5 w-5" aria-hidden="true" />
       </div>
       <div className="min-w-0">
@@ -34,7 +50,31 @@ function MetricCard({ icon: Icon, label, value }) {
         <p className="truncate text-display tabular-nums text-foreground">{value}</p>
         <p className="truncate text-body text-muted-foreground">{label}</p>
       </div>
-    </div>
+    </>
+  );
+
+  const className = cn(
+    'flex min-w-0 items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-xs',
+    'transition-[box-shadow,border-color] duration-150 hover:shadow-sm',
+    to && 'hover:border-primary/40',
+  );
+
+  return to ? (
+    <Link to={to} className={className}>
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
+  );
+}
+
+/** A titled band of metrics — separates "act on this" from "reference figures". */
+function MetricGroup({ title, children }) {
+  return (
+    <section aria-label={title}>
+      <h2 className="mb-3 text-section text-foreground">{title}</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+    </section>
   );
 }
 
@@ -76,31 +116,66 @@ export function Home() {
     refetchInterval: 30_000,
   });
 
-  const cards = [
-    { icon: Users, label: t('dashboard.citizens'), value: m?.totalCitizens ?? '—' },
+  /*
+   * Split by what an officer has to do about it. A flat 3x3 grid of identical counters gave a
+   * pending complaint the same weight as the number of registered citizens; these are not the
+   * same kind of fact. Every card links to the screen where the work is done.
+   */
+  const actionCards = [
     {
       icon: ClipboardList,
       label: t('dashboard.pendingComplaints'),
       value: m?.pendingComplaints ?? '—',
+      to: '/complaints',
+      tone: m?.pendingComplaints ? 'pending' : 'brand',
     },
     {
-      icon: CheckCircle2,
-      label: t('dashboard.resolvedComplaints'),
-      value: m?.resolvedComplaints ?? '—',
+      icon: FileText,
+      label: t('dashboard.certificates'),
+      value: m?.totalCertificates ?? '—',
+      to: '/dakhala',
+      tone: 'brand',
     },
-    { icon: FileText, label: t('dashboard.certificates'), value: m?.totalCertificates ?? '—' },
-    {
-      icon: CheckCircle2,
-      label: t('dashboard.approvedCertificates'),
-      value: m?.approvedCertificates ?? '—',
-    },
-    { icon: Megaphone, label: t('dashboard.activeNotices'), value: m?.totalNotices ?? '—' },
-    { icon: BookOpen, label: t('dashboard.schemes'), value: m?.totalSchemes ?? '—' },
-    { icon: Receipt, label: t('dashboard.taxRecords'), value: m?.totalTaxRecords ?? '—' },
     {
       icon: Receipt,
       label: t('dashboard.outstandingTax'),
       value: m ? formatCurrency(m.outstandingTax, locale) : '—',
+      to: '/tax',
+      tone: m?.outstandingTax ? 'due' : 'brand',
+    },
+  ];
+
+  const recordCards = [
+    { icon: Users, label: t('dashboard.citizens'), value: m?.totalCitizens ?? '—', to: '/users' },
+    {
+      icon: CheckCircle2,
+      label: t('dashboard.resolvedComplaints'),
+      value: m?.resolvedComplaints ?? '—',
+      to: '/complaints',
+    },
+    {
+      icon: CheckCircle2,
+      label: t('dashboard.approvedCertificates'),
+      value: m?.approvedCertificates ?? '—',
+      to: '/dakhala',
+    },
+    {
+      icon: Megaphone,
+      label: t('dashboard.activeNotices'),
+      value: m?.totalNotices ?? '—',
+      to: '/notices',
+    },
+    {
+      icon: BookOpen,
+      label: t('dashboard.schemes'),
+      value: m?.totalSchemes ?? '—',
+      to: '/schemes',
+    },
+    {
+      icon: Receipt,
+      label: t('dashboard.taxRecords'),
+      value: m?.totalTaxRecords ?? '—',
+      to: '/tax',
     },
   ];
 
@@ -141,11 +216,17 @@ export function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
+      <MetricGroup title={t('dashboard.needsAttention')}>
+        {actionCards.map((c) => (
           <MetricCard key={c.label} {...c} />
         ))}
-      </div>
+      </MetricGroup>
+
+      <MetricGroup title={t('dashboard.villageRecords')}>
+        {recordCards.map((c) => (
+          <MetricCard key={c.label} {...c} />
+        ))}
+      </MetricGroup>
 
       <Suspense
         fallback={

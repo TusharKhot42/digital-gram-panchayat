@@ -135,7 +135,9 @@
     "none": "Nothing yet",
     "qaNotice": "New notice",
     "qaScheme": "New scheme",
-    "qaTax": "New tax record"
+    "qaTax": "New tax record",
+    "needsAttention": "Needs your attention",
+    "villageRecords": "Village records"
   },
   "users": {
     "title": "Users",
