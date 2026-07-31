@@ -58,11 +58,15 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
         aria-label={title}
         tabIndex={-1}
         className={cn(
-          'w-full max-w-md rounded-lg border border-border bg-card shadow-overlay outline-none',
+          // Cap to the viewport and scroll the middle. Without this a tall dialog on a short
+          // viewport (a landscape phone, or a zoomed laptop) was clipped top and bottom with
+          // its submit button off-screen — and `body { overflow: hidden }` meant there was no
+          // way to scroll to it at all.
+          'flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col rounded-lg border border-border bg-card shadow-overlay outline-none',
           className,
         )}
       >
-        <div className="flex items-start justify-between gap-3 p-5 pb-0">
+        <div className="flex shrink-0 items-start justify-between gap-3 p-5 pb-0">
           <div className="min-w-0">
             <h2 className="text-section text-foreground">{title}</h2>
             {description ? (
@@ -79,10 +83,10 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
           </button>
         </div>
 
-        {children ? <div className="p-5">{children}</div> : null}
+        {children ? <div className="min-h-0 flex-1 overflow-y-auto p-5">{children}</div> : null}
 
         {footer ? (
-          <div className="flex justify-end gap-2 border-t border-border p-4">{footer}</div>
+          <div className="flex shrink-0 justify-end gap-2 border-t border-border p-4">{footer}</div>
         ) : null}
       </div>
     </div>,

@@ -96,14 +96,18 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+      {/*
+       * The title stays in the printed sheet; only the export buttons are dropped. It used to
+       * be duplicated by a second print-only block, which put two <h1>s on the screen.
+       */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-title text-foreground">{t('reports.title')}</h1>
           <p className="mt-0.5 text-caption text-muted-foreground">
             {t('reports.generatedAt')}: {formatDateTime(r.generatedAt, locale)}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 print:hidden">
           <Button variant="outline" size="sm" onClick={() => exportCsv(r, t)}>
             <Download className="h-4 w-4" aria-hidden="true" />
             {t('reports.exportCsv')}
@@ -117,14 +121,6 @@ export function ReportsPage() {
             {t('reports.exportPdf')}
           </Button>
         </div>
-      </div>
-
-      {/* Print-only header so the PDF carries a title. */}
-      <div className="hidden print:block">
-        <h1 className="text-title text-foreground">{t('reports.title')}</h1>
-        <p className="text-caption text-muted-foreground">
-          {t('reports.generatedAt')}: {formatDateTime(r.generatedAt, locale)}
-        </p>
       </div>
 
       <Section

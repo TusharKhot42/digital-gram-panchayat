@@ -24,7 +24,14 @@
     "audit": "Audit",
     "village": "Village Profile",
     "events": "Events",
-    "help": "Help"
+    "help": "Help",
+    "primary": "Main navigation",
+    "breadcrumb": "Breadcrumb",
+    "openMenu": "Open menu",
+    "portalLabel": "Officer portal",
+    "toggleLanguage": "Switch language",
+    "themeDark": "Switch to dark theme",
+    "themeLight": "Switch to light theme"
   },
   "ntf": {
     "title": "Notifications",

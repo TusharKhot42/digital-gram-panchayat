@@ -24,7 +24,14 @@
     "audit": "ऑडिट",
     "village": "गाव माहिती",
     "events": "कार्यक्रम",
-    "help": "मदत"
+    "help": "मदत",
+    "primary": "मुख्य नेव्हिगेशन",
+    "breadcrumb": "मार्गदर्शक पट्टी",
+    "openMenu": "मेनू उघडा",
+    "portalLabel": "अधिकारी पोर्टल",
+    "toggleLanguage": "भाषा बदला",
+    "themeDark": "गडद थीम वापरा",
+    "themeLight": "फिकट थीम वापरा"
   },
   "ntf": {
     "title": "सूचना",
