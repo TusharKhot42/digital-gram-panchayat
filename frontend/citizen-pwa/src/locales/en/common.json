@@ -624,5 +624,22 @@
       "settings": "Settings",
       "officerGuides": "Officer guides"
     }
+  },
+  "assistant": {
+    "open": "Open help assistant",
+    "title": "Help assistant",
+    "subtitle": "Answers from the Help Center — works offline",
+    "greeting": "Hello! Ask me how to do anything on this portal.",
+    "trySomething": "Or tap a question below:",
+    "placeholder": "Type your question…",
+    "inputLabel": "Ask a question",
+    "send": "Send",
+    "clear": "Clear conversation",
+    "fullGuide": "Full guide",
+    "alsoRelated": "Also related:",
+    "notSure": "I'm not certain which guide you need. Do you mean one of these?",
+    "noMatch": "I couldn't find a guide for that. Try different words, browse the Help Center, or contact the office.",
+    "callOffice": "Call the office",
+    "contactOffice": "Office contacts"
   }
 }

@@ -5,6 +5,7 @@ import { BottomNav } from './BottomNav';
 import { OfflineBanner } from '@/components/OfflineBanner';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { BackgroundSync } from '@/components/BackgroundSync';
+import { HelpAssistant } from '@/components/HelpAssistant';
 
 export function AppLayout() {
   const location = useLocation();
@@ -30,6 +31,7 @@ export function AppLayout() {
       </main>
 
       <BottomNav />
+      <HelpAssistant />
       <InstallPrompt />
       <BackgroundSync />
     </div>
