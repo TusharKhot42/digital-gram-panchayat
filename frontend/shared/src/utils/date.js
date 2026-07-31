@@ -13,6 +13,20 @@ export function formatDate(input, locale = 'en') {
 }
 
 /**
+ * Clock time only, for when the date is already shown beside it (event cards, schedules).
+ *
+ * @param {Date|string} input
+ * @param {'en'|'mr'} [locale]
+ * @returns {string}
+ */
+export function formatTime(input, locale = 'en') {
+  const date = typeof input === 'string' ? new Date(input) : input;
+  return new Intl.DateTimeFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', {
+    timeStyle: 'short',
+  }).format(date);
+}
+
+/**
  * @param {Date|string} input
  * @param {'en'|'mr'} [locale]
  * @returns {string}

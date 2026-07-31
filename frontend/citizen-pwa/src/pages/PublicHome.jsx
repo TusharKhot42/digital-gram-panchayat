@@ -251,9 +251,12 @@ export function PublicHome() {
           aria-labelledby={notices.length ? 'notices-h' : 'schemes-h'}
           className="mx-auto w-full max-w-5xl px-4 py-8"
         >
+          {/* min-w-0 on each column: a grid item's default `min-width: auto` sized the column
+              to its longest notice title (367px inside a 288px grid at 320px), so `truncate`
+              below never engaged and the page scrolled sideways. */}
           <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
             {notices.length ? (
-              <div>
+              <div className="min-w-0">
                 <h2 id="notices-h" className="mb-5 text-title text-foreground">
                   {t('public.latestNotices')}
                 </h2>
@@ -273,7 +276,7 @@ export function PublicHome() {
               </div>
             ) : null}
             {schemes.length ? (
-              <div>
+              <div className="min-w-0">
                 <h2 id="schemes-h" className="mb-5 text-title text-foreground">
                   {t('public.latestSchemes')}
                 </h2>

@@ -17,7 +17,7 @@ import {
   Bell,
   Phone,
 } from 'lucide-react';
-import { formatCurrency, formatDate } from '@dgp/shared';
+import { formatCurrency, formatDate, formatTime } from '@dgp/shared';
 import { Card } from '@/components/ui/card';
 import { SafeImage } from '@/components/SafeImage';
 import { SectionHeader } from '@/components/PageHeader';
@@ -109,13 +109,23 @@ function EventHero({ event, locale, t }) {
         <h2 className="text-display font-semibold leading-tight">{event.title}</h2>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body opacity-95">
           <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-4 w-4" aria-hidden="true" />
+            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
             {formatDate(event.startDate, locale)}
           </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="h-4 w-4 shrink-0" aria-hidden="true" />
+            {formatTime(event.startDate, locale)}
+          </span>
           {event.location ? (
-            <span className="inline-flex items-center gap-1.5">
-              <MapPin className="h-4 w-4" aria-hidden="true" />
-              {event.location}
+            <span className="inline-flex min-w-0 items-center gap-1.5">
+              <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="truncate">{event.location}</span>
+            </span>
+          ) : null}
+          {event.organizer ? (
+            <span className="inline-flex min-w-0 items-center gap-1.5">
+              <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="truncate">{event.organizer}</span>
             </span>
           ) : null}
         </div>
