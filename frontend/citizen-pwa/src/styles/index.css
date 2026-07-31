@@ -34,7 +34,10 @@
     --secondary-foreground: 215 25% 27%;
     --slate: 215 25% 27%; /* #334155 */
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%; /* #64748B — 4.6:1 on white */
+    /* #607085. Was 47% (#64748B), chosen for 4.6:1 "on white" — but body text sits on
+       --background (#F8FAFC), not white, where it measured only 4.38:1 and failed WCAG AA.
+       45% gives 4.83:1 on the page and 5.06:1 on a card: passes on both surfaces. */
+    --muted-foreground: 215 16% 45%;
     --body-foreground: 215 19% 35%; /* #475569 — 7.4:1, for body copy */
     --accent: 210 40% 96%; /* #F1F5F9 — hover surface */
     --accent-foreground: 222 47% 11%;
@@ -79,7 +82,9 @@
     --primary: 221 83% 66%;
     --primary-hover: 221 85% 73%;
     --primary-foreground: 222 47% 11%;
-    --primary-subtle: 224 45% 22%;
+    /* Was 22%, putting --primary text on this tint at 4.31:1 — under WCAG AA wherever the pair
+       is used together (active nav, stat discs). 19% lifts it to 4.69:1. */
+    --primary-subtle: 224 45% 19%;
 
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 90%;

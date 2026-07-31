@@ -91,18 +91,26 @@ function EventHero({ event, locale, t }) {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
       ) : null}
-      {/* Gradient scrim: doubles as the background when there's no banner and as a legibility
-          wash over one when there is. */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-primary to-indigo-900/95" />
-      <div className="absolute inset-0 -z-10 bg-foreground/25" />
+      {/*
+       * Gradient scrim: the background when there's no banner, a legibility wash over one when
+       * there is. Deliberately fixed colours rather than theme tokens — the scrim is always a
+       * dark government blue, so the text on it is always white. Using `from-primary` +
+       * `text-primary-foreground` here made the dark theme unreadable: --primary lightens to
+       * #608EF0 while --primary-foreground flips to near-black (#0F1729), leaving black title
+       * text over the indigo-900 end of the gradient at a 1.02:1 contrast ratio.
+       */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900" />
+      <div className="absolute inset-0 -z-10 bg-black/20" />
 
-      <div className="flex min-h-[13rem] flex-col justify-end gap-3 p-5 text-primary-foreground sm:min-h-[15rem] sm:p-7">
+      <div className="flex min-h-[13rem] flex-col justify-end gap-3 p-5 text-white sm:min-h-[15rem] sm:p-7">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-caption font-medium backdrop-blur">
             <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
             {t('home.upcomingEvents')}
           </span>
-          <span className="rounded-full bg-white/95 px-3 py-1 text-caption font-semibold text-primary">
+          {/* Fixed blue-900 on white: `text-primary` on this white chip fell to 3.17:1 in the
+              dark theme, where --primary lightens. */}
+          <span className="rounded-full bg-white px-3 py-1 text-caption font-semibold text-blue-900">
             {countdownLabel(event.startDate, t)}
           </span>
         </div>
