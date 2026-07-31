@@ -5,6 +5,17 @@ import { OFFICER_TOPICS } from './topics.officer.js';
 // Direct re-export form — rollup resolves this reliably when the package is consumed through
 // the `export *` chain in ../index.js.
 export { HELP_CATEGORIES, localizedText } from './schema.js';
+// Offline assistant matcher (no LLM — see matcher.js for why).
+export {
+  CONFIDENCE,
+  normalize,
+  tokenize,
+  detectLanguage,
+  expand,
+  rankTopics,
+  answerQuestion,
+  suggestedTopics,
+} from './matcher.js';
 export { CITIZEN_TOPICS } from './topics.citizen.js';
 export { OFFICER_TOPICS } from './topics.officer.js';
 
