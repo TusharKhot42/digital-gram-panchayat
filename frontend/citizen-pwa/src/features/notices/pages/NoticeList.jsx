@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Megaphone, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { NOTICE_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { NoNoticesArt } from '@/components/Illustration';
 import { Button } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { NoticeCard } from '../components/NoticeCard';
@@ -78,7 +79,7 @@ export function NoticeList() {
         />
       ) : notices.length === 0 ? (
         <EmptyState
-          icon={Megaphone}
+          art={NoNoticesArt}
           title={filtered ? t('notice.list.emptyFiltered') : t('notice.list.empty')}
           action={
             filtered ? (

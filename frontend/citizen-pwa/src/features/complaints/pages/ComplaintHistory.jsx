@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Inbox, ChevronRight } from 'lucide-react';
+import { Plus, ChevronRight } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { NoComplaintsArt } from '@/components/Illustration';
 import { useMyComplaints } from '../hooks';
 
 export function ComplaintHistory() {
@@ -38,7 +39,7 @@ export function ComplaintHistory() {
         />
       ) : complaints.length === 0 ? (
         <EmptyState
-          icon={Inbox}
+          art={NoComplaintsArt}
           title={t('complaint.history.empty')}
           action={
             <Button asChild size="sm">

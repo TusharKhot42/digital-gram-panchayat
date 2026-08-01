@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Bell, Search, CheckCheck, Settings, X } from 'lucide-react';
+import { Search, CheckCheck, Settings, X } from 'lucide-react';
 import { formatDateTime, pickLocale } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { EmptyState } from '@/components/EmptyState';
+import { NoNotificationsArt } from '@/components/Illustration';
 import { cn } from '@/utils/cn';
 import { useNotifications, useMarkAllRead } from '../hooks';
 
@@ -197,7 +198,7 @@ export function NotificationCenter() {
         <p className="text-body text-destructive-strong">{t('notif.loadError')}</p>
       ) : items.length === 0 ? (
         <EmptyState
-          icon={Bell}
+          art={NoNotificationsArt}
           title={q || unreadOnly ? t('notif.emptyFiltered') : t('notif.empty')}
           action={
             q || unreadOnly ? (

@@ -1,8 +1,20 @@
 import { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LogOut, ClipboardList, FileText, Receipt, ChevronRight } from 'lucide-react';
-import { formatCurrency, formatDateTime } from '@dgp/shared';
+import {
+  LogOut,
+  ClipboardList,
+  FileText,
+  Receipt,
+  ChevronRight,
+  CalendarCheck,
+  IndianRupee,
+  Languages,
+  Moon,
+  Sun,
+} from 'lucide-react';
+import { formatCurrency, formatDate, formatDateTime } from '@dgp/shared';
+import { useTheme, useLanguage } from '@/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { SectionHeader } from '@/components/PageHeader';
@@ -37,6 +49,8 @@ export function Profile() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
 
   const { data: complaints } = useMyComplaints();
@@ -70,6 +84,13 @@ export function Profile() {
     return items.sort((x, y) => new Date(y.at) - new Date(x.at)).slice(0, 5);
   }, [complaintList, applicationList, t]);
 
+  // Issued certificates carry a number; the rest are still applications in flight.
+  const issuedCount = applicationList.filter(
+    (a) => a.certificateNumber || a.status === 'Issued' || a.status === 'Approved',
+  ).length;
+  // Sum of what this citizen has actually paid, across their tax records.
+  const totalPaid = (tax?.data ?? []).reduce((sum, r) => sum + (r.amountPaid ?? 0), 0);
+
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
@@ -92,6 +113,12 @@ export function Profile() {
             {user?.village ? (
               <p className="truncate text-caption text-muted-foreground">{user.village}</p>
             ) : null}
+            {user?.createdAt ? (
+              <p className="mt-1 inline-flex items-center gap-1.5 text-caption text-muted-foreground">
+                <CalendarCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                {t('auth.memberSince')} {formatDate(user.createdAt, locale)}
+              </p>
+            ) : null}
           </div>
           <Button variant="outline" size="sm" onClick={handleLogout} className="shrink-0">
             <LogOut className="h-4 w-4" aria-hidden="true" />
@@ -102,16 +129,22 @@ export function Profile() {
 
       {/* Statistics */}
       <SectionHeader title={t('auth.stats')} />
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile
           icon={ClipboardList}
           value={complaintList.length}
           label={t('auth.statComplaints')}
         />
+        {/*
+         * Applications and certificates are not the same thing. Counting every application as
+         * a "certificate received" overstated what the citizen actually holds, so issued ones
+         * are counted separately — an issued record is one that carries a certificate number.
+         */}
+        <StatTile icon={FileText} value={issuedCount} label={t('auth.statCertificatesIssued')} />
         <StatTile
-          icon={FileText}
-          value={applicationList.length}
-          label={t('auth.statCertificates')}
+          icon={IndianRupee}
+          value={formatCurrency(totalPaid, locale)}
+          label={t('auth.statPaid')}
         />
         <StatTile
           icon={Receipt}
@@ -119,6 +152,35 @@ export function Profile() {
           label={t('auth.statDues')}
         />
       </div>
+
+      {/* Preferences — the two settings citizens change most, without a trip to Settings. */}
+      <SectionHeader title={t('auth.preferences')} />
+      <Card className="mb-6">
+        <ul className="divide-y divide-border">
+          <li className="flex min-h-14 items-center gap-3 px-4 py-2.5">
+            <Languages className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate text-body text-foreground">
+              {t('settings.language')}
+            </span>
+            <Button variant="outline" size="sm" onClick={toggleLanguage}>
+              {language === 'mr' ? 'English' : 'मराठी'}
+            </Button>
+          </li>
+          <li className="flex min-h-14 items-center gap-3 px-4 py-2.5">
+            {theme === 'dark' ? (
+              <Moon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            ) : (
+              <Sun className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            )}
+            <span className="min-w-0 flex-1 truncate text-body text-foreground">
+              {t('settings.theme')}
+            </span>
+            <Button variant="outline" size="sm" onClick={toggleTheme}>
+              {t(theme === 'dark' ? 'nav.themeLight' : 'nav.themeDark')}
+            </Button>
+          </li>
+        </ul>
+      </Card>
 
       {/* Recent activity */}
       <SectionHeader title={t('auth.recentActivity')} />

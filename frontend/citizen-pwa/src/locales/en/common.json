@@ -231,7 +231,10 @@
     "forgot": "Forgot password?",
     "forgotHint": "Please contact your Gram Panchayat office to reset your password.",
     "wrongTabOfficer": "This account belongs to the Officer Portal.",
-    "wrongTabVillager": "This account belongs to the Villager Portal."
+    "wrongTabVillager": "This account belongs to the Villager Portal.",
+    "preferences": "Preferences",
+    "statCertificatesIssued": "Certificates received",
+    "statPaid": "Tax paid"
   },
   "complaint": {
     "category": {

@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, FileText, ChevronRight } from 'lucide-react';
+import { Plus, ChevronRight } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { NoCertificatesArt } from '@/components/Illustration';
 import { DakhalaStatusBadge } from '../components/DakhalaStatusBadge';
 import { useMyApplications } from '../hooks';
 
@@ -37,7 +38,7 @@ export function ApplicationList() {
         />
       ) : apps.length === 0 ? (
         <EmptyState
-          icon={FileText}
+          art={NoCertificatesArt}
           title={t('dakhala.list.empty')}
           action={
             <Button asChild size="sm">

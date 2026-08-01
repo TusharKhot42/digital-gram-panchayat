@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Receipt } from 'lucide-react';
 import { formatCurrency } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { NoTaxArt } from '@/components/Illustration';
 import { Select } from '@/components/ui/input';
 import { TaxCard } from '../components/TaxCard';
 import { useMyTax } from '../hooks';
@@ -42,7 +42,7 @@ export function TaxSummary() {
           isFetching={isFetching}
         />
       ) : records.length === 0 ? (
-        <EmptyState icon={Receipt} title={t('tax.summary.empty')} />
+        <EmptyState art={NoTaxArt} title={t('tax.summary.empty')} />
       ) : (
         <>
           {/* The one number this page exists to answer. */}

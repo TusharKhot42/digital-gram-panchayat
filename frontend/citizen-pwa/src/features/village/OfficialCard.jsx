@@ -82,7 +82,7 @@ export function OfficialCard({ member, variant = 'full' }) {
     : null;
 
   return (
-    <Card className="flex h-full flex-col gap-3 p-4 transition-shadow duration-150 hover:shadow-sm">
+    <Card className="flex h-full min-w-0 flex-col gap-3 p-4 transition-shadow duration-150 hover:shadow-sm">
       <div className="flex items-start gap-3">
         <Avatar member={member} size={compact ? 'sm' : 'lg'} />
         <div className="min-w-0 flex-1">

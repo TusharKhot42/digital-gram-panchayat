@@ -9,11 +9,11 @@ import {
   Users,
   BadgeCheck,
   Bell,
-  CalendarDays,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { SectionHeader } from '@/components/PageHeader';
 import { EmptyState } from '@/components/EmptyState';
+import { NoEventsArt, NoNoticesArt, NoSchemesArt } from '@/components/Illustration';
 import { useAuth } from '@/hooks/useAuth';
 import { useMyComplaints } from '@/features/complaints/hooks';
 import { useMyApplications } from '@/features/dakhala/hooks';
@@ -134,7 +134,7 @@ export function Home() {
           </div>
         ) : (
           <EmptyState
-            icon={CalendarDays}
+            art={NoEventsArt}
             title={t('home.noEvents')}
             description={t('home.noEventsHint')}
           />
@@ -225,7 +225,7 @@ export function Home() {
               ))}
             </div>
           ) : (
-            <EmptyState icon={Megaphone} title={t('notice.list.empty')} />
+            <EmptyState art={NoNoticesArt} title={t('notice.list.empty')} />
           )}
         </section>
 
@@ -249,7 +249,7 @@ export function Home() {
               ))}
             </div>
           ) : (
-            <EmptyState icon={Landmark} title={t('scheme.list.empty')} />
+            <EmptyState art={NoSchemesArt} title={t('scheme.list.empty')} />
           )}
         </section>
       </div>

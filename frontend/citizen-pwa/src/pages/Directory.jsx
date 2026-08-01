@@ -178,8 +178,11 @@ export function Directory() {
             {/* Results */}
             {filtered.length ? (
               <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {/* min-w-0 on each cell: a grid item's default `min-width: auto` sizes the
+                    column to the card's longest unbreakable content (a full office address or
+                    email), which pushed the page 68px wide at 320px once real members existed. */}
                 {filtered.map((m) => (
-                  <li key={m.id}>
+                  <li key={m.id} className="min-w-0">
                     <OfficialCard member={m} variant="full" />
                   </li>
                 ))}

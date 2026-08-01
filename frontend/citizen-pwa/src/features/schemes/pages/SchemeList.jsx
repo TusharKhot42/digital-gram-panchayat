@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Landmark, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { SCHEME_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { EmptyState } from '@/components/EmptyState';
+import { NoSchemesArt } from '@/components/Illustration';
 import { Button } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { SchemeCard } from '../components/SchemeCard';
@@ -78,7 +79,7 @@ export function SchemeList() {
         />
       ) : schemes.length === 0 ? (
         <EmptyState
-          icon={Landmark}
+          art={NoSchemesArt}
           title={filtered ? t('scheme.list.emptyFiltered') : t('scheme.list.empty')}
           action={
             filtered ? (
