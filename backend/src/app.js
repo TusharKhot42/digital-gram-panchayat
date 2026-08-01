@@ -20,6 +20,11 @@ import { adminUserRouter } from './features/users/user.routes.js';
 import { adminAuditRouter } from './features/audit/audit.routes.js';
 import { villageRouter, adminVillageRouter } from './features/village/village.routes.js';
 import { eventRouter, adminEventRouter } from './features/events/event.routes.js';
+import { meetingRouter, adminMeetingRouter } from './features/meetings/meeting.routes.js';
+import { projectRouter, adminProjectRouter } from './features/projects/project.routes.js';
+import { pollRouter, adminPollRouter } from './features/polls/poll.routes.js';
+import { feedbackRouter, adminFeedbackRouter } from './features/feedback/feedback.routes.js';
+import { downloadRouter, adminDownloadRouter } from './features/downloads/download.routes.js';
 import {
   notificationRouter,
   adminNotificationRouter,
@@ -84,6 +89,16 @@ export function createApp() {
   apiRouter.use('/admin/village', adminVillageRouter);
   apiRouter.use('/events', eventRouter);
   apiRouter.use('/admin/events', adminEventRouter);
+  apiRouter.use('/meetings', meetingRouter);
+  apiRouter.use('/admin/meetings', adminMeetingRouter);
+  apiRouter.use('/projects', projectRouter);
+  apiRouter.use('/admin/projects', adminProjectRouter);
+  apiRouter.use('/polls', pollRouter);
+  apiRouter.use('/admin/polls', adminPollRouter);
+  apiRouter.use('/feedback', feedbackRouter);
+  apiRouter.use('/admin/feedback', adminFeedbackRouter);
+  apiRouter.use('/downloads', downloadRouter);
+  apiRouter.use('/admin/downloads', adminDownloadRouter);
   apiRouter.use('/notifications', notificationRouter);
   apiRouter.use('/admin/notifications', adminNotificationRouter);
   app.use(`/api/${env.API_VERSION}`, apiRouter);

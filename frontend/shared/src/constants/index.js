@@ -305,3 +305,72 @@ export const VALIDATION = {
   FULLNAME_MAX_LENGTH: 100,
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 };
+
+/* ------------------------------------------------------------------------------------------
+ * Smart governance modules (Phase 4). Each enum is the single source for the Mongoose enum
+ * and both portals' filters, exactly as the older modules do it.
+ * ---------------------------------------------------------------------------------------- */
+
+/** Gram Sabha and other statutory meetings. */
+export const MEETING_TYPES = [
+  'GramSabha',
+  'SpecialGramSabha',
+  'MonthlyMeeting',
+  'StandingCommittee',
+  'WardMeeting',
+  'Other',
+];
+
+/** Derived from the clock, never stored — see meeting.service.js. */
+export const MEETING_STATUSES = ['Upcoming', 'Live', 'Completed'];
+
+/** Village development works. */
+export const PROJECT_CATEGORIES = [
+  'Road',
+  'WaterSupply',
+  'Sanitation',
+  'Electricity',
+  'Education',
+  'Health',
+  'Building',
+  'Irrigation',
+  'Other',
+];
+
+export const PROJECT_STATUSES = ['Planned', 'InProgress', 'Completed', 'OnHold'];
+
+export const FUNDING_SOURCES = [
+  'FinanceCommission',
+  'MGNREGA',
+  'StateScheme',
+  'CentralScheme',
+  'OwnFunds',
+  'Other',
+];
+
+/** The services a citizen can rate. */
+export const FEEDBACK_CATEGORIES = [
+  'ComplaintResolution',
+  'CertificateProcess',
+  'TaxServices',
+  'Cleanliness',
+  'WaterSupply',
+  'Roads',
+  'StreetLights',
+  'Education',
+  'Health',
+];
+
+export const FEEDBACK_RATING_MIN = 1;
+export const FEEDBACK_RATING_MAX = 5;
+
+/** Documents the Gram Panchayat publishes for download. */
+export const DOWNLOAD_CATEGORIES = [
+  'Form',
+  'Circular',
+  'Map',
+  'AnnualReport',
+  'Budget',
+  'DevelopmentReport',
+  'Other',
+];

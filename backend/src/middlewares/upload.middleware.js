@@ -233,3 +233,75 @@ export function uploadSingleImage(req, res, next) {
     next(new AppError(400, 'UPLOAD_ERROR', 'Image upload failed'));
   });
 }
+
+/**
+ * Gram Sabha meeting media: the statutory notice PDF, an optional banner image, and (after the
+ * meeting) the minutes PDF — each optional, each at most one file. Uses the attachment filter,
+ * so a PDF or an image is accepted and the real bytes are verified afterwards.
+ */
+export function uploadMeetingFiles(req, res, next) {
+  const handler = attachmentUpload.fields([
+    { name: 'notice', maxCount: 1 },
+    { name: 'banner', maxCount: 1 },
+    { name: 'minutes', maxCount: 1 },
+  ]);
+  handler(req, res, (err) => {
+    if (!err) {
+      verifyUploadedFiles(req, res, next);
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'Each file must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'File upload failed'));
+  });
+}
+
+/** A single published document (form, circular, map, report) under `file`. */
+export function uploadDocumentFile(req, res, next) {
+  const handler = attachmentUpload.single('file');
+  handler(req, res, (err) => {
+    if (!err) {
+      verifyUploadedFiles(req, res, next);
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'The document must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Document upload failed'));
+  });
+}
+
+/** Up to 6 progress photos for a development project, under `photos`. */
+export function uploadProjectPhotos(req, res, next) {
+  const handler = upload.array('photos', 6);
+  handler(req, res, (err) => {
+    if (!err) {
+      verifyUploadedFiles(req, res, next);
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'Each image must be 5MB or smaller'));
+      return;
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      next(new AppError(400, 'TOO_MANY_FILES', 'You can upload at most 6 photos'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Photo upload failed'));
+  });
+}
