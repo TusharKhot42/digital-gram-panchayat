@@ -12,7 +12,12 @@
     "dakhala": "Certificates",
     "directory": "Directory",
     "emergency": "Emergency",
-    "profile": "Profile"
+    "profile": "Profile",
+    "verify": "Verify",
+    "notifications": "Alerts",
+    "toggleLanguage": "Switch language",
+    "themeDark": "Switch to dark theme",
+    "themeLight": "Switch to light theme"
   },
   "home": {
     "welcome": "Welcome",
@@ -33,7 +38,35 @@
     "eventTomorrow": "Tomorrow",
     "eventInDays": "In {{count}} days",
     "statusTitle": "Your status",
-    "unread": "Unread alerts"
+    "unread": "Unread alerts",
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "villageHeader": "Village information",
+    "weatherUnavailable": "Weather not available",
+    "todayTitle": "Today",
+    "statsTitle": "Our village in numbers",
+    "noEmergency": "No emergency numbers published yet",
+    "eventPast": "Finished",
+    "eventCopied": "Event details copied",
+    "addToCalendar": "Add to calendar",
+    "share": "Share",
+    "priority": {
+      "complaints_one": "{{count}} complaint still open",
+      "complaints_other": "{{count}} complaints still open",
+      "complaintsHint": "Track what the Gram Panchayat has done so far",
+      "certificates_one": "{{count}} certificate application in progress",
+      "certificates_other": "{{count}} certificate applications in progress",
+      "certificatesHint": "See where each application has reached",
+      "tax": "{{amount}} tax due",
+      "taxHint": "View your bill and payment history",
+      "unread_one": "{{count}} unread message",
+      "unread_other": "{{count}} unread messages",
+      "unreadHint": "From the Gram Panchayat office",
+      "latestNotice": "Latest announcement",
+      "allClear": "Nothing needs your attention",
+      "allClearHint": "No open complaints, applications or dues."
+    }
   },
   "notFound": {
     "title": "Page not found",
@@ -641,5 +674,19 @@
     "noMatch": "I couldn't find a guide for that. Try different words, browse the Help Center, or contact the office.",
     "callOffice": "Call the office",
     "contactOffice": "Office contacts"
+  },
+  "village": {
+    "stat": {
+      "population": "Population",
+      "families": "Families",
+      "literacyRate": "Literacy",
+      "area": "Area",
+      "schools": "Schools",
+      "hospitals": "Hospitals",
+      "banks": "Banks",
+      "postOffice": "Post office",
+      "roadConnectivity": "Road connectivity",
+      "sexRatio": "Sex ratio"
+    }
   }
 }

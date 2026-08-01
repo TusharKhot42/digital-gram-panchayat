@@ -12,7 +12,12 @@
     "dakhala": "दाखले",
     "directory": "निर्देशिका",
     "emergency": "आपत्कालीन",
-    "profile": "प्रोफाईल"
+    "profile": "प्रोफाईल",
+    "verify": "पडताळणी",
+    "notifications": "सूचना",
+    "toggleLanguage": "भाषा बदला",
+    "themeDark": "गडद थीम वापरा",
+    "themeLight": "फिकट थीम वापरा"
   },
   "home": {
     "welcome": "स्वागत आहे",
@@ -33,7 +38,35 @@
     "eventTomorrow": "उद्या",
     "eventInDays": "{{count}} दिवसांत",
     "statusTitle": "तुमची स्थिती",
-    "unread": "न वाचलेल्या सूचना"
+    "unread": "न वाचलेल्या सूचना",
+    "goodMorning": "सुप्रभात",
+    "goodAfternoon": "नमस्कार",
+    "goodEvening": "शुभ संध्याकाळ",
+    "villageHeader": "गावाची माहिती",
+    "weatherUnavailable": "हवामान उपलब्ध नाही",
+    "todayTitle": "आज",
+    "statsTitle": "आकड्यांमध्ये आपले गाव",
+    "noEmergency": "अद्याप आपत्कालीन क्रमांक दिलेले नाहीत",
+    "eventPast": "संपला",
+    "eventCopied": "कार्यक्रमाची माहिती कॉपी झाली",
+    "addToCalendar": "कॅलेंडरमध्ये जोडा",
+    "share": "शेअर करा",
+    "priority": {
+      "complaints_one": "{{count}} तक्रार अजून प्रलंबित",
+      "complaints_other": "{{count}} तक्रारी अजून प्रलंबित",
+      "complaintsHint": "ग्रामपंचायतीने आतापर्यंत काय केले ते पहा",
+      "certificates_one": "{{count}} दाखला अर्ज सुरू आहे",
+      "certificates_other": "{{count}} दाखला अर्ज सुरू आहेत",
+      "certificatesHint": "प्रत्येक अर्ज कुठवर आला ते पहा",
+      "tax": "{{amount}} कर बाकी",
+      "taxHint": "तुमचे बिल आणि भरणा इतिहास पहा",
+      "unread_one": "{{count}} न वाचलेला संदेश",
+      "unread_other": "{{count}} न वाचलेले संदेश",
+      "unreadHint": "ग्रामपंचायत कार्यालयाकडून",
+      "latestNotice": "नवीनतम घोषणा",
+      "allClear": "तुमच्यासाठी काहीही प्रलंबित नाही",
+      "allClearHint": "कोणतीही तक्रार, अर्ज किंवा बाकी नाही."
+    }
   },
   "notFound": {
     "title": "पान सापडले नाही",
@@ -641,5 +674,19 @@
     "noMatch": "त्यासाठी मार्गदर्शिका सापडली नाही. दुसरे शब्द वापरा, मदत केंद्र पहा, किंवा कार्यालयाशी संपर्क साधा.",
     "callOffice": "कार्यालयाला कॉल करा",
     "contactOffice": "कार्यालय संपर्क"
+  },
+  "village": {
+    "stat": {
+      "population": "लोकसंख्या",
+      "families": "कुटुंबे",
+      "literacyRate": "साक्षरता",
+      "area": "क्षेत्रफळ",
+      "schools": "शाळा",
+      "hospitals": "रुग्णालये",
+      "banks": "बँका",
+      "postOffice": "पोस्ट ऑफिस",
+      "roadConnectivity": "रस्ते जोडणी",
+      "sexRatio": "स्त्री-पुरुष प्रमाण"
+    }
   }
 }

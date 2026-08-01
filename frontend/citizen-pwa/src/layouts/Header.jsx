@@ -37,11 +37,21 @@ export function Header() {
           </Link>
         </Button>
 
-        <Button variant="ghost" size="sm" onClick={toggleLanguage} aria-label="Toggle language">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleLanguage}
+          aria-label={t('nav.toggleLanguage')}
+        >
           {language === 'mr' ? 'EN' : 'मर'}
         </Button>
 
-        <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          aria-label={t(theme === 'dark' ? 'nav.themeLight' : 'nav.themeDark')}
+        >
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
 
