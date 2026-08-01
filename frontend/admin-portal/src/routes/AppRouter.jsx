@@ -56,6 +56,23 @@ const VillageProfilePage = lazyNamed(
   'VillageProfilePage',
 );
 const EventsPage = lazyNamed(() => import('@/features/village/EventsPage'), 'EventsPage');
+const MeetingsAdmin = lazyNamed(
+  () => import('@/features/governance/MeetingsAdmin'),
+  'MeetingsAdmin',
+);
+const ProjectsAdmin = lazyNamed(
+  () => import('@/features/governance/ProjectsAdmin'),
+  'ProjectsAdmin',
+);
+const PollsAdmin = lazyNamed(() => import('@/features/governance/PollsAdmin'), 'PollsAdmin');
+const DocumentsAdmin = lazyNamed(
+  () => import('@/features/governance/DocumentsAdmin'),
+  'DocumentsAdmin',
+);
+const FeedbackAnalytics = lazyNamed(
+  () => import('@/features/governance/FeedbackAnalytics'),
+  'FeedbackAnalytics',
+);
 
 const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
 
@@ -93,6 +110,11 @@ const router = createBrowserRouter([
           { path: 'audit', element: page(<AuditLogPage />) },
           { path: 'village', element: page(<VillageProfilePage />) },
           { path: 'events', element: page(<EventsPage />) },
+          { path: 'meetings', element: page(<MeetingsAdmin />) },
+          { path: 'projects', element: page(<ProjectsAdmin />) },
+          { path: 'polls', element: page(<PollsAdmin />) },
+          { path: 'documents', element: page(<DocumentsAdmin />) },
+          { path: 'feedback', element: page(<FeedbackAnalytics />) },
           { path: 'help', element: page(<Help />) },
           { path: '*', element: page(<NotFound />) },
         ],

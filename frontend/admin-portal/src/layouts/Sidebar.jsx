@@ -17,6 +17,11 @@ import {
   LogOut,
   HelpCircle,
   X,
+  Gavel,
+  HardHat,
+  Vote,
+  FolderDown,
+  Star,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
@@ -35,6 +40,11 @@ const items = [
   { to: '/audit', label: 'nav.audit', icon: ScrollText },
   { to: '/village', label: 'nav.village', icon: Home },
   { to: '/events', label: 'nav.events', icon: CalendarDays },
+  { to: '/meetings', label: 'nav.meetings', icon: Gavel },
+  { to: '/projects', label: 'nav.projects', icon: HardHat },
+  { to: '/polls', label: 'nav.polls', icon: Vote },
+  { to: '/documents', label: 'nav.documents', icon: FolderDown },
+  { to: '/feedback', label: 'nav.feedback', icon: Star },
   { to: '/help', label: 'nav.help', icon: HelpCircle },
 ];
 

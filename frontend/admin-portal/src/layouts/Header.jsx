@@ -17,6 +17,11 @@ const SECTIONS = [
   ['/audit', 'nav.audit'],
   ['/village', 'nav.village'],
   ['/events', 'nav.events'],
+  ['/meetings', 'nav.meetings'],
+  ['/projects', 'nav.projects'],
+  ['/polls', 'nav.polls'],
+  ['/documents', 'nav.documents'],
+  ['/feedback', 'nav.feedback'],
   ['/help', 'nav.help'],
 ];
 
