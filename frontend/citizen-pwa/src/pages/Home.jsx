@@ -27,6 +27,7 @@ import { NoticeCard } from '@/features/notices/components/NoticeCard';
 import { SchemeCard } from '@/features/schemes/components/SchemeCard';
 import { useUnreadCount } from '@/features/notifications/hooks';
 import { VillageHero } from '@/features/home/VillageHero';
+import { GlobalSearch } from '@/features/home/GlobalSearch';
 import { PriorityBoard } from '@/features/home/PriorityBoard';
 import { VillageStats } from '@/features/home/VillageStats';
 import { EmergencyContacts } from '@/features/home/EmergencyContacts';
@@ -79,6 +80,17 @@ export function Home() {
     <div className="mx-auto w-full max-w-6xl space-y-7 px-4 py-5 lg:px-6">
       {/* 1 — the village itself */}
       <VillageHero profile={profile} firstName={firstName} />
+
+      {/* One box across everything already loaded — no extra request, works offline. */}
+      <GlobalSearch
+        notices={notices?.data}
+        schemes={schemes?.data}
+        complaints={complaints?.data}
+        applications={applications?.data}
+        tax={tax?.data}
+        profile={profile}
+        events={events}
+      />
 
       {/* 2 — what this particular citizen has to deal with, before anything generic */}
       <PriorityBoard

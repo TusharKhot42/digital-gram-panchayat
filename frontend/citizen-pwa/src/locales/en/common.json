@@ -688,5 +688,21 @@
       "roadConnectivity": "Road connectivity",
       "sexRatio": "Sex ratio"
     }
+  },
+  "search": {
+    "label": "Search the portal",
+    "placeholder": "Search notices, schemes, certificates, officials…",
+    "results": "Search results",
+    "noResults": "Nothing found for “{{query}}”",
+    "type": {
+      "notice": "Notices",
+      "scheme": "Schemes",
+      "complaint": "Your complaints",
+      "certificate": "Your certificates",
+      "tax": "Tax",
+      "member": "Officials",
+      "event": "Events",
+      "service": "Services"
+    }
   }
 }
