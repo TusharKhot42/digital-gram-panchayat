@@ -17,7 +17,12 @@
     "notifications": "सूचना",
     "toggleLanguage": "भाषा बदला",
     "themeDark": "गडद थीम वापरा",
-    "themeLight": "फिकट थीम वापरा"
+    "themeLight": "फिकट थीम वापरा",
+    "meetings": "ग्रामसभा",
+    "projects": "कामे",
+    "polls": "कौल",
+    "feedback": "अभिप्राय",
+    "downloads": "डाउनलोड"
   },
   "home": {
     "welcome": "स्वागत आहे",
@@ -705,7 +710,134 @@
       "tax": "कर",
       "member": "पदाधिकारी",
       "event": "कार्यक्रम",
-      "service": "सेवा"
+      "service": "सेवा",
+      "meeting": "ग्रामसभा",
+      "project": "कामे",
+      "poll": "कौल",
+      "download": "डाउनलोड"
+    }
+  },
+  "meeting": {
+    "title": "ग्रामसभा बैठका",
+    "intro": "गावातील बैठकांचे विषयपत्र, सूचना आणि इतिवृत्त.",
+    "agenda": "विषयपत्र",
+    "notice": "सूचना",
+    "minutes": "इतिवृत्त",
+    "copied": "बैठकीची माहिती कॉपी झाली",
+    "empty": "अद्याप कोणतीही बैठक जाहीर झालेली नाही",
+    "emptyHint": "कार्यालयाने जाहीर केल्यावर ग्रामसभेच्या तारखा येथे दिसतील.",
+    "loadError": "बैठका लोड करता आल्या नाहीत",
+    "status": {
+      "Upcoming": "आगामी",
+      "Live": "सुरू आहे",
+      "Completed": "पूर्ण"
+    },
+    "type": {
+      "GramSabha": "ग्रामसभा",
+      "SpecialGramSabha": "विशेष ग्रामसभा",
+      "MonthlyMeeting": "मासिक सभा",
+      "StandingCommittee": "स्थायी समिती",
+      "WardMeeting": "प्रभाग सभा",
+      "Other": "इतर"
+    }
+  },
+  "project": {
+    "title": "गावातील कामे",
+    "intro": "विकासकामे, त्यांची प्रगती आणि निधीचा वापर.",
+    "progress": "प्रगती",
+    "utilisation": "वापरलेला निधी",
+    "totalWorks": "एकूण कामे",
+    "completed": "पूर्ण",
+    "sanctioned": "मंजूर",
+    "spent": "खर्च",
+    "allStatuses": "सर्व",
+    "empty": "अद्याप कोणतेही काम प्रसिद्ध केलेले नाही",
+    "emptyFiltered": "या स्थितीतील कोणतेही काम नाही",
+    "loadError": "कामे लोड करता आली नाहीत",
+    "status": {
+      "Planned": "नियोजित",
+      "InProgress": "सुरू आहे",
+      "Completed": "पूर्ण",
+      "OnHold": "स्थगित"
+    },
+    "category": {
+      "Road": "रस्ता",
+      "WaterSupply": "पाणीपुरवठा",
+      "Sanitation": "स्वच्छता",
+      "Electricity": "वीज",
+      "Education": "शिक्षण",
+      "Health": "आरोग्य",
+      "Building": "इमारत",
+      "Irrigation": "सिंचन",
+      "Other": "इतर"
+    }
+  },
+  "poll": {
+    "title": "गावाचा कौल",
+    "intro": "ग्रामपंचायतीला तुमचे मत कळवा. प्रत्येकाला एक मत.",
+    "submit": "मत द्या",
+    "voted": "तुम्ही मत दिले",
+    "closed": "बंद",
+    "closesOn": "बंद होणार",
+    "thanks": "तुमचे मत नोंदवले गेले",
+    "alreadyVoted": "तुम्ही या कौलात आधीच मत दिले आहे",
+    "voteFailed": "तुमचे मत नोंदवता आले नाही",
+    "resultsAfterVote": "मत दिल्यानंतर निकाल दिसतील.",
+    "totalVotes_one": "आतापर्यंत {{count}} मत",
+    "totalVotes_other": "आतापर्यंत {{count}} मते",
+    "empty": "सध्या कोणताही कौल नाही",
+    "emptyHint": "ग्रामपंचायत गावाला काही विचारेल तेव्हा ते येथे दिसेल.",
+    "loadError": "कौल लोड करता आले नाहीत"
+  },
+  "feedback": {
+    "title": "आमच्या सेवांना गुण द्या",
+    "intro": "तुमच्या अभिप्रायामुळे ग्रामपंचायतीला काय सुधारायचे ते कळते.",
+    "service": "सेवा",
+    "rating": "तुमचे गुण",
+    "stars_one": "{{count}} तारा",
+    "stars_other": "{{count}} तारे",
+    "comment": "टिप्पणी (ऐच्छिक)",
+    "commentPlaceholder": "काय चांगले झाले, किंवा काय सुधारायला हवे?",
+    "anonymous": "नाव न देता पाठवा",
+    "anonymousHint": "या अभिप्रायासोबत तुमचे नाव कार्यालयाला दिसणार नाही.",
+    "submit": "अभिप्राय पाठवा",
+    "thanks": "अभिप्रायाबद्दल धन्यवाद",
+    "failed": "अभिप्राय पाठवता आला नाही",
+    "pickRating": "आधी गुण निवडा",
+    "villageScores": "प्रत्येक सेवेला गावाने दिलेले गुण",
+    "noScore": "अद्याप गुण नाहीत",
+    "mine": "तुमचा अभिप्राय",
+    "noneYet": "तुम्ही अद्याप कशालाही गुण दिलेले नाहीत",
+    "wasAnonymous": "नाव न देता पाठवले",
+    "category": {
+      "ComplaintResolution": "तक्रार निवारण",
+      "CertificateProcess": "दाखला प्रक्रिया",
+      "TaxServices": "कर सेवा",
+      "Cleanliness": "गाव स्वच्छता",
+      "WaterSupply": "पाणीपुरवठा",
+      "Roads": "रस्ते",
+      "StreetLights": "पथदिवे",
+      "Education": "शिक्षण",
+      "Health": "आरोग्य"
+    }
+  },
+  "download": {
+    "title": "डाउनलोड केंद्र",
+    "intro": "अर्ज, परिपत्रके, नकाशे, अंदाजपत्रके आणि अहवाल.",
+    "get": "डाउनलोड करा",
+    "allCategories": "सर्व",
+    "empty": "अद्याप कोणतेही कागदपत्र प्रसिद्ध केलेले नाही",
+    "emptyFiltered": "या प्रकारात कोणतेही कागदपत्र नाही",
+    "loadError": "कागदपत्रे लोड करता आली नाहीत",
+    "failed": "कागदपत्र उघडता आले नाही",
+    "category": {
+      "Form": "अर्ज",
+      "Circular": "परिपत्रके",
+      "Map": "नकाशे",
+      "AnnualReport": "वार्षिक अहवाल",
+      "Budget": "अंदाजपत्रके",
+      "DevelopmentReport": "विकास अहवाल",
+      "Other": "इतर"
     }
   }
 }

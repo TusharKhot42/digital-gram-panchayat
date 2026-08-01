@@ -17,7 +17,12 @@
     "notifications": "Alerts",
     "toggleLanguage": "Switch language",
     "themeDark": "Switch to dark theme",
-    "themeLight": "Switch to light theme"
+    "themeLight": "Switch to light theme",
+    "meetings": "Gram Sabha",
+    "projects": "Works",
+    "polls": "Polls",
+    "feedback": "Feedback",
+    "downloads": "Downloads"
   },
   "home": {
     "welcome": "Welcome",
@@ -705,7 +710,134 @@
       "tax": "Tax",
       "member": "Officials",
       "event": "Events",
-      "service": "Services"
+      "service": "Services",
+      "meeting": "Gram Sabha",
+      "project": "Works",
+      "poll": "Polls",
+      "download": "Downloads"
+    }
+  },
+  "meeting": {
+    "title": "Gram Sabha meetings",
+    "intro": "Agendas, notices and minutes of village meetings.",
+    "agenda": "Agenda",
+    "notice": "Notice",
+    "minutes": "Minutes",
+    "copied": "Meeting details copied",
+    "empty": "No meetings announced yet",
+    "emptyHint": "Gram Sabha dates will appear here once the office publishes them.",
+    "loadError": "Could not load meetings",
+    "status": {
+      "Upcoming": "Upcoming",
+      "Live": "In progress",
+      "Completed": "Completed"
+    },
+    "type": {
+      "GramSabha": "Gram Sabha",
+      "SpecialGramSabha": "Special Gram Sabha",
+      "MonthlyMeeting": "Monthly meeting",
+      "StandingCommittee": "Standing committee",
+      "WardMeeting": "Ward meeting",
+      "Other": "Other"
+    }
+  },
+  "project": {
+    "title": "Village works",
+    "intro": "Development works, their progress and how the budget is being used.",
+    "progress": "Progress",
+    "utilisation": "Budget used",
+    "totalWorks": "Total works",
+    "completed": "Completed",
+    "sanctioned": "Sanctioned",
+    "spent": "Spent",
+    "allStatuses": "All",
+    "empty": "No works published yet",
+    "emptyFiltered": "No works with this status",
+    "loadError": "Could not load works",
+    "status": {
+      "Planned": "Planned",
+      "InProgress": "In progress",
+      "Completed": "Completed",
+      "OnHold": "On hold"
+    },
+    "category": {
+      "Road": "Road",
+      "WaterSupply": "Water supply",
+      "Sanitation": "Sanitation",
+      "Electricity": "Electricity",
+      "Education": "Education",
+      "Health": "Health",
+      "Building": "Building",
+      "Irrigation": "Irrigation",
+      "Other": "Other"
+    }
+  },
+  "poll": {
+    "title": "Village polls",
+    "intro": "Tell the Gram Panchayat what you think. One vote each.",
+    "submit": "Vote",
+    "voted": "You voted",
+    "closed": "Closed",
+    "closesOn": "Closes",
+    "thanks": "Your vote has been recorded",
+    "alreadyVoted": "You have already voted in this poll",
+    "voteFailed": "Could not record your vote",
+    "resultsAfterVote": "Results are shown once you have voted.",
+    "totalVotes_one": "{{count}} vote so far",
+    "totalVotes_other": "{{count}} votes so far",
+    "empty": "No polls right now",
+    "emptyHint": "When the Gram Panchayat asks the village something, it will appear here.",
+    "loadError": "Could not load polls"
+  },
+  "feedback": {
+    "title": "Rate our services",
+    "intro": "Your rating helps the Gram Panchayat see what needs work.",
+    "service": "Service",
+    "rating": "Your rating",
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars",
+    "comment": "Comment (optional)",
+    "commentPlaceholder": "What went well, or what should improve?",
+    "anonymous": "Submit anonymously",
+    "anonymousHint": "Your name will not be shown to the office with this rating.",
+    "submit": "Send feedback",
+    "thanks": "Thank you for your feedback",
+    "failed": "Could not send your feedback",
+    "pickRating": "Choose a rating first",
+    "villageScores": "How the village rates each service",
+    "noScore": "Not rated yet",
+    "mine": "Your feedback",
+    "noneYet": "You have not rated anything yet",
+    "wasAnonymous": "Sent anonymously",
+    "category": {
+      "ComplaintResolution": "Complaint resolution",
+      "CertificateProcess": "Certificate process",
+      "TaxServices": "Tax services",
+      "Cleanliness": "Village cleanliness",
+      "WaterSupply": "Water supply",
+      "Roads": "Roads",
+      "StreetLights": "Street lights",
+      "Education": "Education",
+      "Health": "Health"
+    }
+  },
+  "download": {
+    "title": "Download centre",
+    "intro": "Forms, circulars, maps, budgets and reports.",
+    "get": "Download",
+    "allCategories": "All",
+    "empty": "No documents published yet",
+    "emptyFiltered": "No documents in this category",
+    "loadError": "Could not load documents",
+    "failed": "Could not open the document",
+    "category": {
+      "Form": "Forms",
+      "Circular": "Circulars",
+      "Map": "Maps",
+      "AnnualReport": "Annual reports",
+      "Budget": "Budgets",
+      "DevelopmentReport": "Development reports",
+      "Other": "Other"
     }
   }
 }

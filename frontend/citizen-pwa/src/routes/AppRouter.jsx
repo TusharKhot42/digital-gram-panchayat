@@ -41,6 +41,11 @@ const SchemeDetail = lazyNamed(
   'SchemeDetail',
 );
 const TaxSummary = lazyNamed(() => import('@/features/tax/pages/TaxSummary'), 'TaxSummary');
+const Meetings = lazyNamed(() => import('@/features/governance/pages/Meetings'), 'Meetings');
+const Projects = lazyNamed(() => import('@/features/governance/pages/Projects'), 'Projects');
+const Polls = lazyNamed(() => import('@/features/governance/pages/Polls'), 'Polls');
+const Feedback = lazyNamed(() => import('@/features/governance/pages/Feedback'), 'Feedback');
+const Downloads = lazyNamed(() => import('@/features/governance/pages/Downloads'), 'Downloads');
 const ApplicationList = lazyNamed(
   () => import('@/features/dakhala/pages/ApplicationList'),
   'ApplicationList',
@@ -99,6 +104,11 @@ const router = createBrowserRouter([
           { path: 'schemes', element: page(<SchemeList />) },
           { path: 'schemes/:id', element: page(<SchemeDetail />) },
           { path: 'tax', element: page(<TaxSummary />) },
+          { path: 'meetings', element: page(<Meetings />) },
+          { path: 'projects', element: page(<Projects />) },
+          { path: 'polls', element: page(<Polls />) },
+          { path: 'feedback', element: page(<Feedback />) },
+          { path: 'downloads', element: page(<Downloads />) },
           { path: 'dakhala', element: page(<ApplicationList />) },
           { path: 'dakhala/new', element: page(<ApplyCertificate />) },
           { path: 'dakhala/:id', element: page(<ApplicationDetail />) },

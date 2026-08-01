@@ -6,11 +6,15 @@ import {
   BookOpen,
   CalendarDays,
   ClipboardList,
+  Download,
   FileText,
+  Gavel,
+  HardHat,
   Megaphone,
   Receipt,
   Search,
   Users,
+  Vote,
   X,
 } from 'lucide-react';
 import { normalize } from '@dgp/shared';
@@ -24,6 +28,10 @@ const ICONS = {
   member: Users,
   event: CalendarDays,
   service: BadgeCheck,
+  meeting: Gavel,
+  project: HardHat,
+  poll: Vote,
+  download: Download,
 };
 
 /**
@@ -40,6 +48,10 @@ const SERVICES = [
   ['nav.directory', '/directory'],
   ['nav.verify', '/verify'],
   ['nav.notifications', '/notifications'],
+  ['nav.meetings', '/meetings'],
+  ['nav.projects', '/projects'],
+  ['nav.polls', '/polls'],
+  ['nav.downloads', '/downloads'],
 ];
 
 const MAX_PER_GROUP = 4;
@@ -56,7 +68,19 @@ function bothLocales(record, field, fallback) {
  * works on the offline PWA too. Matching reuses the Help Center's `normalize`, which keeps
  * Devanagari combining marks; a naive strip would turn तक्रार into तक र र and never match.
  */
-export function GlobalSearch({ notices, schemes, complaints, applications, tax, profile, events }) {
+export function GlobalSearch({
+  notices,
+  schemes,
+  complaints,
+  applications,
+  tax,
+  profile,
+  events,
+  meetings,
+  projects,
+  polls,
+  downloads,
+}) {
   const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -134,12 +158,64 @@ export function GlobalSearch({ notices, schemes, complaints, applications, tax, 
     for (const e of events ?? []) {
       add('event', e.id, '/', e.title, [e.title, e.description, e.location, e.organizer]);
     }
+    for (const m of meetings ?? []) {
+      add('meeting', m.id, '/meetings', m.title, [
+        m.title,
+        m.description,
+        m.venue,
+        m.meetingNumber,
+        m.meetingType,
+      ]);
+    }
+    for (const p of projects ?? []) {
+      add('project', p.id, '/projects', p.name, [
+        p.name,
+        p.description,
+        p.location,
+        p.contractor,
+        p.engineer,
+        p.projectNumber,
+        p.category,
+        p.status,
+      ]);
+    }
+    for (const p of polls ?? []) {
+      add('poll', p.id, '/polls', p.question, [
+        p.question,
+        p.description,
+        ...(p.options ?? []).map((o) => o.text),
+      ]);
+    }
+    for (const d of downloads ?? []) {
+      add('download', d.id, '/downloads', d.title, [
+        d.title,
+        d.description,
+        d.fileName,
+        d.category,
+        d.year,
+      ]);
+    }
     for (const [key, to] of SERVICES) {
       add('service', key, to, t(key), [tEn(key), tMr(key)]);
     }
 
     return rows;
-  }, [notices, schemes, complaints, applications, tax, profile, events, t, tEn, tMr]);
+  }, [
+    notices,
+    schemes,
+    complaints,
+    applications,
+    tax,
+    profile,
+    events,
+    meetings,
+    projects,
+    polls,
+    downloads,
+    t,
+    tEn,
+    tMr,
+  ]);
 
   const results = useMemo(() => {
     const terms = normalize(query).split(' ').filter(Boolean);

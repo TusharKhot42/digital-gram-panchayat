@@ -9,6 +9,10 @@ import {
   Users,
   BadgeCheck,
   Bell,
+  Gavel,
+  HardHat,
+  Vote,
+  Download,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { SectionHeader } from '@/components/PageHeader';
@@ -32,9 +36,10 @@ import { PriorityBoard } from '@/features/home/PriorityBoard';
 import { VillageStats } from '@/features/home/VillageStats';
 import { EmergencyContacts } from '@/features/home/EmergencyContacts';
 import { EventCard, daysUntil } from '@/features/home/EventCard';
+import { useMeetings, useProjects, useDownloads } from '@/features/governance/hooks';
 
-// Quick services — the eight things a citizen comes here to do. Emergency scrolls to the
-// contacts block on this page; the rest route to their module.
+// Quick services — every entry point a citizen has. The last four are the governance modules
+// that give someone a reason to open this weekly rather than only when they need a document.
 const SERVICES = [
   { to: '/complaints/new', label: 'nav.complaints', icon: ClipboardList },
   { to: '/dakhala', label: 'nav.dakhala', icon: FileText },
@@ -44,6 +49,10 @@ const SERVICES = [
   { to: '/directory', label: 'nav.directory', icon: Users },
   { to: '/verify', label: 'nav.verify', icon: BadgeCheck },
   { to: '/notifications', label: 'nav.notifications', icon: Bell },
+  { to: '/meetings', label: 'nav.meetings', icon: Gavel },
+  { to: '/projects', label: 'nav.projects', icon: HardHat },
+  { to: '/polls', label: 'nav.polls', icon: Vote },
+  { to: '/downloads', label: 'nav.downloads', icon: Download },
 ];
 
 export function Home() {
@@ -58,6 +67,10 @@ export function Home() {
   const { data: profile } = useVillageProfile();
   const { data: eventsData } = useVillageEvents();
   const { data: unread = 0 } = useUnreadCount();
+  // Fetched here purely so global search can reach them; each list caches for minutes.
+  const { data: meetings } = useMeetings();
+  const { data: projects } = useProjects();
+  const { data: downloads } = useDownloads();
 
   const activeComplaints = (complaints?.data ?? []).filter((c) => c.status !== 'Resolved').length;
   const pendingCerts = (applications?.data ?? []).filter(
@@ -90,6 +103,9 @@ export function Home() {
         tax={tax?.data}
         profile={profile}
         events={events}
+        meetings={meetings?.data}
+        projects={projects?.data}
+        downloads={downloads?.data}
       />
 
       {/* 2 — what this particular citizen has to deal with, before anything generic */}
@@ -144,7 +160,7 @@ export function Home() {
       {/* 4 — quick services */}
       <section aria-labelledby="qs-h">
         <SectionHeader id="qs-h" title={t('home.services')} />
-        <div className="grid grid-cols-4 gap-2.5 lg:grid-cols-8">
+        <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-6 lg:grid-cols-12">
           {SERVICES.map(({ to, label, icon: Icon }) => (
             <Link
               key={label}
