@@ -167,16 +167,31 @@ describe('development projects', () => {
     expect(res.status).toBe(400);
   });
 
-  test('progress is still clamped on update, where no validator guards it', async () => {
+  test('update rejects an impossible progress figure, as create does', async () => {
     const token = await officerToken();
     const created = await request(app).post('/api/v1/admin/projects').set(auth(token)).send(base);
+    // Update used to accept anything: create validated, update did not. It does now.
     const updated = await request(app)
       .put(`/api/v1/admin/projects/${created.body.data.id}`)
       .set(auth(token))
-      .send({ progress: 250, amountSpent: 999999 });
+      .send({ progress: 250 });
 
-    expect(updated.body.data.progress).toBe(100);
+    expect(updated.status).toBe(400);
+  });
+
+  test('overspend is still clamped on update — the validator only bounds it below', async () => {
+    const token = await officerToken();
+    const created = await request(app).post('/api/v1/admin/projects').set(auth(token)).send(base);
+    // 999999 is a valid non-negative number, so it passes validation; the service is what
+    // stops it exceeding the sanctioned budget. Defence in depth, both layers tested.
+    const updated = await request(app)
+      .put(`/api/v1/admin/projects/${created.body.data.id}`)
+      .set(auth(token))
+      .send({ amountSpent: 999999 });
+
+    expect(updated.status).toBe(200);
     expect(updated.body.data.amountSpent).toBe(100000);
+    expect(updated.body.data.utilisation).toBe(100);
   });
 
   test('utilisation is 0 when no budget is recorded, not a divide-by-zero', async () => {

@@ -25,5 +25,19 @@ adminMeetingRouter.use(authenticate, authorize(ROLES.OFFICER));
 adminMeetingRouter.get('/', controller.list);
 adminMeetingRouter.get('/:id', controller.detail);
 adminMeetingRouter.post('/', uploadMeetingFiles, meetingValidation, validate, controller.create);
-adminMeetingRouter.put('/:id', uploadMeetingFiles, controller.update);
+// Update validates the same fields as create. Everything is optional — an update is a patch —
+// but anything supplied must still be valid. Create-only validation left the field free.
+const meetingUpdateValidation = [
+  body('title').optional({ values: 'falsy' }).trim().isLength({ min: 3, max: 200 }),
+  body('scheduledAt').optional({ values: 'falsy' }).isISO8601(),
+  body('endsAt').optional({ values: 'falsy' }).isISO8601(),
+  body('meetingType').optional({ values: 'falsy' }).isIn(MEETING_TYPES),
+];
+adminMeetingRouter.put(
+  '/:id',
+  uploadMeetingFiles,
+  meetingUpdateValidation,
+  validate,
+  controller.update,
+);
 adminMeetingRouter.delete('/:id', controller.remove);

@@ -32,5 +32,22 @@ adminProjectRouter.use(authenticate, authorize(ROLES.OFFICER));
 adminProjectRouter.get('/', controller.list);
 adminProjectRouter.get('/:id', controller.detail);
 adminProjectRouter.post('/', uploadProjectPhotos, projectValidation, validate, controller.create);
-adminProjectRouter.put('/:id', uploadProjectPhotos, controller.update);
+// Same rules as create, all optional. The service still clamps as defence in depth, but an
+// impossible figure now fails here first rather than being silently corrected.
+const projectUpdateValidation = [
+  body('name').optional({ values: 'falsy' }).trim().isLength({ min: 3, max: 200 }),
+  body('category').optional({ values: 'falsy' }).isIn(PROJECT_CATEGORIES),
+  body('status').optional({ values: 'falsy' }).isIn(PROJECT_STATUSES),
+  body('fundingSource').optional({ values: 'falsy' }).isIn(FUNDING_SOURCES),
+  body('budget').optional({ values: 'falsy' }).isFloat({ min: 0 }),
+  body('amountSpent').optional({ values: 'falsy' }).isFloat({ min: 0 }),
+  body('progress').optional({ values: 'falsy' }).isInt({ min: 0, max: 100 }),
+];
+adminProjectRouter.put(
+  '/:id',
+  uploadProjectPhotos,
+  projectUpdateValidation,
+  validate,
+  controller.update,
+);
 adminProjectRouter.delete('/:id', controller.remove);

@@ -14,7 +14,7 @@ backed by one Node/Express REST API.
   PDF), manage notices/schemes/tax, broadcast SMS/voice/in-app notifications, user management,
   audit trail.
 - **Platform:** JWT auth + role gates, idempotent submissions, rate limiting, Helmet + strict
-  CORS, provider-agnostic notifications, append-only audit log, 85%+ backend test coverage.
+  CORS, provider-agnostic notifications, append-only audit log, 80%+ backend test coverage.
 
 ## Monorepo layout
 
@@ -49,15 +49,15 @@ Full steps: [docs/guides/installation.md](docs/guides/installation.md).
 
 ## Scripts (from repo root)
 
-| Script                             | Does                                        |
-| ---------------------------------- | ------------------------------------------- |
-| `npm run dev`                      | Backend + both frontends concurrently       |
-| `npm run build`                    | Build both frontend apps                    |
-| `npm run lint` / `lint:fix`        | ESLint across the monorepo                  |
-| `npm test`                         | Every workspace's tests (Jest + Vitest)     |
-| `npm run test:coverage -w backend` | Backend coverage report                     |
-| `npm run e2e`                      | Playwright journeys (needs a running stack) |
-| `npm run format` / `format:check`  | Prettier                                    |
+| Script                            | Does                                                           |
+| --------------------------------- | -------------------------------------------------------------- |
+| `npm run dev`                     | Backend + both frontends concurrently                          |
+| `npm run build`                   | Build both frontend apps                                       |
+| `npm run lint` / `lint:fix`       | ESLint across the monorepo                                     |
+| `npm test`                        | Every workspace's tests (Jest + Vitest)                        |
+| `npm run test:coverage`           | Backend coverage **and the CI gate** — run this before pushing |
+| `npm run e2e`                     | Playwright journeys (needs a running stack)                    |
+| `npm run format` / `format:check` | Prettier                                                       |
 
 ## Documentation
 
@@ -76,8 +76,12 @@ Full steps: [docs/guides/installation.md](docs/guides/installation.md).
 
 ## Testing
 
-- **Backend:** Jest + Supertest + mongodb-memory-server — 157 tests, **85%+ statements /
-  89%+ lines** coverage.
+- **Backend:** Jest + Supertest + mongodb-memory-server — 282 tests, 82% statements /
+  85% lines.
+- **The coverage gate is enforced in CI, not by `npm test`.** `npm test` runs without
+  `--coverage`, so a drop below the thresholds in `backend/jest.config.js` (statements 80,
+  branches 62, functions 78, lines 84) stays invisible locally and fails the build instead.
+  Run `npm run test:coverage` before pushing.
 - **Frontend:** Vitest + React Testing Library — components, hooks, contexts, error boundaries.
 - **E2E:** Playwright — citizen + officer journeys in `e2e/`.
 

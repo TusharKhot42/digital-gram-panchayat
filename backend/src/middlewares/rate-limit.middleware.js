@@ -96,3 +96,16 @@ export const generalLimiter = createRateLimiter({
   windowMs: env.RATE_LIMIT_WINDOW_MS,
   max: env.RATE_LIMIT_MAX,
 });
+
+/**
+ * Public download opens. The documents themselves are public — requiring a login to read a
+ * published circular would defeat the point — so the counter can never be fully trustworthy.
+ * This keeps a casual `for i in $(seq 1000)` from rewriting it; the number is documented as
+ * indicative, not as an audit trail.
+ */
+export const downloadLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  code: 'DOWNLOAD_RATE_LIMITED',
+  message: 'Too many downloads. Please try again in a few minutes.',
+});

@@ -22,5 +22,11 @@ export const adminEventRouter = Router();
 adminEventRouter.use(authenticate, authorize(ROLES.OFFICER));
 adminEventRouter.get('/', controller.list);
 adminEventRouter.post('/', uploadSingleImage, eventValidation, validate, controller.create);
-adminEventRouter.put('/:id', uploadSingleImage, controller.update);
+// Update validated to the same rules as create; previously it accepted anything.
+const eventUpdateValidation = [
+  body('title').optional({ values: 'falsy' }).trim().isLength({ min: 3, max: 200 }),
+  body('startDate').optional({ values: 'falsy' }).isISO8601(),
+  body('endDate').optional({ values: 'falsy' }).isISO8601(),
+];
+adminEventRouter.put('/:id', uploadSingleImage, eventUpdateValidation, validate, controller.update);
 adminEventRouter.delete('/:id', controller.remove);

@@ -30,5 +30,12 @@ adminPollRouter.post(
   validate,
   controller.create,
 );
-adminPollRouter.put('/:id', controller.update);
+// Only publication and closing time are editable; both are validated.
+adminPollRouter.put(
+  '/:id',
+  body('closesAt').optional({ values: 'falsy' }).isISO8601(),
+  body('isPublished').optional().isBoolean(),
+  validate,
+  controller.update,
+);
 adminPollRouter.delete('/:id', controller.remove);

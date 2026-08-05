@@ -5,6 +5,7 @@ import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { uploadDocumentFile } from '../../middlewares/upload.middleware.js';
+import { downloadLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './download.controller.js';
 
 /**
@@ -13,7 +14,9 @@ import * as controller from './download.controller.js';
  */
 export const downloadRouter = Router();
 downloadRouter.get('/', controller.publicList);
-downloadRouter.post('/:id/open', controller.open);
+// Public documents need no login, so this counter can never be an audit trail. The limiter
+// stops it being rewritten by a loop; download.model.js documents it as indicative.
+downloadRouter.post('/:id/open', downloadLimiter, controller.open);
 
 /** Officer document management — mounted at /api/v1/admin/downloads. */
 export const adminDownloadRouter = Router();
@@ -27,5 +30,15 @@ adminDownloadRouter.post(
   validate,
   controller.create,
 );
-adminDownloadRouter.put('/:id', uploadDocumentFile, controller.update);
+const documentUpdateValidation = [
+  body('title').optional({ values: 'falsy' }).trim().isLength({ min: 3, max: 200 }),
+  body('category').optional({ values: 'falsy' }).isIn(DOWNLOAD_CATEGORIES),
+];
+adminDownloadRouter.put(
+  '/:id',
+  uploadDocumentFile,
+  documentUpdateValidation,
+  validate,
+  controller.update,
+);
 adminDownloadRouter.delete('/:id', controller.remove);

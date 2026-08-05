@@ -131,8 +131,16 @@ export async function adminList(query = {}) {
   };
 }
 
+/** Malformed options JSON is a client error and must surface as 400, never an unhandled 500. */
 function parseOptions(value) {
-  const raw = typeof value === 'string' ? JSON.parse(value) : value;
+  let raw = value;
+  if (typeof value === 'string') {
+    try {
+      raw = JSON.parse(value);
+    } catch {
+      throw new AppError(400, 'INVALID_OPTIONS', 'Options must be a valid JSON array');
+    }
+  }
   if (!Array.isArray(raw)) return [];
   return raw
     .map((o) => (typeof o === 'string' ? o : o?.text))

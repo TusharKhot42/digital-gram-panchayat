@@ -9,9 +9,11 @@ export { DOWNLOAD_CATEGORIES };
  * A document the Gram Panchayat publishes: forms, circulars, maps, budgets, annual and
  * development reports.
  *
- * `downloadCount` is a plain counter incremented on the public download endpoint. It is not
- * per-citizen and is not an audit trail — an officer wanting to know *who* took a copy should
- * look at the audit log, not this number.
+ * `downloadCount` is INDICATIVE ONLY. The endpoint that increments it is public, because
+ * requiring a login to read a published circular would defeat the point of publishing it — so
+ * the number can never be trustworthy. A rate limiter stops it being rewritten by a loop, but
+ * it is not per-citizen and it is not an audit trail. An officer wanting to know *who* took a
+ * copy must use the audit log. Treat it as "roughly how wanted is this form", nothing more.
  */
 const downloadSchema = new Schema(
   {

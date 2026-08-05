@@ -101,10 +101,20 @@ export async function adminDetail(id) {
   return shape(meeting, new Date());
 }
 
-/** Agenda arrives as JSON from a multipart form, so it may be a string. */
+/**
+ * Agenda arrives as JSON from a multipart form, so it may be a string. Malformed JSON is the
+ * client's mistake, not ours — it must read as 400, not as an unhandled 500.
+ */
 function parseAgenda(value) {
   if (!value) return [];
-  const raw = typeof value === 'string' ? JSON.parse(value) : value;
+  let raw = value;
+  if (typeof value === 'string') {
+    try {
+      raw = JSON.parse(value);
+    } catch {
+      throw new AppError(400, 'INVALID_AGENDA', 'Agenda must be a valid JSON array');
+    }
+  }
   if (!Array.isArray(raw)) return [];
   return raw
     .filter((item) => item && String(item.title || '').trim())
