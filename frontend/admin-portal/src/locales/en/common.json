@@ -881,7 +881,8 @@
         "StandingCommittee": "Standing committee",
         "WardMeeting": "Ward meeting",
         "Other": "Other"
-      }
+      },
+      "loadError": "Could not load meetings"
     },
     "project": {
       "title": "Village works",
@@ -927,7 +928,8 @@
         "CentralScheme": "Central scheme",
         "OwnFunds": "Own funds",
         "Other": "Other"
-      }
+      },
+      "loadError": "Could not load works"
     },
     "poll": {
       "title": "Village polls",
@@ -944,7 +946,8 @@
       "closed": "Closed",
       "totalVotes_one": "{{count}} vote",
       "totalVotes_other": "{{count}} votes",
-      "editWarning": "Options cannot be changed after the poll is created — votes would be reassigned."
+      "editWarning": "Options cannot be changed after the poll is created — votes would be reassigned.",
+      "loadError": "Could not load polls"
     },
     "doc": {
       "title": "Download centre",
@@ -967,7 +970,8 @@
         "Budget": "Budgets",
         "DevelopmentReport": "Development reports",
         "Other": "Other"
-      }
+      },
+      "loadError": "Could not load documents"
     },
     "feedback": {
       "title": "Citizen feedback",
@@ -999,7 +1003,8 @@
         "StreetLights": "Street lights",
         "Education": "Education",
         "Health": "Health"
-      }
+      },
+      "loadError": "Could not load feedback"
     }
   }
 }

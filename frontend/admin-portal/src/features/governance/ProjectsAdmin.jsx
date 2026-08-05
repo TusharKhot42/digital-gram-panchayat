@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { controlClass } from '@/components/ui/input';
 import { Dialog } from '@/components/ui/dialog';
+import { QueryError } from '@/components/QueryError';
 import {
   TableShell,
   Table,
@@ -38,7 +39,7 @@ const EMPTY = {
 export function ProjectsAdmin() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data, isLoading } = useAdminProjects();
+  const { data, isLoading, isError, refetch } = useAdminProjects();
   const { create, remove } = useProjectMutations();
 
   const [open, setOpen] = useState(false);
@@ -98,6 +99,11 @@ export function ProjectsAdmin() {
           <TBody>
             {isLoading ? (
               <TableMessageRow colSpan={7}>{t('common.loading')}</TableMessageRow>
+            ) : isError ? (
+              // A failed load must not read as 'nothing here yet' — a different fact.
+              <TableMessageRow colSpan={7}>
+                <QueryError message={t('gov.project.loadError')} onRetry={refetch} />
+              </TableMessageRow>
             ) : rows.length ? (
               rows.map((p) => (
                 <TR key={p.id}>

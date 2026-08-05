@@ -11,6 +11,7 @@ import {
   TD,
   TableMessageRow,
 } from '@/components/ui/table';
+import { QueryError } from '@/components/QueryError';
 import { useAdminFeedback, useFeedbackAnalytics } from './hooks';
 
 /** A 1-5 average drawn as a proportion of the bar, so the eye reads it before the number. */
@@ -26,7 +27,7 @@ function RatingBar({ average }) {
 export function FeedbackAnalytics() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data: analytics, isLoading } = useFeedbackAnalytics(6);
+  const { data: analytics, isLoading, isError, refetch } = useFeedbackAnalytics(6);
   const { data: entries } = useAdminFeedback();
 
   const rows = analytics?.byCategory ?? [];
@@ -70,6 +71,10 @@ export function FeedbackAnalytics() {
             <TBody>
               {isLoading ? (
                 <TableMessageRow colSpan={4}>{t('common.loading')}</TableMessageRow>
+              ) : isError ? (
+                <TableMessageRow colSpan={4}>
+                  <QueryError message={t('gov.feedback.loadError')} onRetry={refetch} />
+                </TableMessageRow>
               ) : (
                 rows.map((r) => (
                   <TR key={r.category}>

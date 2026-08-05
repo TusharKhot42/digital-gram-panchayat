@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { controlClass } from '@/components/ui/input';
 import { Dialog } from '@/components/ui/dialog';
+import { QueryError } from '@/components/QueryError';
 import {
   TableShell,
   Table,
@@ -79,7 +80,7 @@ function AgendaEditor({ items, onChange }) {
 export function MeetingsAdmin() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
-  const { data, isLoading } = useAdminMeetings();
+  const { data, isLoading, isError, refetch } = useAdminMeetings();
   const { create, remove } = useMeetingMutations();
 
   const [open, setOpen] = useState(false);
@@ -144,6 +145,11 @@ export function MeetingsAdmin() {
           <TBody>
             {isLoading ? (
               <TableMessageRow colSpan={6}>{t('common.loading')}</TableMessageRow>
+            ) : isError ? (
+              // A failed load must not read as 'nothing here yet' — a different fact.
+              <TableMessageRow colSpan={6}>
+                <QueryError message={t('gov.meeting.loadError')} onRetry={refetch} />
+              </TableMessageRow>
             ) : rows.length ? (
               rows.map((m) => (
                 <TR key={m.id}>

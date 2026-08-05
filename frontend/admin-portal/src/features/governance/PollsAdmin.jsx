@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { controlClass } from '@/components/ui/input';
 import { Dialog } from '@/components/ui/dialog';
+import { QueryError } from '@/components/QueryError';
 import { useAdminPolls, usePollMutations } from './hooks';
 
 export function PollsAdmin() {
   const { t } = useTranslation();
-  const { data, isLoading } = useAdminPolls();
+  const { data, isLoading, isError, refetch } = useAdminPolls();
   const { create, update, remove } = usePollMutations();
 
   const [open, setOpen] = useState(false);
@@ -52,6 +53,8 @@ export function PollsAdmin() {
 
       {isLoading ? (
         <p className="text-body text-muted-foreground">{t('common.loading')}</p>
+      ) : isError ? (
+        <QueryError message={t('gov.poll.loadError')} onRetry={refetch} />
       ) : rows.length ? (
         <div className="grid gap-3 lg:grid-cols-2">
           {rows.map((poll) => (
