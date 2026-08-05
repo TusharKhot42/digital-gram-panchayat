@@ -1,4 +1,4 @@
-import { FEEDBACK_CATEGORIES } from '@dgp/shared';
+import { FEEDBACK_CATEGORIES, FEEDBACK_RATING_MIN, FEEDBACK_RATING_MAX } from '@dgp/shared';
 import { parsePagination } from '../../utils/pagination.js';
 import { Feedback } from './feedback.model.js';
 import { AppError } from '../../utils/app-error.js';
@@ -24,17 +24,33 @@ function shape(row, { includeCitizen = false } = {}) {
   };
 }
 
+/**
+ * Record a rating. One per citizen per service: submitting again replaces the earlier score
+ * rather than stacking a second one, so no single person can move the published average by
+ * repeating themselves. The unique index is what holds under concurrency; this upsert is what
+ * makes the ordinary case a clean replacement instead of a 409 the citizen cannot act on.
+ */
 export async function submitFeedback(citizenId, body) {
   if (!FEEDBACK_CATEGORIES.includes(body.category)) {
     throw new AppError(400, 'INVALID_CATEGORY', 'Unknown feedback category');
   }
-  const entry = await Feedback.create({
-    citizenId,
-    category: body.category,
-    rating: Number(body.rating),
-    comment: body.comment || '',
-    isAnonymous: body.isAnonymous === true || body.isAnonymous === 'true',
-  });
+  const rating = Number(body.rating);
+  if (!Number.isInteger(rating) || rating < FEEDBACK_RATING_MIN || rating > FEEDBACK_RATING_MAX) {
+    throw new AppError(400, 'INVALID_RATING', 'Rating must be between 1 and 5');
+  }
+
+  const entry = await Feedback.findOneAndUpdate(
+    { citizenId, category: body.category },
+    {
+      $set: {
+        rating,
+        comment: body.comment || '',
+        isAnonymous: body.isAnonymous === true || body.isAnonymous === 'true',
+        isActive: true,
+      },
+    },
+    { new: true, upsert: true, setDefaultsOnInsert: true },
+  );
   return shape(entry);
 }
 
