@@ -10,8 +10,17 @@ import { test, expect } from '@playwright/test';
 const unique = () => `9${Math.floor(100000000 + Math.random() * 899999999)}`;
 const PASSWORD = 'Secret@123';
 
+/**
+ * A fresh browser context is a first-time visitor, so the onboarding overlay opens over the
+ * page and intercepts every click ("<div class=fixed inset-0 z-50 …> intercepts pointer
+ * events"). These specs predate that overlay. Marking the intro as seen keeps each journey
+ * about the journey; onboarding itself is covered by its own component tests.
+ */
 async function forceEnglish(page) {
-  await page.addInitScript(() => localStorage.setItem('dgp_language', 'en'));
+  await page.addInitScript(() => {
+    localStorage.setItem('dgp_language', 'en');
+    localStorage.setItem('dgp_onboarded', '1');
+  });
 }
 
 async function register(page, mobile) {

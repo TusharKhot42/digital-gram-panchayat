@@ -19,7 +19,11 @@ const API_URL = process.env.E2E_API_URL || 'http://localhost:5000/api/v1';
  * also exercises the callback + boot-verification path.
  */
 async function login(page) {
-  await page.addInitScript(() => localStorage.setItem('dgp_language', 'en'));
+  await page.addInitScript(() => {
+    localStorage.setItem('dgp_language', 'en');
+    // The hand-off passes through the citizen origin, where onboarding would intercept clicks.
+    localStorage.setItem('dgp_onboarded', '1');
+  });
   const res = await page.request.post(`${API_URL}/auth/session`, {
     data: { identifier: EMAIL, password: PASSWORD },
   });
@@ -30,7 +34,9 @@ async function login(page) {
 
 test('admin login reaches the dashboard', async ({ page }) => {
   await login(page);
-  await expect(page.getByRole('navigation')).toBeVisible();
+  // The officer header gained a breadcrumb <nav> in Phase 2, so a bare navigation role now
+  // matches two elements. Name the one this assertion is actually about.
+  await expect(page.getByRole('navigation', { name: /main navigation/i })).toBeVisible();
 });
 
 test('admin resolves a complaint', async ({ page }) => {
