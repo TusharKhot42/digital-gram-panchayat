@@ -49,11 +49,16 @@ have voted would silently reassign their answers to something nobody chose.
 
 ### 3. Anonymous feedback stores the citizen but never discloses them
 
-`citizenId` is always written — it is what stops one person rating the same service fifty times,
-and an officer must be able to act on abuse. What "anonymous" controls is **disclosure**: the
-service strips the identity on every read path, _including the officer endpoint_. Anonymity an
-officer can see through is not anonymity. The test asserts the officer list omits the name while
-the row remains linked in the database.
+`citizenId` is always written, and an officer must be able to act on abuse. What "anonymous"
+controls is **disclosure**: the service strips the identity on every read path, _including the
+officer endpoint_. Anonymity an officer can see through is not anonymity. The test asserts the
+officer list omits the name while the row remains linked in the database.
+
+> **Corrected in Phase 5.** This section originally claimed that storing `citizenId` "stops one
+> person rating the same service fifty times". It did not — nothing enforced any limit, and one
+> citizen could move the published average alone. The guarantee now exists (unique index on
+> `{citizenId, category}` plus an upsert, so rating again replaces the earlier score) but it was
+> added in Phase 5, not here. The claim was false when this document was written.
 
 ## Money is clamped, because it is published
 
@@ -90,18 +95,29 @@ pulling a chart library into that screen's bundle.
 
 ## Verification
 
-- **35/35** end-to-end checks against the running API, covering derived status, hidden drafts,
-  overspend clamping, hidden-then-revealed tallies, a rejected second vote, anonymity held
-  against the officer endpoint, and citizens refused every `/admin` route.
+- **35/35** end-to-end checks against the running API at the time of this phase, covering
+  derived status, hidden drafts, overspend clamping, hidden-then-revealed tallies, a rejected
+  second vote, anonymity held against the officer endpoint, and citizens refused every `/admin`
+  route. **That script has not been re-run since Phase 5 changed the feedback and update-
+  validation behaviour**, so two of its assertions (repeat feedback, unvalidated PUT) no longer
+  describe the current API. The behaviour they covered is now asserted by the Jest suites
+  instead, which do run in CI.
 - **28 integration tests** (`governance.test.js`) including the five-way concurrent vote.
 - Both portals driven in the browser: five citizen routes and five officer routes render with
   live data, zero horizontal overflow, one `<h1>` each, complete Marathi on the citizen side.
 
-| Check           | Result                                                 |
-| --------------- | ------------------------------------------------------ |
-| `npm run lint`  | 0 errors, 0 warnings                                   |
-| `npm test`      | **375 passing** (250 backend, 101 citizen, 24 officer) |
-| `npm run build` | both apps build                                        |
+Figures as at the end of Phase 4. Current totals are in the Phase 5 record; `npm test` now
+reports **427**.
+
+| Check           | Result (Phase 4)                                   |
+| --------------- | -------------------------------------------------- |
+| `npm run lint`  | 0 errors, 0 warnings                               |
+| `npm test`      | 375 passing (250 backend, 101 citizen, 24 officer) |
+| `npm run build` | both apps build                                    |
+
+> **The coverage gate was failing when this phase was pushed** — statements 77.18 against a
+> gate of 80, and all four metrics below threshold. `npm test` does not run coverage, so it went
+> unnoticed until Phase 5 audited it. Fixed there.
 
 ## Not built, and why
 

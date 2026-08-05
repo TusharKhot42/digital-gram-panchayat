@@ -6,6 +6,19 @@ any new feature work. No features added, no architecture or authentication chang
 This document records every defect found, its root cause, the fix, and how the fix was
 verified — plus, just as importantly, **what could not be verified in this environment**.
 
+> **Two claims in this document were later found to be wrong.** Both are corrected in
+> `ui-professionalization.md`, and are flagged here so nobody reads this file alone and is
+> misled:
+>
+> 1. The "NOT VERIFIED — environment limitation" section below blames browser tooling for being
+>    unable to reach the officer portal. That was not the cause. The officer portal forwards
+>    unauthenticated visitors to the citizen origin, because there is one shared login page — so
+>    every attempt landed on the citizen app by design. Signing in first makes it fully drivable.
+> 2. The "Verified — no defect found" section states that the D3 overflow defect class "does not
+>    exist in the officer portal". It did. Nine of thirteen officer screens scrolled sideways at
+>    375px, by up to 546px, from the same `min-width: auto` cause at the layout level rather than
+>    in `shrink-0`.
+
 ## Defect register
 
 ### D1 — "Too many requests" during ordinary local use

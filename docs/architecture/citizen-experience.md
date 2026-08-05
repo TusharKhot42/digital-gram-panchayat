@@ -115,11 +115,13 @@ white text against the page background. Composited against the real stops the ra
 
 ## Quality gate
 
-| Check           | Result                                                 |
-| --------------- | ------------------------------------------------------ |
-| `npm run lint`  | 0 errors, 0 warnings                                   |
-| `npm test`      | **347 passing** (222 backend, 101 citizen, 24 officer) |
-| `npm run build` | both apps build                                        |
+Figures as at the end of Phase 3; `npm test` now reports **427**.
+
+| Check           | Result (Phase 3)                                   |
+| --------------- | -------------------------------------------------- |
+| `npm run lint`  | 0 errors, 0 warnings                               |
+| `npm test`      | 347 passing (222 backend, 101 citizen, 24 officer) |
+| `npm run build` | both apps build                                    |
 
 17 tests added: ICS structure and escaping, search across types and both languages, AND-matching,
 the honest no-result, Escape behaviour, and the counter's correctness when it cannot animate.

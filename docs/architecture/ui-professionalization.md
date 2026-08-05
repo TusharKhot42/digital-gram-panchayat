@@ -130,11 +130,13 @@ neutral at zero. No new metric was invented.
 
 ## Quality gate
 
-| Check           | Result                                                |
-| --------------- | ----------------------------------------------------- |
-| `npm run lint`  | 0 errors, 0 warnings                                  |
-| `npm test`      | **330 passing** (222 backend, 84 citizen, 24 officer) |
-| `npm run build` | both apps build                                       |
+Figures as at the end of Phase 2; `npm test` now reports **427**.
+
+| Check           | Result (Phase 2)                                  |
+| --------------- | ------------------------------------------------- |
+| `npm run lint`  | 0 errors, 0 warnings                              |
+| `npm test`      | 330 passing (222 backend, 84 citizen, 24 officer) |
+| `npm run build` | both apps build                                   |
 
 22 tests added: 16 covering the officer shell (breadcrumb per route, single `<h1>`, drawer contents,
 Escape, scrim, focus move, scroll lock, Tab wrap, dialog viewport fit) and 6 covering label
