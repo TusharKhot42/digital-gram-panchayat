@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./assets/logo.svg": "./src/assets/logo.svg"
+    "./assets/*": "./src/assets/*"
   },
   "files": [
     "src"

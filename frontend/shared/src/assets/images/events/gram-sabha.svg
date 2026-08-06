@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="gs-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1E3A8A"/><stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <radialGradient id="gs-sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F59E0B" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#F59E0B" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gs-haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#gs-sky)"/>
+  <circle cx="1250" cy="210" r="286" fill="url(#gs-sun)"/>
+  <circle cx="1250" cy="210" r="46" fill="#F59E0B" opacity="0.85"/>
+  <rect y="430" width="1600" height="470" fill="url(#gs-haze)"/>
+  <path d="M0 560 C 210 470 350 520 520 555 C 700 592 830 540 1010 520 C 1200 498 1400 545 1600 512 L1600 900 L0 900 Z" fill="#152C6B" opacity="0.75"/>
+  <path d="M0 640 C 240 578 430 620 640 640 C 880 662 1090 612 1310 628 C 1430 637 1520 660 1600 648 L1600 900 L0 900 Z" fill="#1B3578" opacity="0.85"/>
+  <path d="M0 772 C 300 748 600 790 900 766 C 1180 744 1400 782 1600 758 L1600 900 L0 900 Z" fill="#0F2557"/>
+  <g>
+    <rect x="572" y="754" width="456" height="20" rx="4" fill="#E8EEF9" opacity="0.95"/>
+    <rect x="590" y="562" width="420" height="210" rx="4" fill="#E8EEF9" opacity="0.18"/>
+    <rect x="628" y="596" width="20" height="158" fill="#E8EEF9" opacity="0.92"/><rect x="710" y="596" width="20" height="158" fill="#E8EEF9" opacity="0.92"/><rect x="792" y="596" width="20" height="158" fill="#E8EEF9" opacity="0.92"/><rect x="874" y="596" width="20" height="158" fill="#E8EEF9" opacity="0.92"/><rect x="956" y="596" width="20" height="158" fill="#E8EEF9" opacity="0.92"/>
+    <path d="M566 596 L800 532 L1034 596 Z" fill="#E8EEF9" opacity="0.95"/>
+    <path d="M754 532 a46 46 0 0 1 92 0 Z" fill="#F59E0B"/>
+    <rect x="797" y="444" width="6" height="88" fill="#E8EEF9" opacity="0.9"/>
+    <path d="M803 444 l72 20 -72 20 Z" fill="#F59E0B"/>
+  </g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="300" cy="758" r="16"/><path d="M277 818 q0 -36 22 -36 q22 0 22 36 Z"/></g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="372" cy="771" r="14"/><path d="M352 824 q0 -32 19 -32 q19 0 19 32 Z"/></g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="444" cy="760" r="15"/><path d="M423 816 q0 -33 20 -33 q20 0 20 33 Z"/></g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="1170" cy="762" r="16"/><path d="M1148 820 q0 -35 21 -35 q21 0 21 35 Z"/></g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="1242" cy="775" r="14"/><path d="M1223 826 q0 -30 18 -30 q18 0 18 30 Z"/></g>
+  <g opacity="0.9" fill="#E8EEF9"><circle cx="1314" cy="762" r="15"/><path d="M1293 818 q0 -33 20 -33 q20 0 20 33 Z"/></g>
+</svg>

@@ -10,6 +10,17 @@ export default defineConfig({
     },
   },
   build: {
+    /*
+     * Banner artwork must be emitted as files, never inlined.
+     *
+     * Each banner is a few hundred bytes under Vite's 4 KB inline threshold, so by default all
+     * of them were base64'd into the entry chunk: ~70 KB of pictures that every visitor
+     * downloads and parses before the first screen paints, and `loading="lazy"` on a data URI
+     * means nothing. As files they are separate, cacheable, genuinely deferred requests.
+     *
+     * Everything else — the 400-byte logo, small icons — keeps the default and stays inline.
+     */
+    assetsInlineLimit: (filePath) => (filePath.includes('/images/') ? false : undefined),
     rollupOptions: {
       output: {
         // Split heavy third-party libraries into long-lived cache chunks.
