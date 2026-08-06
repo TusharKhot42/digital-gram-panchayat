@@ -18,8 +18,14 @@ export function CenteredPanel({ children, className }) {
   );
 }
 
-/** Icon + headline + copy + action, for the states where nothing else is on screen. */
-export function StatusPanel({ icon: Icon, title, description, action, tone = 'muted' }) {
+/**
+ * Icon + headline + copy + action, for the states where nothing else is on screen.
+ *
+ * `art` takes an illustration from components/Illustration.jsx and replaces the icon disc. The
+ * icon path stays, so every existing call site is untouched — these are the screens a citizen
+ * hits when something has gone wrong, and they were the last ones still showing a bare glyph.
+ */
+export function StatusPanel({ icon: Icon, art: Art, title, description, action, tone = 'muted' }) {
   const discClass = {
     muted: 'bg-secondary text-muted-foreground',
     brand: 'bg-primary-subtle text-primary',
@@ -28,7 +34,9 @@ export function StatusPanel({ icon: Icon, title, description, action, tone = 'mu
 
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      {Icon ? (
+      {Art ? (
+        <Art />
+      ) : Icon ? (
         <div className={cn('flex h-16 w-16 items-center justify-center rounded-full', discClass)}>
           <Icon className="h-8 w-8" aria-hidden="true" />
         </div>

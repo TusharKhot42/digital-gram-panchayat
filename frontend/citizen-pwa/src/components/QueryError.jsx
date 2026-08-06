@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { RefreshCw, WifiOff } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
+import { OfflineArt, ServerErrorArt } from '@/components/Illustration';
 
 /**
  * Inline error state for a failed query, with a Retry button wired to the query's `refetch`.
@@ -12,7 +13,15 @@ export function QueryError({ message, onRetry, isFetching = false }) {
 
   return (
     <div role="alert" className="flex flex-col items-center gap-3 py-12 text-center">
-      <WifiOff className="h-9 w-9 text-muted-foreground/60" aria-hidden="true" />
+      {/*
+       * Two drawings, not one icon: "your phone has no signal" and "our server failed" ask
+       * different things of the citizen, and the same glyph for both taught them nothing.
+       */}
+      {offline ? (
+        <OfflineArt className="h-20 w-20 text-muted-foreground" />
+      ) : (
+        <ServerErrorArt className="h-20 w-20 text-muted-foreground" />
+      )}
       <p className="max-w-xs text-sm text-muted-foreground">
         {offline ? t('error.offline') : message || t('error.generic')}
       </p>

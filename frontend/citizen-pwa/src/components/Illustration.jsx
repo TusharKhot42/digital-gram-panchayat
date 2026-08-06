@@ -113,3 +113,64 @@ export function NoTaxArt(props) {
     </Frame>
   );
 }
+
+/** A magnifier over an empty page — a search that matched nothing. */
+export function NoResultsArt(props) {
+  return (
+    <Frame {...props}>
+      <circle cx="54" cy="54" r="20" {...stroke} />
+      <path d="M69 69 84 84" {...stroke} />
+      <path d="M46 54h16" {...stroke} className="opacity-50" />
+    </Frame>
+  );
+}
+
+/** A download tray with nothing in it. */
+export function NoDownloadsArt(props) {
+  return (
+    <Frame {...props}>
+      <path d="M60 32v30" {...stroke} />
+      <path d="M50 54l10 10 10-10" {...stroke} />
+      <path d="M36 74v8a4 4 0 0 0 4 4h40a4 4 0 0 0 4-4v-8" {...stroke} />
+    </Frame>
+  );
+}
+
+/**
+ * A cloud with the link struck through. Distinct from the error drawing on purpose: offline is
+ * the citizen's connection and it will come back; a server error is ours and it will not fix
+ * itself by walking up the hill.
+ */
+export function OfflineArt(props) {
+  return (
+    <Frame {...props}>
+      <path d="M44 74a14 14 0 0 1 1-28 18 18 0 0 1 34-4 12 12 0 0 1 2 32H44Z" {...stroke} />
+      <path d="M38 38l44 44" {...stroke} />
+    </Frame>
+  );
+}
+
+/** A building with a warning — something on our side failed. */
+export function ServerErrorArt(props) {
+  return (
+    <Frame {...props}>
+      <rect x="34" y="38" width="52" height="18" rx="4" {...stroke} />
+      <rect x="34" y="64" width="52" height="18" rx="4" {...stroke} />
+      <path d="M44 47h.01M44 73h.01" {...stroke} />
+      <path d="M60 30v-8" {...stroke} className="opacity-50" />
+      <path d="M74 47h4M74 73h4" {...stroke} className="opacity-50" />
+    </Frame>
+  );
+}
+
+/** A signpost pointing nowhere — the address does not exist. */
+export function NotFoundArt(props) {
+  return (
+    <Frame {...props}>
+      <path d="M60 34v52" {...stroke} />
+      <path d="M60 42h22l8 8-8 8H60Z" {...stroke} />
+      <path d="M60 64H38l-8 8 8 8h22Z" {...stroke} className="opacity-60" />
+      <path d="M46 90h28" {...stroke} />
+    </Frame>
+  );
+}

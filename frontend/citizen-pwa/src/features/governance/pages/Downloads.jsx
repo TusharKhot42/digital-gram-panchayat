@@ -5,7 +5,7 @@ import { Download, FileText } from 'lucide-react';
 import { DOWNLOAD_CATEGORIES, formatDate } from '@dgp/shared';
 import { PageHeader } from '@/components/PageHeader';
 import { EmptyState } from '@/components/EmptyState';
-import { NoCertificatesArt } from '@/components/Illustration';
+import { NoDownloadsArt } from '@/components/Illustration';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
 import { cn } from '@/utils/cn';
@@ -119,7 +119,7 @@ export function Downloads() {
         </ul>
       ) : (
         <EmptyState
-          art={NoCertificatesArt}
+          art={NoDownloadsArt}
           title={category ? t('download.emptyFiltered') : t('download.empty')}
         />
       )}

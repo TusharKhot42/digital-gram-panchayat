@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { CloudOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CenteredPanel, StatusPanel } from '@/components/CenteredPanel';
+import { OfflineArt } from '@/components/Illustration';
 
 /**
  * Full-screen fallback shown when a page needs the network but no cached copy exists
@@ -14,8 +14,7 @@ export function Offline({ onRetry }) {
   return (
     <CenteredPanel>
       <StatusPanel
-        icon={CloudOff}
-        tone="warning"
+        art={OfflineArt}
         title={t('pwa.offlineTitle')}
         description={t('pwa.offlineBody')}
         action={

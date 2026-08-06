@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { NoResultsArt } from '@/components/Illustration';
 import {
   BadgeCheck,
   BookOpen,
@@ -332,9 +333,12 @@ export function GlobalSearch({
               );
             })
           ) : (
-            <p className="px-3 py-6 text-center text-body text-muted-foreground">
-              {t('search.noResults', { query: query.trim() })}
-            </p>
+            <div className="flex flex-col items-center gap-2 px-3 py-8 text-center">
+              <NoResultsArt className="h-20 w-20 text-muted-foreground" />
+              <p className="text-body text-muted-foreground">
+                {t('search.noResults', { query: query.trim() })}
+              </p>
+            </div>
           )}
         </div>
       ) : null}
