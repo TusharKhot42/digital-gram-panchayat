@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { NotificationMotif } from '@/components/ModuleArt';
 import { Search, CheckCheck, Settings, X } from 'lucide-react';
 import { formatDateTime, pickLocale } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
@@ -129,7 +130,7 @@ export function NotificationCenter() {
       {/* The action group must be allowed to wrap and shrink: the Marathi "mark all as read"
           label is far longer than the English one and, held rigid, pushed the page wider than a
           320px viewport (which in turn stretched the fixed bottom nav to the document width). */}
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+      <div className="relative isolate mb-4 flex flex-wrap items-start justify-between gap-2 overflow-hidden">
         <div className="min-w-0">
           <h1 className="text-title text-foreground">{t('notif.title')}</h1>
           {unreadCount ? (
@@ -137,6 +138,14 @@ export function NotificationCenter() {
               {t('notif.unreadCount', { count: unreadCount })}
             </p>
           ) : null}
+        </div>
+        {/* Motif only — the heading and its controls keep the wrapper that made them survive a
+            long Marathi label at 320px, so this is decoration and nothing structural. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-2 top-0 hidden h-24 text-primary opacity-[0.14] sm:block"
+        >
+          <NotificationMotif className="h-full w-auto" />
         </div>
         <div className="flex min-w-0 items-center gap-1">
           <Button

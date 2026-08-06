@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ModuleHeader } from '@/components/ModuleHeader';
+import { NoticeMotif } from '@/components/ModuleArt';
 import { Search, X } from 'lucide-react';
 import { NOTICE_CATEGORIES } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
@@ -28,7 +30,7 @@ export function NoticeList() {
 
   return (
     <div className="dgp-page-wide">
-      <h1 className="mb-5 text-title text-foreground">{t('notice.list.title')}</h1>
+      <ModuleHeader art={NoticeMotif} title={t('notice.list.title')} />
 
       <div className="mb-5 flex flex-col gap-2.5 sm:flex-row sm:items-center">
         <div className="relative sm:max-w-sm sm:flex-1">

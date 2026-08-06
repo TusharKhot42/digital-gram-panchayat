@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ModuleHeader } from '@/components/ModuleHeader';
+import { CertificateMotif } from '@/components/ModuleArt';
 import { Plus, ChevronRight } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
@@ -18,15 +20,18 @@ export function ApplicationList() {
 
   return (
     <div className="dgp-page-wide">
-      <div className="mb-5 flex items-center justify-between gap-2">
-        <h1 className="text-title text-foreground">{t('dakhala.list.title')}</h1>
-        <Button asChild size="sm">
-          <Link to="/dakhala/new">
-            <Plus className="h-4 w-4" aria-hidden="true" />
-            {t('dakhala.list.apply')}
-          </Link>
-        </Button>
-      </div>
+      <ModuleHeader
+        art={CertificateMotif}
+        title={t('dakhala.list.title')}
+        action={
+          <Button asChild size="sm">
+            <Link to="/dakhala/new">
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t('dakhala.list.apply')}
+            </Link>
+          </Button>
+        }
+      />
 
       {isLoading ? (
         <SkeletonList />

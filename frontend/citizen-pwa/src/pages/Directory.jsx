@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ModuleHeader } from '@/components/ModuleHeader';
+import { DirectoryMotif } from '@/components/ModuleArt';
 import { ArrowLeft, UserRound, Clock, Phone, Mail, Landmark, Search } from 'lucide-react';
 import { MEMBER_CATEGORIES } from '@dgp/shared';
 import logo from '@dgp/shared/assets/logo.svg';
@@ -97,8 +99,11 @@ export function Directory() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8">
-        <h1 className="text-title text-foreground">{t('directory.heading')}</h1>
-        <p className="mt-1 text-body text-muted-foreground">{t('directory.intro')}</p>
+        <ModuleHeader
+          art={DirectoryMotif}
+          title={t('directory.heading')}
+          description={t('directory.intro')}
+        />
 
         {isLoading ? (
           <p className="mt-6 text-body text-muted-foreground">{t('common.loading')}</p>

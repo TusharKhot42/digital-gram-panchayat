@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ModuleHeader } from '@/components/ModuleHeader';
+import { TaxMotif } from '@/components/ModuleArt';
 import { formatCurrency } from '@dgp/shared';
 import { SkeletonList } from '@/components/Skeleton';
 import { QueryError } from '@/components/QueryError';
@@ -37,7 +39,7 @@ export function TaxSummary() {
 
   return (
     <div className="dgp-page-wide">
-      <h1 className="mb-5 text-title text-foreground">{t('tax.summary.title')}</h1>
+      <ModuleHeader art={TaxMotif} title={t('tax.summary.title')} />
 
       {isLoading ? (
         <SkeletonList />
