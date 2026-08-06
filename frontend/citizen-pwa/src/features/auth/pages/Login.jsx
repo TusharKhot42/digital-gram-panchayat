@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { User, Landmark } from 'lucide-react';
-import logo from '@/assets/logo.svg';
+import logo from '@dgp/shared/assets/logo.svg';
 import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginForm } from '../components/LoginForm';

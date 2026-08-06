@@ -18,7 +18,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
-import logo from '@/assets/logo.svg';
+import logo from '@dgp/shared/assets/logo.svg';
 import { SafeImage } from '@/components/SafeImage';
 import { MapView } from '@/components/MapView';
 import { LanguageGate } from '@/components/LanguageGate';

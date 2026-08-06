@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import logo from '@/assets/logo.svg';
+import logo from '@dgp/shared/assets/logo.svg';
 
 /** Boot gate shown by App.jsx for a beat before the router mounts. Not a routed page. */
 export function Splash() {

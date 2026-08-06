@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, UserRound, Clock, Phone, Mail, Landmark, Search } from 'lucide-react';
 import { MEMBER_CATEGORIES } from '@dgp/shared';
-import logo from '@/assets/logo.svg';
+import logo from '@dgp/shared/assets/logo.svg';
 import { SafeImage } from '@/components/SafeImage';
 import { Card, CardContent } from '@/components/ui/card';
 import { controlClass } from '@/components/ui/input';

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import logo from '@dgp/shared/assets/logo.svg';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -48,14 +49,19 @@ const items = [
   { to: '/help', label: 'nav.help', icon: HelpCircle },
 ];
 
-/** Brand mark — grounds the portal as an official product, not a generic dashboard. */
+/**
+ * Brand mark — grounds the portal as an official product, not a generic dashboard.
+ *
+ * The same `logo.svg` the citizen app uses, not a lucide glyph on a themed square. The two were
+ * different marks in different colours, so the officer portal and the citizen portal read as two
+ * products rather than two doors into one panchayat. The file lives in `@dgp/shared` precisely so
+ * there is one mark to change.
+ */
 function Brand() {
   const { t } = useTranslation();
   return (
     <span className="flex min-w-0 items-center gap-2.5">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-        <Landmark className="h-4 w-4" aria-hidden="true" />
-      </span>
+      <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 rounded-md" />
       <span className="truncate text-section text-foreground">{t('appName')}</span>
     </span>
   );

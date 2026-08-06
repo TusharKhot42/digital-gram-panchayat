@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { ShieldCheck, ShieldX, Search, ArrowLeft } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
-import logo from '@/assets/logo.svg';
+import logo from '@dgp/shared/assets/logo.svg';
 import { SafeImage } from '@/components/SafeImage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

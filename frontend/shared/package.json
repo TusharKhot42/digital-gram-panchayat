@@ -6,7 +6,8 @@
   "description": "Shared constants, zod validation schemas, enums, utils — single contract for backend + both frontends.",
   "main": "src/index.js",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./src/index.js",
+    "./assets/logo.svg": "./src/assets/logo.svg"
   },
   "files": [
     "src"
