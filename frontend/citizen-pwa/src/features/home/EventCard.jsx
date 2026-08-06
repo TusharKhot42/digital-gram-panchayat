@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { CalendarDays, CalendarPlus, Clock, MapPin, Share2, Users } from 'lucide-react';
 import { formatDate, formatTime } from '@dgp/shared';
 import { SafeImage } from '@/components/SafeImage';
+import { eventArtFor } from '@/components/Artwork';
 import { downloadEventIcs } from '@/utils/calendar';
 
 /** Whole days from today; 0 today, negative once past. */
@@ -68,22 +69,18 @@ export function EventCard({ event, featured = false }) {
       }`}
     >
       <div className="relative isolate">
-        {event.banner ? (
-          <SafeImage
-            src={event.banner}
-            alt=""
-            loading={featured ? 'eager' : 'lazy'}
-            className={`w-full object-cover ${featured ? 'h-44 sm:h-56' : 'h-32'}`}
-          />
-        ) : (
-          // No banner: the same fixed government-blue scrim used across the portal, so the
-          // card still reads as an event rather than a blank rectangle.
-          <div
-            className={`w-full bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 ${
-              featured ? 'h-44 sm:h-56' : 'h-32'
-            }`}
-          />
-        )}
+        {/*
+         * With no uploaded banner the card used to fall back to a flat blue gradient. It now
+         * falls back to artwork chosen from the event's own title — a tricolour for Republic
+         * Day, a sapling for a plantation drive — so a list of events reads as a list of
+         * different occasions. Decorative only: the title below still says what it is.
+         */}
+        <SafeImage
+          src={event.banner || eventArtFor(event.title)}
+          alt=""
+          loading={featured ? 'eager' : 'lazy'}
+          className={`w-full object-cover ${featured ? 'h-44 sm:h-56' : 'h-32'}`}
+        />
         <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-caption font-semibold text-blue-900 shadow-sm">
           {countdownLabel(event.startDate, t)}
         </span>

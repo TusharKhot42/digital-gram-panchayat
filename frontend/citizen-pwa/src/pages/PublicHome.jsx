@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import logo from '@dgp/shared/assets/logo.svg';
+import { HERO, eventArtFor } from '@/components/Artwork';
 import { SafeImage } from '@/components/SafeImage';
 import { MapView } from '@/components/MapView';
 import { LanguageGate } from '@/components/LanguageGate';
@@ -152,13 +153,29 @@ export function PublicHome() {
 
       {/* Hero */}
       <div className="relative isolate overflow-hidden border-b border-border bg-primary text-primary-foreground">
-        {g.banner ? (
-          <SafeImage
-            src={g.banner}
-            alt=""
-            className="absolute inset-0 -z-10 h-full w-full object-cover opacity-25"
-          />
-        ) : null}
+        {/*
+         * The officer's own photograph of the village leads when there is one. Without it the
+         * hero used to be a flat block of primary colour — correct, and completely mute about
+         * the place it is introducing. The drawn scene stands in.
+         */}
+        <SafeImage
+          src={g.banner || HERO.villageWelcome}
+          alt=""
+          loading="eager"
+          className={`absolute inset-0 -z-10 h-full w-full object-cover ${
+            g.banner ? 'opacity-25' : 'opacity-40'
+          }`}
+        />
+        {/*
+         * Scrim, and it is load-bearing rather than decorative.
+         *
+         * Measured by compositing the artwork's real pixels over the hero colour: the sun in
+         * the drawing put a bright patch behind the heading and white text there fell to
+         * 2.15:1 in the dark theme. At 45% it is 5.00:1 dark and 7.56:1 light. It also fixes
+         * what was already there — the flat dark-theme primary was 3.17:1, scraping past
+         * large-text AA and failing it for the tagline underneath.
+         */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#0B1E45]/45" />
         <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
           <h1 className="text-display">{villageName}</h1>
           {g.description ? (
@@ -310,9 +327,12 @@ export function PublicHome() {
                 key={e.id}
                 className="overflow-hidden rounded-lg border border-border bg-card shadow-xs"
               >
-                {e.banner ? (
-                  <SafeImage src={e.banner} alt="" className="h-36 w-full object-cover" />
-                ) : null}
+                {/* Every card gets a picture; without one the grid was a wall of grey blocks. */}
+                <SafeImage
+                  src={e.banner || eventArtFor(e.title)}
+                  alt=""
+                  className="h-36 w-full object-cover"
+                />
                 <div className="p-4">
                   <p className="inline-flex items-center gap-1.5 text-caption text-primary">
                     <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />

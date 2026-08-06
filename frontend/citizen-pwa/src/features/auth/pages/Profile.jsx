@@ -17,6 +17,8 @@ import { formatCurrency, formatDate, formatDateTime } from '@dgp/shared';
 import { useTheme, useLanguage } from '@/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Banner } from '@/components/Banner';
+import { HERO } from '@/components/Artwork';
 import { SectionHeader } from '@/components/PageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useMyComplaints } from '@/features/complaints/hooks';
@@ -98,8 +100,18 @@ export function Profile() {
 
   return (
     <div className="dgp-page">
+      {/*
+       * A village strip above the identity card. The card itself is untouched: this is the one
+       * screen that is entirely about the citizen, and it opened with a white rectangle.
+       */}
+      <Banner
+        src={HERO.villageEntrance}
+        ratio="h-24 sm:h-28"
+        className="mb-[-2.5rem] rounded-2xl"
+        scrim={false}
+      />
       {/* Identity */}
-      <Card className="mb-5">
+      <Card className="relative mb-5">
         <CardContent className="flex items-center gap-3.5">
           <span
             aria-hidden="true"

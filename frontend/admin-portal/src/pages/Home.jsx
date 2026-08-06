@@ -13,6 +13,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@dgp/shared';
+import officeBanner from '@dgp/shared/assets/images/hero/gram-panchayat-office.svg';
 import { cn } from '@/utils/cn';
 import { Skeleton } from '@/components/Skeleton';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -196,10 +197,23 @@ export function Home() {
        * The dashboard had no <h1> of its own — it borrowed the one the header used to render,
        * so once that (permanently mislabelled) heading went, the page had no title at all.
        */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      {/*
+       * The officer's dashboard opened on a plain white page with a heading. The band grounds it
+       * as the panchayat's own product rather than a generic admin template — same artwork the
+       * citizen sees on the public page, so the two portals are visibly one service.
+       */}
+      <div className="relative isolate flex flex-wrap items-end justify-between gap-3 overflow-hidden rounded-2xl border border-border px-5 py-5">
+        <img
+          src={officeBanner}
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#0B1E45]/70" />
         <div className="min-w-0">
-          <h1 className="text-title text-foreground">{t('dashboard.title')}</h1>
-          <p className="mt-0.5 text-caption text-muted-foreground">{formatDate(today, locale)}</p>
+          <h1 className="text-title text-white">{t('dashboard.title')}</h1>
+          <p className="mt-0.5 text-caption text-white/80">{formatDate(today, locale)}</p>
         </div>
 
         <div className="flex flex-wrap gap-2">

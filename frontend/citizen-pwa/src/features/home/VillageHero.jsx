@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalendarDays, CloudSun, Languages, MapPin, Moon, Sun } from 'lucide-react';
 import { formatDate } from '@dgp/shared';
 import { SafeImage } from '@/components/SafeImage';
+import { HERO } from '@/components/Artwork';
 import { useTheme, useLanguage } from '@/store';
 
 /** Morning / afternoon / evening, from the device clock. */
@@ -38,15 +39,17 @@ export function VillageHero({ profile, firstName }) {
       aria-label={t('home.villageHeader')}
       className="relative isolate overflow-hidden rounded-2xl border border-border shadow-sm"
     >
-      {g.banner ? (
-        <SafeImage
-          src={g.banner}
-          alt=""
-          loading="eager"
-          fetchpriority="high"
-          className="absolute inset-0 -z-10 h-full w-full object-cover"
-        />
-      ) : null}
+      {/*
+       * The officer's village photograph when there is one, the drawn village scene when there
+       * is not. Either way the masthead shows the village rather than a rectangle of blue.
+       */}
+      <SafeImage
+        src={g.banner || HERO.villageWelcome}
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
       {/* Fixed colours, not theme tokens: this scrim is dark in both themes, so its text is
           always white. Theme-flipping tokens here made the dark theme unreadable before. */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900" />
