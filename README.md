@@ -83,7 +83,9 @@ Full steps: [docs/guides/installation.md](docs/guides/installation.md).
   branches 62, functions 78, lines 84) stays invisible locally and fails the build instead.
   Run `npm run test:coverage` before pushing.
 - **Frontend:** Vitest + React Testing Library — components, hooks, contexts, error boundaries.
-- **E2E:** Playwright — citizen + officer journeys in `e2e/`.
+- **E2E:** Playwright — 11 citizen + officer journeys in `e2e/`, all passing. Includes a real
+  file upload through the form in both portals. Needs a running stack; run
+  `npx playwright install chromium` once first.
 
 ## Contributing
 

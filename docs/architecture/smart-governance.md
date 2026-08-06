@@ -138,6 +138,9 @@ reports **427**.
 - **Responsive sweeps for the new routes were run at desktop width only.** The components follow
   the same `min-w-0` + `TableShell` patterns that the Phase 2 sweep proved, but that is an
   inference, not a measurement.
-- File uploads (notice PDF, banner, project photos, documents) were exercised through the API
-  contract and the multer middleware, **not** by actually uploading a file through the browser.
+- ~~File uploads were exercised through the API contract and the multer middleware, not through
+  the browser.~~ **Closed in Phase 5.** Both portals now upload a real file through the real
+  form in the Playwright suite: three documents attached to a citizen certificate application,
+  and a document published through the officer download-centre dialog. Both use a buffer
+  starting with `%PDF-`, because the upload path verifies magic bytes.
 - The Marathi caveat from earlier phases stands: parity and rendering are proven, idiom is not.
