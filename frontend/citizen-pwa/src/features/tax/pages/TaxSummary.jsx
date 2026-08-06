@@ -27,7 +27,13 @@ export function TaxSummary() {
     ? records.filter((r) => r.financialYear === financialYear)
     : records;
   const totalDues = filtered.reduce((sum, r) => sum + r.balance, 0);
-  const settled = totalDues <= 0;
+  /*
+   * Records the officer raised from a scanned bill carry no assessed total, so they contribute
+   * nothing to this sum. Left alone the page would answer "₹0, all settled" in green to a
+   * citizen who owes whatever the bill says — the worst possible wrong answer on this screen.
+   */
+  const unbilled = filtered.filter((r) => r.amount === null || r.amount === undefined).length;
+  const settled = totalDues <= 0 && unbilled === 0;
 
   return (
     <div className="dgp-page-wide">
@@ -59,6 +65,11 @@ export function TaxSummary() {
             >
               {formatCurrency(totalDues, locale)}
             </p>
+            {unbilled ? (
+              <p className="mt-1 text-caption text-muted-foreground">
+                {t('tax.summary.unbilled', { count: unbilled })}
+              </p>
+            ) : null}
           </div>
 
           {years.length > 1 ? (

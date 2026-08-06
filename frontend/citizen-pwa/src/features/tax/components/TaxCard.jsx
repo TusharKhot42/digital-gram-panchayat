@@ -14,7 +14,10 @@ export function TaxCard({ record }) {
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
 
   const Icon = record.taxType === 'Water' ? Droplets : Home;
-  const settled = record.balance <= 0;
+  // The officer raised this from a scanned bill without transcribing the figure. Showing
+  // ₹0 here would tell the citizen they owe nothing, so the ledger points at the bill.
+  const unknownAmount = record.amount === null || record.amount === undefined;
+  const settled = !unknownAmount && record.balance <= 0;
 
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
@@ -41,7 +44,7 @@ export function TaxCard({ record }) {
         <div className="flex items-baseline justify-between px-4 py-2.5">
           <dt className="text-body text-muted-foreground">{t('tax.card.assessed')}</dt>
           <dd className="text-body tabular-nums text-foreground">
-            {formatCurrency(record.amount, locale)}
+            {unknownAmount ? t('tax.card.viewBill') : formatCurrency(record.amount, locale)}
           </dd>
         </div>
         <div className="flex items-baseline justify-between px-4 py-2.5">
@@ -55,7 +58,11 @@ export function TaxCard({ record }) {
           <dd
             className={`text-title tabular-nums ${settled ? 'text-success-strong' : 'text-destructive-strong'}`}
           >
-            {formatCurrency(record.balance, locale)}
+            {unknownAmount ? (
+              <span className="text-body text-muted-foreground">{t('tax.card.viewBill')}</span>
+            ) : (
+              formatCurrency(record.balance, locale)
+            )}
           </dd>
         </div>
       </dl>

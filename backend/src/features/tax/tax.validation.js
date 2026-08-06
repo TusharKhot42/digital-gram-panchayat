@@ -8,7 +8,12 @@ export const createTaxValidation = [
   body('financialYear')
     .matches(/^\d{4}-\d{4}$/)
     .withMessage('Financial year must look like 2025-2026'),
-  body('amount').isFloat({ min: 0 }).withMessage('Amount cannot be negative'),
+  // Optional: the officer may attach the scanned bill instead. The service rejects a record
+  // that carries neither.
+  body('amount')
+    .optional({ values: 'falsy' })
+    .isFloat({ min: 0 })
+    .withMessage('Amount cannot be negative'),
   body('dueDate').optional({ values: 'falsy' }).isISO8601().withMessage('Invalid due date'),
 ];
 

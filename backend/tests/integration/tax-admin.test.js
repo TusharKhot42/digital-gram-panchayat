@@ -119,3 +119,102 @@ describe('officer tax admin list + detail', () => {
     expect(res.status).toBe(404);
   });
 });
+
+/**
+ * The officer attaches the scanned demand bill instead of transcribing the figure from it —
+ * the one step where a typo silently became a citizen's official liability. `amount` therefore
+ * became optional, and "unknown" has to stay distinguishable from "nil", or a record with no
+ * transcribed figure would announce itself as settled.
+ */
+describe('tax records raised from a scanned bill', () => {
+  // %PDF- so the magic-byte check downstream of multer accepts it.
+  const PDF = Buffer.from('%PDF-1.4');
+
+  async function makeFromBill(token, citizenId, fields = {}) {
+    const req = request(app)
+      .post('/api/v1/admin/tax')
+      .set('Authorization', `Bearer ${token}`)
+      .field('citizenId', citizenId)
+      .field('taxType', 'Property')
+      .field('financialYear', '2024-2025')
+      .field('propertyNumber', 'PROP-BILL');
+    Object.entries(fields).forEach(([k, v]) => req.field(k, v));
+    return req.attach('bills', PDF, 'bill.pdf');
+  }
+
+  it('creates a record with no amount when a bill is attached', async () => {
+    const token = await officer();
+    const c = await citizen();
+    const res = await makeFromBill(token, c.id);
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.amount).toBeNull();
+    expect(res.body.data.bills).toHaveLength(1);
+    // Not 'Paid'. Nothing knows what settling this record would mean.
+    expect(res.body.data.paymentStatus).toBe('Unpaid');
+    expect(res.body.data.balance).toBe(0);
+  });
+
+  it('rejects a record carrying neither an amount nor a bill', async () => {
+    const token = await officer();
+    const c = await citizen();
+    const res = await request(app)
+      .post('/api/v1/admin/tax')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        citizenId: c.id,
+        taxType: 'Property',
+        financialYear: '2024-2025',
+        propertyNumber: 'PROP-EMPTY',
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('BILL_REQUIRED');
+  });
+
+  it('still accepts a typed amount, and 0 still means a settled nil demand', async () => {
+    const token = await officer();
+    const c = await citizen();
+    const rec = await makeRecord(token, c.id, { amount: 0 });
+
+    expect(rec.amount).toBe(0);
+    expect(rec.paymentStatus).toBe('Paid');
+  });
+
+  it('records a payment against a bill-only record instead of refusing it', async () => {
+    const token = await officer();
+    const c = await citizen();
+    const created = await makeFromBill(token, c.id);
+
+    // balance is 0 because the total is unknown — that must not read as "nothing left to pay".
+    const res = await request(app)
+      .post(`/api/v1/admin/tax/${created.body.data.id}/payment`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amount: 750 });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.amountPaid).toBe(750);
+    expect(res.body.data.paymentStatus).toBe('Partial');
+  });
+
+  it('settles once the officer fills the amount in from the bill', async () => {
+    const token = await officer();
+    const c = await citizen();
+    const created = await makeFromBill(token, c.id);
+    const id = created.body.data.id;
+
+    await request(app)
+      .post(`/api/v1/admin/tax/${id}/payment`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amount: 1200 });
+
+    const res = await request(app)
+      .patch(`/api/v1/admin/tax/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amount: 1200 });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.paymentStatus).toBe('Paid');
+    expect(res.body.data.balance).toBe(0);
+  });
+});

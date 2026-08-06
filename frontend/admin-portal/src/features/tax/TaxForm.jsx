@@ -36,6 +36,7 @@ export function TaxForm() {
   const [mobile, setMobile] = useState('');
   const [lookingUp, setLookingUp] = useState(false);
   const [bills, setBills] = useState([]);
+  const [billError, setBillError] = useState(null);
   const m = useTaxMutations();
 
   const {
@@ -66,9 +67,13 @@ export function TaxForm() {
       toast.error(t('tax.form.lookupFirst'));
       return;
     }
+    if (!bills.length) {
+      setBillError({ message: t('tax.form.billRequired') });
+      return;
+    }
     try {
       await m.create.mutateAsync({
-        values: { ...values, citizenId: citizen.id, amount: Number(values.amount) },
+        values: { ...values, citizenId: citizen.id },
         files: bills,
       });
       toast.success(t('tax.form.created'));
@@ -154,38 +159,33 @@ export function TaxForm() {
               />
             </Row>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Row id="tax-amount" label={t('tax.form.amount')} error={errors.amount}>
-                <Input
-                  id="tax-amount"
-                  type="number"
-                  min="0"
-                  invalid={Boolean(errors.amount)}
-                  {...register('amount', {
-                    required: t('tax.form.required'),
-                    min: { value: 0, message: t('tax.form.badAmount') },
-                  })}
-                />
-              </Row>
+            <Row id="tax-due" label={t('tax.form.dueDate')}>
+              <Input id="tax-due" type="date" {...register('dueDate')} />
+            </Row>
 
-              <Row id="tax-due" label={t('tax.form.dueDate')}>
-                <Input id="tax-due" type="date" {...register('dueDate')} />
-              </Row>
-            </div>
-
-            <Row id="tax-bills" label={t('tax.form.bills')}>
+            {/*
+             * The bill scan replaces the assessed-amount field: the officer attaches the demand
+             * bill the panchayat already prints rather than retyping the figure from it, which
+             * was the one step where a typo silently became the citizen's official liability.
+             * Required, because without it the record would carry no demand at all.
+             */}
+            <Row id="tax-bills" label={t('tax.form.bills')} error={billError}>
               <input
                 id="tax-bills"
                 type="file"
                 accept="image/*,application/pdf"
                 multiple
+                aria-invalid={billError ? 'true' : undefined}
                 className="block w-full text-body text-muted-foreground file:mr-3 file:rounded-md file:border file:border-input file:bg-background file:px-3 file:py-1.5 file:text-body file:font-medium file:text-foreground hover:file:bg-accent"
-                onChange={(e) => setBills(Array.from(e.target.files || []))}
+                onChange={(e) => {
+                  setBills(Array.from(e.target.files || []));
+                  setBillError(null);
+                }}
               />
               <p className="text-caption text-muted-foreground">
                 {bills.length
                   ? t('tax.form.billsSelected', { count: bills.length })
-                  : t('tax.form.billsHint')}
+                  : t('tax.form.billsRequiredHint')}
               </p>
             </Row>
           </CardContent>

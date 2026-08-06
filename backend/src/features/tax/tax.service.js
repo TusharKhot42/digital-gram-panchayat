@@ -16,8 +16,20 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/** Derive balance + status from amount/amountPaid. */
+/**
+ * Derive balance + status from amount/amountPaid.
+ *
+ * `amount` is null when the officer raised the record from a scanned bill without transcribing
+ * the figure. An unknown total is not a zero total: it can never settle to Paid, because nothing
+ * knows what settling would mean. Balance stays 0 so the village dues figure never counts a
+ * number it does not have.
+ */
 function recompute(record) {
+  if (record.amount === null || record.amount === undefined) {
+    record.balance = 0;
+    record.paymentStatus = record.amountPaid > 0 ? 'Partial' : 'Unpaid';
+    return;
+  }
   record.balance = Math.max(0, record.amount - record.amountPaid);
   if (record.amountPaid <= 0) record.paymentStatus = 'Unpaid';
   else if (record.amountPaid >= record.amount) record.paymentStatus = 'Paid';
@@ -63,10 +75,21 @@ export async function createRecord({ officerId, body, files }) {
 
   const year = new Date().getFullYear();
   const seq = await getNextSequence(`tax-${year}`);
-  const amount = Number(body.amount);
+  // Omitted amount means "read it off the scanned bill", which is the normal path now that the
+  // officer attaches the bill instead of transcribing the figure. Kept distinct from 0, which
+  // means a genuine nil demand and settles the record.
+  const hasAmount = body.amount !== undefined && body.amount !== null && body.amount !== '';
+  const amount = hasAmount ? Number(body.amount) : null;
 
   // Reuse the shared upload abstraction (Cloudinary or mock) — no duplicate logic.
   const bills = await uploadAttachments(files, 'tax');
+  if (!bills.length && !hasAmount) {
+    throw new AppError(
+      400,
+      'BILL_REQUIRED',
+      'Attach the scanned bill, or enter the assessed amount',
+    );
+  }
 
   const record = await TaxRecord.create({
     taxRecordId: buildTaxRecordId(year, seq),
@@ -76,8 +99,8 @@ export async function createRecord({ officerId, body, files }) {
     financialYear: body.financialYear,
     amount,
     amountPaid: 0,
-    balance: amount,
-    paymentStatus: amount > 0 ? 'Unpaid' : 'Paid',
+    balance: amount ?? 0,
+    paymentStatus: amount === null || amount > 0 ? 'Unpaid' : 'Paid',
     dueDate: body.dueDate || undefined,
     bills,
     createdBy: officerId,
@@ -157,7 +180,9 @@ export async function addPayment(id, officerId, payload) {
 
   const amount = Number(payload.amount);
   if (amount <= 0) throw new AppError(400, 'INVALID_PAYMENT', 'Payment must be greater than zero');
-  if (amount > record.balance) {
+  // A record raised from a scanned bill has no assessed total, so there is no balance to exceed.
+  // Refusing the receipt would be worse than accepting it: the citizen has paid either way.
+  if (record.amount !== null && record.amount !== undefined && amount > record.balance) {
     throw new AppError(400, 'PAYMENT_EXCEEDS_BALANCE', 'Payment exceeds the outstanding balance');
   }
 

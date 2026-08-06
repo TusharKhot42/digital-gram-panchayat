@@ -23,6 +23,12 @@ import { PaymentStatusBadge } from './PaymentStatusBadge';
 import { useTaxRecords } from './hooks';
 
 const LIMIT = 20;
+/**
+ * A record raised from a scanned bill carries no assessed total. Nothing here may render
+ * that as a rupee figure — ₹0 tells the citizen and the officer the demand is settled.
+ */
+const unknownAmount = (r) => r.amount === null || r.amount === undefined;
+
 const COLS = 6;
 
 export function TaxList() {
@@ -135,13 +141,18 @@ export function TaxList() {
                   </TD>
                   <TD>{t(`tax.type.${r.taxType}`, r.taxType)}</TD>
                   <TD className="whitespace-nowrap text-muted-foreground">{r.financialYear}</TD>
-                  <TD className="text-right tabular-nums">{formatCurrency(r.amount, locale)}</TD>
+                  <TD className="text-right tabular-nums">
+                    {unknownAmount(r) ? t('tax.card.viewBill') : formatCurrency(r.amount, locale)}
+                  </TD>
                   <TD
                     className={`text-right font-medium tabular-nums ${
-                      r.balance > 0 ? 'text-destructive-strong' : 'text-muted-foreground'
+                      r.balance > 0 && !unknownAmount(r)
+                        ? 'text-destructive-strong'
+                        : 'text-muted-foreground'
                     }`}
                   >
-                    {formatCurrency(r.balance, locale)}
+                    {/* An unknown total has no dues figure. ₹0 here would read as "nothing owed". */}
+                    {unknownAmount(r) ? '—' : formatCurrency(r.balance, locale)}
                   </TD>
                   <TD>
                     <PaymentStatusBadge status={r.paymentStatus} />

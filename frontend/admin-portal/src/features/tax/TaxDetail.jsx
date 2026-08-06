@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/PageHeader';
+import { DocumentViewer } from '@/components/DocumentViewer';
 import { Timeline } from '@/components/Timeline';
 import { Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
 import { PaymentStatusBadge } from './PaymentStatusBadge';
@@ -71,7 +72,10 @@ export function TaxDetail() {
     }
   };
 
-  const settled = r.balance <= 0;
+  // A record raised from a scanned bill has no assessed total, so a zero balance means
+  // "unknown", not "paid" — the officer must still be able to record a receipt against it.
+  const unknownAmount = r.amount === null || r.amount === undefined;
+  const settled = !unknownAmount && r.balance <= 0;
 
   return (
     <div>
@@ -87,19 +91,41 @@ export function TaxDetail() {
         <div className="space-y-4 lg:col-span-2">
           <Card>
             <CardContent className="grid grid-cols-3 gap-4 p-5">
-              <Figure label={t('tax.card.assessed')} value={formatCurrency(r.amount, locale)} />
+              <Figure
+                label={t('tax.card.assessed')}
+                value={unknownAmount ? t('tax.card.viewBill') : formatCurrency(r.amount, locale)}
+              />
               <Figure
                 label={t('tax.card.paid')}
                 value={formatCurrency(r.amountPaid, locale)}
                 tone="paid"
               />
+              {/* No assessed total means no dues figure — ₹0 would read as "nothing owed". */}
               <Figure
                 label={t('tax.card.dues')}
-                value={formatCurrency(r.balance, locale)}
-                tone={settled ? 'paid' : 'due'}
+                value={unknownAmount ? '—' : formatCurrency(r.balance, locale)}
+                tone={unknownAmount ? undefined : settled ? 'paid' : 'due'}
               />
             </CardContent>
           </Card>
+
+          {/*
+           * The scanned bills, which the citizen could already open but the officer could not.
+           * That was survivable while the assessed figure was typed in; now that the bill carries
+           * the amount, "View bill" above has to point at something an officer can actually read.
+           */}
+          {r.bills?.length ? (
+            <Card>
+              <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
+                {t('tax.form.bills')}
+              </h2>
+              <CardContent className="space-y-2 p-5">
+                {r.bills.map((b) => (
+                  <DocumentViewer key={b.url} doc={b} variant="row" />
+                ))}
+              </CardContent>
+            </Card>
+          ) : null}
 
           <Card>
             <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
@@ -195,7 +221,7 @@ export function TaxDetail() {
                   min="0"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder={String(r.amount)}
+                  placeholder={r.amount === null || r.amount === undefined ? '' : String(r.amount)}
                   aria-label={t('tax.detail.updateAmount')}
                 />
                 <Button

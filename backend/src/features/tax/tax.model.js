@@ -36,7 +36,8 @@ const taxRecordSchema = new Schema(
     propertyNumber: { type: String, required: true, trim: true, index: true },
     taxType: { type: String, enum: TAX_TYPES, required: true, index: true },
     financialYear: { type: String, required: true, index: true },
-    amount: { type: Number, required: true, min: 0 },
+    // null = raised from a scanned bill, figure not transcribed. Distinct from 0, a nil demand.
+    amount: { type: Number, default: null, min: 0 },
     amountPaid: { type: Number, default: 0, min: 0 },
     balance: { type: Number, default: 0, min: 0 },
     paymentStatus: { type: String, enum: PAYMENT_STATUSES, default: 'Unpaid', index: true },

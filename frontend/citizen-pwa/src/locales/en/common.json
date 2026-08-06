@@ -388,7 +388,8 @@
       "totalDues": "Total outstanding dues",
       "allYears": "All years",
       "empty": "No tax records found for your account.",
-      "loadError": "Could not load tax records"
+      "loadError": "Could not load tax records",
+      "unbilled": "Excludes {{count}} record(s) whose amount is on the attached bill."
     },
     "card": {
       "assessed": "Assessed",

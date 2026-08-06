@@ -411,7 +411,8 @@
     "card": {
       "assessed": "Assessed",
       "paid": "Paid",
-      "dues": "Dues"
+      "dues": "Dues",
+      "viewBill": "View bill"
     },
     "dash": {
       "title": "Tax Records",
@@ -443,16 +444,15 @@
       "financialYear": "Financial year",
       "badYear": "Use format 2025-2026",
       "propertyNumber": "Property / connection number",
-      "amount": "Assessed amount",
-      "badAmount": "Amount cannot be negative",
       "dueDate": "Due date",
       "required": "This field is required",
       "save": "Create record",
       "created": "Tax record created",
       "failed": "Could not create record",
       "bills": "Tax bill scans (image/PDF)",
-      "billsHint": "Optional. Attach scanned bills the citizen can view.",
-      "billsSelected": "{{count}} file(s) selected"
+      "billsSelected": "{{count}} file(s) selected",
+      "billRequired": "Attach the scanned tax bill",
+      "billsRequiredHint": "Required. Attach the demand bill — the citizen reads the amount from it."
     },
     "detail": {
       "back": "Back to tax records",
