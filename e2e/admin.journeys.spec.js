@@ -92,3 +92,29 @@ test('admin toggles a user account status', async ({ page }) => {
     }
   }
 });
+
+/**
+ * Publishing a document is the officer portal's simplest real upload, and until now uploads
+ * were only ever exercised through the API contract and the multer middleware — never through
+ * the actual form. The buffer starts with %PDF- because the upload path verifies magic bytes,
+ * so a file whose contents contradict its declared type is rejected before the service sees it.
+ */
+test('admin publishes a document through the upload form', async ({ page }) => {
+  await login(page);
+  await page.goto('/documents');
+
+  const title = `E2E circular ${Date.now()}`;
+  await page.getByRole('button', { name: /add document/i }).click();
+
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel(/title/i).fill(title);
+  await dialog.getByLabel(/^file$/i).setInputFiles({
+    name: 'circular.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from('%PDF-1.4'),
+  });
+  await dialog.getByRole('button', { name: /save/i }).click();
+
+  // The row appearing in the table is proof the file reached storage and the record was written.
+  await expect(page.getByText(title)).toBeVisible();
+});

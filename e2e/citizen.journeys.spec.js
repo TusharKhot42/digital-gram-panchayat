@@ -32,7 +32,21 @@ async function register(page, mobile) {
   await page.getByLabel(/village/i).fill('Sakharale');
   await page.getByLabel(/address/i).fill('Main Road');
   await page.getByRole('button', { name: /register/i }).click();
-  await expect(page).toHaveURL(/\/$|\/home|\//);
+
+  /*
+   * Wait for the session to actually exist.
+   *
+   * This used to assert `toHaveURL(/\/$|\/home|\//)`. The final `\/` alternative matches ANY
+   * path — including /register — so the assertion resolved immediately and could never fail.
+   * Every caller then went straight to page.goto(), racing the in-flight registration POST:
+   * the token was not written yet, the protected route bounced, and the journey failed on a
+   * missing heading that had nothing to do with the bug.
+   *
+   * Anchoring on `/$` means the dashboard specifically, and the nav landmark proves the app
+   * rendered as a signed-in citizen rather than redirecting to the public page.
+   */
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('navigation')).toBeVisible();
 }
 
 test('citizen registration creates a session', async ({ page }) => {
@@ -64,11 +78,41 @@ test('complaint submission then tracking in history', async ({ page }) => {
   await expect(page.getByText(/pothole near the temple/i)).toBeVisible();
 });
 
+/**
+ * A real PDF, not an empty buffer: the upload middleware verifies magic bytes, so a file whose
+ * contents do not match its declared type is rejected before it reaches the service.
+ */
+const PDF = { name: 'proof.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4') };
+
 test('certificate application journey', async ({ page }) => {
-  await register(page, unique());
+  const mobile = unique();
+  await register(page, mobile);
   await page.goto('/dakhala/new');
-  await page.getByLabel(/certificate type/i).selectOption({ index: 1 });
+
+  await page.getByLabel(/certificate type/i).selectOption('Residence');
+  await page.getByLabel(/full name/i).fill('E2E Citizen');
+  await page.getByLabel(/mobile/i).fill(mobile);
+  await page.getByLabel(/address/i).fill('Main Road, Sakharale');
+
+  /*
+   * Certificates gained per-type required document groups (identity proof, address proof, a
+   * declaration) after this spec was written; selecting a type and pressing submit has not
+   * been enough for a long time. Attaching to every group keeps the test honest whichever
+   * groups the chosen type marks required, and exercises the real upload path end to end.
+   */
+  const fileInputs = page.locator('input[type="file"]');
+  const groups = await fileInputs.count();
+  for (let i = 0; i < groups; i += 1) {
+    // select 0 is the certificate type; the document-type selects follow, one per group.
+    await page
+      .locator('main select')
+      .nth(i + 1)
+      .selectOption({ index: 0 });
+    await fileInputs.nth(i).setInputFiles(PDF);
+  }
+
   await page.getByRole('button', { name: /submit/i }).click();
+
   await page.goto('/dakhala');
   await expect(page.getByText(/DKH-/)).toBeVisible();
 });
