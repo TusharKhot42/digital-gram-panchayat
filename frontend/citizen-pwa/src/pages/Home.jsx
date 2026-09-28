@@ -13,7 +13,9 @@ import {
   HardHat,
   Vote,
   Download,
+  CalendarClock,
 } from 'lucide-react';
+import { MemberContactsSection } from '@/features/home/MemberContactsSection';
 import { Card } from '@/components/ui/card';
 import { SectionHeader } from '@/components/PageHeader';
 import { EmptyState } from '@/components/EmptyState';
@@ -38,21 +40,21 @@ import { EmergencyContacts } from '@/features/home/EmergencyContacts';
 import { EventCard, daysUntil } from '@/features/home/EventCard';
 import { useMeetings, useProjects, useDownloads } from '@/features/governance/hooks';
 
-// Quick services — every entry point a citizen has. The last four are the governance modules
-// that give someone a reason to open this weekly rather than only when they need a document.
+// Quick services — every entry point a citizen has.
 const SERVICES = [
-  { to: '/complaints/new', label: 'nav.complaints', icon: ClipboardList },
-  { to: '/dakhala', label: 'nav.dakhala', icon: FileText },
-  { to: '/tax', label: 'nav.tax', icon: Receipt },
-  { to: '/schemes', label: 'nav.schemes', icon: Landmark },
-  { to: '/notices', label: 'nav.notices', icon: Megaphone },
-  { to: '/directory', label: 'nav.directory', icon: Users },
-  { to: '/verify', label: 'nav.verify', icon: BadgeCheck },
-  { to: '/notifications', label: 'nav.notifications', icon: Bell },
-  { to: '/meetings', label: 'nav.meetings', icon: Gavel },
-  { to: '/projects', label: 'nav.projects', icon: HardHat },
-  { to: '/polls', label: 'nav.polls', icon: Vote },
-  { to: '/downloads', label: 'nav.downloads', icon: Download },
+  { to: '/complaints/new', label: 'nav.complaints', icon: ClipboardList, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400' },
+  { to: '/dakhala', label: 'nav.dakhala', icon: FileText, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400' },
+  { to: '/tax', label: 'nav.tax', icon: Receipt, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/40 dark:text-blue-400' },
+  { to: '/schemes', label: 'nav.schemes', icon: Landmark, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/40 dark:text-purple-400' },
+  { to: '/notices', label: 'nav.notices', icon: Megaphone, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400' },
+  { to: '/directory', label: 'nav.directory', icon: Users, color: 'text-teal-600 bg-teal-50 dark:bg-teal-950/40 dark:text-teal-400' },
+  { to: '/verify', label: 'nav.verify', icon: BadgeCheck, color: 'text-sky-600 bg-sky-50 dark:bg-sky-950/40 dark:text-sky-400' },
+  { to: '/notifications', label: 'nav.notifications', icon: Bell, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-400' },
+  { to: '/meetings', label: 'nav.meetings', icon: Gavel, color: 'text-slate-600 bg-slate-100 dark:bg-slate-800 dark:text-slate-300' },
+  { to: '/projects', label: 'nav.projects', icon: HardHat, color: 'text-orange-600 bg-orange-50 dark:bg-orange-950/40 dark:text-orange-400' },
+  { to: '/polls', label: 'nav.polls', icon: Vote, color: 'text-violet-600 bg-violet-50 dark:bg-violet-950/40 dark:text-violet-400' },
+  { to: '/downloads', label: 'nav.downloads', icon: Download, color: 'text-cyan-600 bg-cyan-50 dark:bg-cyan-950/40 dark:text-cyan-400' },
+  { to: '/timetable', label: 'nav.timetable', icon: CalendarClock, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400' },
 ];
 
 export function Home() {
@@ -161,16 +163,16 @@ export function Home() {
       <section aria-labelledby="qs-h">
         <SectionHeader id="qs-h" title={t('home.services')} />
         <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-6 lg:grid-cols-12">
-          {SERVICES.map(({ to, label, icon: Icon }) => (
+          {SERVICES.map(({ to, label, icon: Icon, color }) => (
             <Link
               key={label}
               to={to}
-              className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-xl border border-border bg-card p-2 text-center shadow-xs transition-[box-shadow,transform,border-color] duration-150 hover:border-primary/40 hover:shadow-sm active:translate-y-px"
+              className="group flex min-h-[96px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/80 bg-card p-2.5 text-center shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md active:translate-y-0"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-subtle">
-                <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+              <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${color} shadow-2xs transition-transform duration-150 group-hover:scale-110`}>
+                <Icon className="h-5.5 w-5.5" aria-hidden="true" />
               </span>
-              <span className="text-caption font-medium leading-tight text-foreground">
+              <span className="text-[0.8125rem] font-semibold leading-tight text-foreground tracking-tight">
                 {t(label)}
               </span>
             </Link>
@@ -215,6 +217,9 @@ export function Home() {
           </Card>
         )}
       </section>
+
+      {/* 5 — members contact numbers */}
+      <MemberContactsSection members={profile?.members ?? []} />
 
       {/* 6 — the village in numbers */}
       <VillageStats statistics={profile?.statistics} />

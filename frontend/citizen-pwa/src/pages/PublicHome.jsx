@@ -27,6 +27,7 @@ import { useLanguage } from '@/store';
 import { useVillageProfile, useVillageEvents } from '@/features/village/hooks';
 import { useNotices } from '@/features/notices/hooks';
 import { useSchemes } from '@/features/schemes/hooks';
+import { PublicImportantContacts } from '@/components/PublicImportantContacts';
 
 // The portal's built-in services — shown when an officer hasn't configured custom cards.
 // Guests are pointed at login (the actions themselves need a session).
@@ -120,14 +121,14 @@ export function PublicHome() {
     <div className="min-h-dvh bg-background">
       <LanguageGate />
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#6495ED]/40 bg-[#1E3A8A] text-white shadow-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <SafeImage src={g.logo || logo} alt="" className="h-9 w-9 rounded" />
+            <SafeImage src={g.logo || logo} alt="" className="h-9 w-9 rounded-lg bg-white/10 p-0.5" />
             <div className="min-w-0">
-              <p className="truncate text-section text-foreground">{villageName}</p>
+              <p className="truncate text-base font-bold text-white tracking-tight">{villageName}</p>
               {g.panchayatName ? (
-                <p className="truncate text-caption text-muted-foreground">{g.panchayatName}</p>
+                <p className="truncate text-xs font-medium text-[#93C5FD]">{g.panchayatName}</p>
               ) : null}
             </div>
           </div>
@@ -135,16 +136,16 @@ export function PublicHome() {
             <button
               type="button"
               onClick={toggleLanguage}
-              className="inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-body font-medium text-foreground transition-colors duration-150 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+              className="inline-flex min-h-10 items-center rounded-xl border border-white/20 bg-white/10 px-3 text-xs font-bold text-white transition-colors duration-150 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6495ED]"
               aria-label={language === 'mr' ? 'Switch to English' : 'मराठीत बदला'}
             >
               {language === 'mr' ? 'English' : 'मराठी'}
             </button>
             <Link
               to="/login"
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-primary px-4 text-body font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary-hover"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 px-4 text-xs font-extrabold shadow-md hover:shadow-lg transition-all duration-150 active:scale-95 border border-amber-300/60"
             >
-              <LogIn className="h-4 w-4" aria-hidden="true" />
+              <LogIn className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
               {t('public.enter')}
             </Link>
           </div>
@@ -153,44 +154,37 @@ export function PublicHome() {
 
       {/* Hero */}
       <div className="relative isolate overflow-hidden border-b border-border bg-primary text-primary-foreground">
-        {/*
-         * The officer's own photograph of the village leads when there is one. Without it the
-         * hero used to be a flat block of primary colour — correct, and completely mute about
-         * the place it is introducing. The drawn scene stands in.
-         */}
         <SafeImage
-          src={g.banner || HERO.villageWelcome}
+          src={g.banner || HERO.gramPanchayatBanner || HERO.villageWelcome}
           alt=""
           loading="eager"
-          className={`absolute inset-0 -z-10 h-full w-full object-cover ${
-            g.banner ? 'opacity-25' : 'opacity-40'
-          }`}
+          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-85 transition-opacity duration-300"
         />
-        {/*
-         * Scrim, and it is load-bearing rather than decorative.
-         *
-         * Measured by compositing the artwork's real pixels over the hero colour: the sun in
-         * the drawing put a bright patch behind the heading and white text there fell to
-         * 2.15:1 in the dark theme. At 45% it is 5.00:1 dark and 7.56:1 light. It also fixes
-         * what was already there — the flat dark-theme primary was 3.17:1, scraping past
-         * large-text AA and failing it for the tagline underneath.
-         */}
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#0B1E45]/45" />
-        <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
-          <h1 className="text-display">{villageName}</h1>
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/35" />
+        <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:py-24">
+          <h1 className="text-display font-extrabold text-white drop-shadow-md">{villageName}</h1>
           {g.description ? (
-            <p className="mx-auto mt-3 max-w-2xl text-body leading-relaxed opacity-90">
+            <p className="mx-auto mt-3 max-w-2xl text-body leading-relaxed text-white/95 drop-shadow-xs">
               {g.description}
             </p>
           ) : (
-            <p className="mx-auto mt-3 max-w-2xl text-body opacity-90">{t('public.tagline')}</p>
+            <p className="mx-auto mt-3 max-w-2xl text-body text-white/95 drop-shadow-xs">{t('public.tagline')}</p>
           )}
           {(g.taluka || g.district) && (
-            <p className="mt-4 inline-flex items-center gap-1.5 text-caption opacity-90">
+            <p className="mt-4 inline-flex items-center gap-1.5 text-caption font-semibold text-white/90">
               <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
               {[g.taluka, g.district, g.state].filter(Boolean).join(', ')}
             </p>
           )}
+          <div className="mt-6 flex justify-center">
+            <Link
+              to="/login"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 text-sm font-extrabold shadow-lg transition-all duration-150 hover:scale-105 active:scale-95 border border-amber-300/60"
+            >
+              <LogIn className="h-4.5 w-4.5 stroke-[2.5]" aria-hidden="true" />
+              {t('public.enter')}
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -247,12 +241,12 @@ export function PublicHome() {
               <Link
                 key={s.key || s.title}
                 to="/login"
-                className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-lg border border-border bg-card p-4 text-center shadow-xs transition-[box-shadow,transform] duration-150 hover:shadow-sm active:translate-y-px"
+                className="group flex min-h-28 flex-col items-center justify-center gap-2.5 rounded-2xl border border-border bg-card p-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#6495ED]/70 hover:shadow-md active:translate-y-0"
               >
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-subtle text-primary">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#DBEAFE] text-[#1E3A8A] transition-colors duration-200 group-hover:bg-[#1E3A8A] group-hover:text-white">
+                  <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
-                <span className="text-body font-medium text-foreground">{title}</span>
+                <span className="text-body font-bold text-foreground transition-colors group-hover:text-[#1E3A8A]">{title}</span>
               </Link>
             );
           })}
@@ -411,32 +405,10 @@ export function PublicHome() {
         </Section>
       ) : null}
 
-      {/* Emergency contacts */}
-      {contacts.length ? (
-        <Section id="emergency" title={t('public.emergency')}>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {contacts.map((c, i) => (
-              <a
-                key={`${c.label}-${i}`}
-                href={`tel:${c.phone}`}
-                className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-xs transition-colors duration-150 hover:bg-accent"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive-subtle text-destructive-strong">
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-body font-medium text-foreground">
-                    {c.label}
-                  </span>
-                  <span className="block truncate text-caption text-muted-foreground">
-                    {c.phone}
-                  </span>
-                </span>
-              </a>
-            ))}
-          </div>
-        </Section>
-      ) : null}
+      {/* Gram Panchayat Important Contacts Cards */}
+      <div className="mx-auto w-full max-w-5xl px-4">
+        <PublicImportantContacts />
+      </div>
 
       {/* Location */}
       {hasMap ? (
@@ -446,30 +418,30 @@ export function PublicHome() {
       ) : null}
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card">
+      <footer className="border-t border-[#6495ED]/40 bg-[#1E3A8A] text-white shadow-md">
         <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Identity */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <SafeImage src={g.logo || logo} alt="" className="h-8 w-8 rounded" />
-              <p className="text-body font-medium text-foreground">
+            <div className="flex items-center gap-2.5">
+              <SafeImage src={g.logo || logo} alt="" className="h-8.5 w-8.5 rounded-lg bg-white/10 p-0.5" />
+              <p className="text-body font-bold text-white">
                 {g.panchayatName || villageName}
               </p>
             </div>
-            <p className="text-caption leading-relaxed text-muted-foreground">
+            <p className="text-caption leading-relaxed text-[#93C5FD]">
               {t('public.tagline')}
             </p>
           </div>
 
           {/* Quick links */}
-          <nav aria-label={t('public.quickLinks')} className="space-y-2">
-            <p className="text-label text-foreground">{t('public.quickLinks')}</p>
+          <nav aria-label={t('public.quickLinks')} className="space-y-2.5">
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.quickLinks')}</p>
             <ul className="space-y-1.5 text-caption">
               {QUICK_LINKS.map((q) => (
                 <li key={q.href}>
                   <a
                     href={q.href}
-                    className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                    className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
                   >
                     {t(q.key)}
                   </a>
@@ -478,7 +450,7 @@ export function PublicHome() {
               <li>
                 <Link
                   to="/help"
-                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
                 >
                   {t('help.title')}
                 </Link>
@@ -486,7 +458,7 @@ export function PublicHome() {
               <li>
                 <Link
                   to="/directory"
-                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
                 >
                   {t('directory.heading')}
                 </Link>
@@ -494,7 +466,7 @@ export function PublicHome() {
               <li>
                 <Link
                   to="/verify"
-                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
                 >
                   {t('verify.heading')}
                 </Link>
@@ -502,7 +474,7 @@ export function PublicHome() {
               <li>
                 <Link
                   to="/login"
-                  className="text-muted-foreground transition-colors duration-150 hover:text-primary"
+                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline font-semibold"
                 >
                   {t('public.enter')}
                 </Link>
@@ -511,8 +483,8 @@ export function PublicHome() {
           </nav>
 
           {/* Government links */}
-          <nav aria-label={t('public.govLinks')} className="space-y-2">
-            <p className="text-label text-foreground">{t('public.govLinks')}</p>
+          <nav aria-label={t('public.govLinks')} className="space-y-2.5">
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.govLinks')}</p>
             <ul className="space-y-1.5 text-caption">
               {GOV_LINKS.map((l) => (
                 <li key={l.href}>
@@ -520,10 +492,10 @@ export function PublicHome() {
                     href={l.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="inline-flex items-center gap-1 text-muted-foreground transition-colors duration-150 hover:text-primary"
+                    className="inline-flex items-center gap-1 text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
                   >
                     {l.label}
-                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    <ExternalLink className="h-3 w-3 text-[#93C5FD]" aria-hidden="true" />
                   </a>
                 </li>
               ))}
@@ -531,33 +503,33 @@ export function PublicHome() {
           </nav>
 
           {/* Office */}
-          <div className="space-y-2">
-            <p className="text-label text-foreground">{t('public.office')}</p>
-            <address className="space-y-1.5 not-italic text-caption text-muted-foreground">
+          <div className="space-y-2.5">
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.office')}</p>
+            <address className="space-y-1.5 not-italic text-caption text-slate-200">
               {officeAddress ? (
                 <p className="flex items-start gap-1.5">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
                   <span>{officeAddress}</span>
                 </p>
               ) : null}
               {lead.officeTimings ? (
                 <p className="flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
                   {lead.officeTimings}
                 </p>
               ) : null}
               {lead.contactNumbers ? (
                 <p className="flex items-center gap-1.5">
-                  <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  <a href={`tel:${lead.contactNumbers}`} className="hover:text-primary">
+                  <Phone className="h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
+                  <a href={`tel:${lead.contactNumbers}`} className="hover:text-white hover:underline">
                     {lead.contactNumbers}
                   </a>
                 </p>
               ) : null}
               {lead.officeEmail ? (
                 <p className="flex items-center gap-1.5">
-                  <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  <a href={`mailto:${lead.officeEmail}`} className="hover:text-primary">
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
+                  <a href={`mailto:${lead.officeEmail}`} className="hover:text-white hover:underline">
                     {lead.officeEmail}
                   </a>
                 </p>
@@ -566,8 +538,8 @@ export function PublicHome() {
           </div>
         </div>
 
-        <div className="border-t border-border">
-          <p className="mx-auto max-w-5xl px-4 py-4 text-center text-caption text-muted-foreground">
+        <div className="border-t border-[#6495ED]/30 bg-black/10">
+          <p className="mx-auto max-w-5xl px-4 py-4 text-center text-caption text-slate-300">
             © {year} {g.panchayatName || villageName}. {t('public.rights')} · {t('appName')}
           </p>
         </div>

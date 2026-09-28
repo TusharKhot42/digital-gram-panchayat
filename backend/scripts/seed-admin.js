@@ -22,20 +22,43 @@ async function run() {
   await connectDatabase();
 
   const passwordHash = await hashPassword(password);
-  const existing = await User.findOne({ email, role: ROLES.OFFICER });
-
-  if (existing) {
-    existing.passwordHash = passwordHash;
-    existing.fullName = fullName;
-    existing.isActive = true;
-    await existing.save();
+  
+  // 1. Seed Officer Account
+  const existingOfficer = await User.findOne({ email, role: ROLES.OFFICER });
+  if (existingOfficer) {
+    existingOfficer.passwordHash = passwordHash;
+    existingOfficer.fullName = fullName;
+    existingOfficer.isActive = true;
+    await existingOfficer.save();
     logger.info(`Officer updated: ${email}`);
   } else {
     await User.create({ role: ROLES.OFFICER, fullName, email, passwordHash });
     logger.info(`Officer created: ${email}`);
   }
 
-  logger.info(`Login with email "${email}" and the seeded password.`);
+  // 2. Seed Villager / Citizen Account
+  const citizenEmail = 'citizen@dgp.local';
+  const citizenPassword = 'Citizen@123';
+  const citizenHash = await hashPassword(citizenPassword);
+  const existingCitizen = await User.findOne({ email: citizenEmail });
+
+  if (!existingCitizen) {
+    await User.create({
+      role: ROLES.CITIZEN,
+      fullName: 'Sarang Patil',
+      email: citizenEmail,
+      mobile: '9822012345',
+      passwordHash: citizenHash,
+      ward: 'Ward 1 (Bazaar Area)',
+      address: 'Main Road, Sakharale',
+      isActive: true,
+    });
+    logger.info(`Demo Citizen created: ${citizenEmail}`);
+  }
+
+  logger.info('--- Database Seeded Successfully ---');
+  logger.info(`Officer Login: "${email}" / "${password}"`);
+  logger.info(`Citizen Login: "${citizenEmail}" / "${citizenPassword}" or Mobile "9822012345"`);
   await disconnectDatabase();
 }
 

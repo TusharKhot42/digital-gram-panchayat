@@ -477,7 +477,7 @@
   },
   "dakhala": {
     "type": {
-      "Residence": "Residence Certificate",
+      "Marriage": "Marriage Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
       "SevenTwelve": "7/12 & 8A Certificate",

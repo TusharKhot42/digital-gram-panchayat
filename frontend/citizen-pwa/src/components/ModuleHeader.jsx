@@ -1,17 +1,16 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
 
 /**
  * A module's title, on a soft branded band with the module's own motif behind it.
- *
- * It replaces a bare `<h1>` on a white page. The band costs no extra vertical space worth
- * speaking of — the heading moves into it rather than sitting under it — so a 320px phone
- * loses nothing, and the module announces itself the way a government service should.
- *
- * The motif is clipped by the band and sits at low opacity behind the text. It is drawn at the
- * right edge and pushed off-screen below `sm`, because at 320px there is no room for a picture
- * and a Marathi heading and an action button in one row: the heading wins.
+ * Features an integrated Back navigation button.
  */
-export function ModuleHeader({ art: Art, title, description, action, className }) {
+export function ModuleHeader({ art: Art, title, description, action, className, backTo, showBack = true }) {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -30,9 +29,30 @@ export function ModuleHeader({ art: Art, title, description, action, className }
         </div>
       ) : null}
 
+      {showBack ? (
+        backTo ? (
+          <Link
+            to={backTo}
+            className="mb-2.5 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-primary/20 bg-white/80 dark:bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs transition-all hover:bg-primary hover:text-white active:scale-95"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>{t('common.back', 'Back')}</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="mb-2.5 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-primary/20 bg-white/80 dark:bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs transition-all hover:bg-primary hover:text-white active:scale-95 cursor-pointer"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>{t('common.back', 'Back')}</span>
+          </button>
+        )
+      ) : null}
+
       <div className="relative flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-title text-foreground">{title}</h1>
+          <h1 className="text-title font-bold text-foreground">{title}</h1>
           {description ? (
             <p className="mt-1 text-body text-muted-foreground">{description}</p>
           ) : null}

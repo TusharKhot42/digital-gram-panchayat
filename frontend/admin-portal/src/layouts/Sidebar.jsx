@@ -28,41 +28,51 @@ import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
-const items = [
-  { to: '/', label: 'nav.dashboard', icon: LayoutDashboard, end: true },
-  { to: '/complaints', label: 'nav.complaints', icon: ClipboardList },
-  { to: '/notices', label: 'nav.notices', icon: Megaphone },
-  { to: '/dakhala', label: 'nav.dakhala', icon: FileText },
-  { to: '/tax', label: 'nav.tax', icon: Landmark },
-  { to: '/schemes', label: 'nav.schemes', icon: BookOpen },
-  { to: '/users', label: 'nav.users', icon: Users },
-  { to: '/notifications', label: 'nav.notifications', icon: Bell },
-  { to: '/reports', label: 'nav.reports', icon: BarChart3 },
-  { to: '/audit', label: 'nav.audit', icon: ScrollText },
-  { to: '/village', label: 'nav.village', icon: Home },
-  { to: '/events', label: 'nav.events', icon: CalendarDays },
-  { to: '/meetings', label: 'nav.meetings', icon: Gavel },
-  { to: '/projects', label: 'nav.projects', icon: HardHat },
-  { to: '/polls', label: 'nav.polls', icon: Vote },
-  { to: '/documents', label: 'nav.documents', icon: FolderDown },
-  { to: '/feedback', label: 'nav.feedback', icon: Star },
-  { to: '/help', label: 'nav.help', icon: HelpCircle },
+const SECTIONS = [
+  {
+    title: 'Overview & Services',
+    items: [
+      { to: '/', label: 'nav.dashboard', icon: LayoutDashboard, end: true },
+      { to: '/complaints', label: 'nav.complaints', icon: ClipboardList },
+      { to: '/notices', label: 'nav.notices', icon: Megaphone },
+      { to: '/dakhala', label: 'nav.dakhala', icon: FileText },
+      { to: '/tax', label: 'nav.tax', icon: Landmark },
+      { to: '/schemes', label: 'nav.schemes', icon: BookOpen },
+    ],
+  },
+  {
+    title: 'Governance & Community',
+    items: [
+      { to: '/village', label: 'nav.village', icon: Home },
+      { to: '/events', label: 'nav.events', icon: CalendarDays },
+      { to: '/meetings', label: 'nav.meetings', icon: Gavel },
+      { to: '/projects', label: 'nav.projects', icon: HardHat },
+      { to: '/polls', label: 'nav.polls', icon: Vote },
+      { to: '/documents', label: 'nav.documents', icon: FolderDown },
+      { to: '/feedback', label: 'nav.feedback', icon: Star },
+    ],
+  },
+  {
+    title: 'Administration',
+    items: [
+      { to: '/users', label: 'nav.users', icon: Users },
+      { to: '/notifications', label: 'nav.notifications', icon: Bell },
+      { to: '/reports', label: 'nav.reports', icon: BarChart3 },
+      { to: '/audit', label: 'nav.audit', icon: ScrollText },
+      { to: '/help', label: 'nav.help', icon: HelpCircle },
+    ],
+  },
 ];
 
 /**
  * Brand mark — grounds the portal as an official product, not a generic dashboard.
- *
- * The same `logo.svg` the citizen app uses, not a lucide glyph on a themed square. The two were
- * different marks in different colours, so the officer portal and the citizen portal read as two
- * products rather than two doors into one panchayat. The file lives in `@dgp/shared` precisely so
- * there is one mark to change.
  */
 function Brand() {
   const { t } = useTranslation();
   return (
     <span className="flex min-w-0 items-center gap-2.5">
-      <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 rounded-md" />
-      <span className="truncate text-section text-foreground">{t('appName')}</span>
+      <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 rounded-lg shadow-xs" />
+      <span className="truncate text-base font-extrabold tracking-tight text-[#1E3A8A]">{t('appName')}</span>
     </span>
   );
 }
@@ -70,39 +80,51 @@ function Brand() {
 function NavItems() {
   const { t } = useTranslation();
 
-  return items.map(({ to, label, icon: Icon, end }) => (
-    <NavLink
-      key={to}
-      to={to}
-      end={end}
-      className={({ isActive }) =>
-        cn(
-          // 44px min height keeps every row a comfortable touch target in the mobile drawer.
-          'group relative flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-body font-medium',
-          'text-muted-foreground transition-colors duration-150',
-          'hover:bg-accent hover:text-accent-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
-          isActive && 'bg-primary-subtle text-primary',
-        )
-      }
-    >
-      {({ isActive }) => (
-        <>
-          {/* 3px rail marks the section — quieter than a full-width fill. */}
-          <span
-            aria-hidden="true"
-            className={cn(
-              'absolute inset-y-1.5 left-0 w-0.5 rounded-full transition-colors duration-150',
-              isActive ? 'bg-primary' : 'bg-transparent',
-            )}
-          />
-          <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-          <span className="truncate">{t(label)}</span>
-        </>
-      )}
-    </NavLink>
-  ));
+  return (
+    <div className="space-y-4">
+      {SECTIONS.map((section, idx) => (
+        <div key={section.title || idx} className="space-y-1">
+          {section.title ? (
+            <div className="px-3 pt-2 pb-1 text-[0.6875rem] font-extrabold uppercase tracking-wider text-[#4169E1]">
+              {section.title}
+            </div>
+          ) : null}
+          {section.items.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                cn(
+                  'group relative flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold',
+                  'text-slate-600 transition-all duration-150',
+                  'hover:bg-[#EBF2FF] hover:text-[#1E3A8A]',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
+                  isActive && 'bg-[#4169E1] text-white font-bold shadow-sm shadow-[#4169E1]/30 hover:bg-[#4169E1] hover:text-white',
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'absolute inset-y-2 left-0 w-1 rounded-r-full transition-colors duration-150',
+                      isActive ? 'bg-amber-400' : 'bg-transparent',
+                    )}
+                  />
+                  <Icon className={cn('h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-110', isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#1E3A8A]')} aria-hidden="true" />
+                  <span className="truncate">{t(label)}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
+
 
 /** Signed-in officer plus the sign-out control, shared by the fixed rail and the drawer. */
 function AccountFooter() {
@@ -116,19 +138,19 @@ function AccountFooter() {
   };
 
   return (
-    <div className="border-t border-border p-3">
+    <div className="border-t border-[#6495ED]/20 bg-white/70 p-3">
       {user ? (
         <div className="mb-2 flex items-center gap-2.5 px-1">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-caption font-semibold text-secondary-foreground">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-caption font-extrabold text-[#1E3A8A]">
             {user.fullName?.slice(0, 1)?.toUpperCase()}
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-label text-foreground">{user.fullName}</span>
-            <span className="block truncate text-caption text-muted-foreground">{user.email}</span>
+            <span className="block truncate text-label font-bold text-slate-900">{user.fullName}</span>
+            <span className="block truncate text-caption text-slate-500">{user.email}</span>
           </span>
         </div>
       ) : null}
-      <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleLogout}>
+      <Button variant="ghost" size="sm" className="w-full justify-start text-slate-700 hover:bg-rose-50 hover:text-rose-600 font-semibold" onClick={handleLogout}>
         <LogOut className="h-4 w-4" />
         {t('auth.logout')}
       </Button>
@@ -141,8 +163,8 @@ export function Sidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
-      <div className="flex h-16 items-center border-b border-border px-5">
+    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-[#6495ED]/30 bg-[#F8FAFC] shadow-xs md:flex">
+      <div className="flex h-16 items-center border-b border-[#6495ED]/20 px-5 bg-white">
         <Brand />
       </div>
 
@@ -208,18 +230,18 @@ export function MobileSidebar({ open, onClose }) {
         type="button"
         aria-label={t('common.close')}
         onClick={onClose}
-        className="absolute inset-0 h-full w-full cursor-default bg-foreground/40 backdrop-blur-[2px]"
+        className="absolute inset-0 h-full w-full cursor-default bg-black/40 backdrop-blur-[2px]"
       />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={t('nav.primary')}
-        className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-border bg-card shadow-lg"
+        className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-[#6495ED]/30 bg-[#F8FAFC] shadow-xl"
       >
-        <div className="flex h-16 items-center justify-between gap-2 border-b border-border px-4">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-[#6495ED]/20 px-4 bg-white">
           <Brand />
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label={t('common.close')}>
+          <Button variant="ghost" size="icon" onClick={onClose} className="text-slate-700 hover:bg-slate-100" aria-label={t('common.close')}>
             <X className="h-5 w-5" />
           </Button>
         </div>

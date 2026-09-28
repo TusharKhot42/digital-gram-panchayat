@@ -83,7 +83,7 @@ export const PAYMENT_STATUS_COLOR_MAP = {
   Paid: 'green',
 };
 
-export const CERT_TYPES = ['Residence', 'Birth', 'Death', 'SevenTwelve', 'Other'];
+export const CERT_TYPES = ['Marriage', 'Birth', 'Death', 'SevenTwelve', 'Other'];
 
 export const DAKHALA_STATUSES = ['Submitted', 'UnderReview', 'Approved', 'Rejected'];
 
@@ -97,10 +97,13 @@ export const DAKHALA_STATUS_COLOR_MAP = {
 // Dynamic per-type application fields. Backend validates required keys against these;
 // the citizen form renders inputs from the same map (single source).
 export const CERT_TYPE_FIELDS = {
-  Residence: [
-    { key: 'fullName', label: 'Full name', type: 'text', required: true },
-    { key: 'mobile', label: 'Mobile number', type: 'text', required: true },
-    { key: 'address', label: 'Address', type: 'textarea', required: true },
+  Marriage: [
+    { key: 'husbandName', label: "Husband's full name", type: 'text', required: true },
+    { key: 'wifeName', label: "Wife's full name", type: 'text', required: true },
+    { key: 'dateOfMarriage', label: 'Date of marriage', type: 'date', required: true },
+    { key: 'placeOfMarriage', label: 'Place of marriage', type: 'text', required: true },
+    { key: 'applicantMobile', label: 'Mobile number', type: 'text', required: true },
+    { key: 'address', label: 'Residential address', type: 'textarea', required: true },
   ],
   Birth: [
     { key: 'childName', label: 'Child name', type: 'text', required: true },
@@ -157,18 +160,22 @@ export const CERT_DOC_TYPES = [
  * uploader per group from the same map (single source of truth).
  */
 export const CERT_DOC_REQUIREMENTS = {
-  Residence: [
+  Marriage: [
     {
       key: 'identity',
       required: true,
       anyOf: ['Aadhaar', 'PAN', 'VoterId', 'Passport', 'DrivingLicence'],
     },
     {
+      key: 'marriageProof',
+      required: true,
+      anyOf: ['SelfDeclaration', 'Supporting'],
+    },
+    {
       key: 'address',
       required: true,
       anyOf: ['RationCard', 'ElectricityBill', 'WaterBill', 'PropertyTaxReceipt'],
     },
-    { key: 'selfDeclaration', required: true, anyOf: ['SelfDeclaration'] },
   ],
   Birth: [
     {

@@ -15,15 +15,18 @@ const PNG = Buffer.from(
   'base64',
 );
 const DATA = {
-  fullName: 'Test Citizen',
-  mobile: '9876500002',
+  husbandName: 'Rahul Patil',
+  wifeName: 'Priya Patil',
+  dateOfMarriage: '2024-01-15',
+  placeOfMarriage: 'Sakharale',
+  applicantMobile: '9876500002',
   address: '12 Main Road',
 };
 
 const DOCS = [
   { group: 'identity', docType: 'Aadhaar' },
+  { group: 'marriageProof', docType: 'SelfDeclaration' },
   { group: 'address', docType: 'RationCard' },
-  { group: 'selfDeclaration', docType: 'SelfDeclaration' },
 ];
 
 beforeAll(async () => {
@@ -75,7 +78,7 @@ async function apply(token) {
   const req = request(app)
     .post('/api/v1/dakhala')
     .set('Authorization', `Bearer ${token}`)
-    .field('certificateType', 'Residence')
+    .field('certificateType', 'Marriage')
     .field('applicationData', JSON.stringify(DATA))
     .field('documentMeta', JSON.stringify(DOCS));
   DOCS.forEach((d, i) =>

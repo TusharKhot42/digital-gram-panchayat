@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { eventArtFor, EVENT_ART, HERO } from '@/components/Artwork';
 import { ModuleHeader } from '@/components/ModuleHeader';
 import { TaxMotif } from '@/components/ModuleArt';
@@ -47,14 +48,18 @@ describe('event artwork chosen from the title', () => {
   it('every hero name resolves to a real bundled asset', () => {
     Object.entries(HERO).forEach(([name, url]) => {
       expect(url, name).toBeTruthy();
-      expect(String(url), name).toMatch(/\.svg/);
+      expect(String(url), name).toMatch(/\.(svg|png|jpg|jpeg|webp)/i);
     });
   });
 });
 
 describe('decorative artwork is silent to a screen reader', () => {
   it('a module header exposes its heading and hides its motif', () => {
-    render(<ModuleHeader art={TaxMotif} title="Tax records" />);
+    render(
+      <MemoryRouter>
+        <ModuleHeader art={TaxMotif} title="Tax records" />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByRole('heading', { level: 1, name: 'Tax records' })).toBeInTheDocument();
     // The motif must not appear in the accessibility tree at all.

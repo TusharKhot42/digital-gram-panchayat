@@ -22,7 +22,8 @@
     "projects": "कामे",
     "polls": "कौल",
     "feedback": "अभिप्राय",
-    "downloads": "डाउनलोड"
+    "downloads": "डाउनलोड",
+    "timetable": "वेळापत्रक"
   },
   "home": {
     "welcome": "स्वागत आहे",
@@ -407,7 +408,7 @@
   },
   "dakhala": {
     "type": {
-      "Residence": "रहिवासी दाखला",
+      "Marriage": "विवाह नोंदणी दाखला",
       "Birth": "जन्म दाखला",
       "Death": "मृत्यू दाखला",
       "SevenTwelve": "७/१२ व ८अ उतारा",
@@ -420,6 +421,11 @@
       "Rejected": "नाकारले"
     },
     "field": {
+      "husbandName": "पतीचे पूर्ण नाव",
+      "wifeName": "पत्नीचे पूर्ण नाव",
+      "dateOfMarriage": "विवाह तारीख",
+      "placeOfMarriage": "विवाह स्थळ",
+      "applicantMobile": "अर्जदाराचा मोबाईल क्र.",
       "fullName": "पूर्ण नाव",
       "address": "पत्ता",
       "purpose": "उद्देश",

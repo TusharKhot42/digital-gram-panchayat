@@ -44,16 +44,13 @@ export function VillageHero({ profile, firstName }) {
        * is not. Either way the masthead shows the village rather than a rectangle of blue.
        */}
       <SafeImage
-        src={g.banner || HERO.villageWelcome}
+        src={g.banner || HERO.gramPanchayatBanner || HERO.villageWelcome}
         alt=""
         loading="eager"
         fetchpriority="high"
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
-      {/* Fixed colours, not theme tokens: this scrim is dark in both themes, so its text is
-          always white. Theme-flipping tokens here made the dark theme unreadable before. */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900" />
-      <div className="absolute inset-0 -z-10 bg-black/25" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/45 to-black/20" />
 
       <div className="flex flex-col gap-4 p-5 text-white sm:p-7">
         <div className="flex items-start justify-between gap-3">

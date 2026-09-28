@@ -1,4 +1,5 @@
 import villageWelcome from '@dgp/shared/assets/images/hero/village-welcome.svg';
+import gramPanchayatBanner from '@dgp/shared/assets/images/hero/gram-panchayat-banner.jpg';
 import gramPanchayatOffice from '@dgp/shared/assets/images/hero/gram-panchayat-office.svg';
 import digitalVillage from '@dgp/shared/assets/images/hero/digital-village.svg';
 import citizenServices from '@dgp/shared/assets/images/hero/citizen-services.svg';
@@ -18,17 +19,10 @@ import waterTank from '@dgp/shared/assets/images/village/water-tank.svg';
 
 /**
  * The banner artwork, addressed by name.
- *
- * Vector, not photographs: each file is under 4 KB, so the whole set costs less than one
- * photo, it stays sharp from a 320px phone to a 1920px desk, and it precaches for the offline
- * PWA without thought. They are drawn from one palette and one set of scene layers, which is
- * what makes them read as a commissioned set rather than a folder of unrelated pictures.
- *
- * Every use is decorative. The heading beside the artwork carries the meaning, so callers pass
- * `alt=""` unless the picture itself is the content.
  */
 export const HERO = {
-  villageWelcome,
+  villageWelcome: gramPanchayatBanner,
+  gramPanchayatBanner,
   gramPanchayatOffice,
   digitalVillage,
   citizenServices,

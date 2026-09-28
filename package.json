@@ -18,6 +18,7 @@
     "dev:server": "npm run dev -w backend",
     "dev:citizen": "npm run dev -w frontend/citizen-pwa",
     "dev:admin": "npm run dev -w frontend/admin-portal",
+    "seed": "npm run seed:admin -w backend && npm run seed:village -w backend",
     "build": "npm run build -w frontend/citizen-pwa && npm run build -w frontend/admin-portal",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

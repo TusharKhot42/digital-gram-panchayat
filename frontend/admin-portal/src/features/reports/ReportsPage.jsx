@@ -9,6 +9,7 @@ import {
   Download,
   Printer,
   FileSpreadsheet,
+  FileDown,
 } from 'lucide-react';
 import { formatCurrency, formatDateTime } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
@@ -16,16 +17,26 @@ import { Card, CardContent } from '@/components/ui/card';
 import { QueryError } from '@/components/QueryError';
 import { Skeleton } from '@/components/Skeleton';
 import { useReport } from './hooks';
-import { exportCsv, exportExcel, exportPdf } from './exporters';
+import {
+  exportCsv,
+  exportExcel,
+  exportPdf,
+  exportTaxRegister,
+  exportComplaintsRegister,
+  exportCertificatesRegister,
+} from './exporters';
 
 /** One module's numbers: headline tiles + a labelled breakdown list. */
-function Section({ icon: Icon, title, tiles, breakdowns, t }) {
+function Section({ icon: Icon, title, tiles, breakdowns, t, action }) {
   return (
     <Card className="print:break-inside-avoid print:shadow-none">
-      <h2 className="flex items-center gap-2 border-b border-border px-5 py-3 text-section text-foreground">
-        <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
-        {title}
-      </h2>
+      <div className="flex flex-wrap items-center justify-between border-b border-border px-5 py-3 gap-2">
+        <h2 className="flex items-center gap-2 text-section text-foreground">
+          <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
+          {title}
+        </h2>
+        {action}
+      </div>
       <CardContent className="p-5">
         <div className="mb-4 flex flex-wrap gap-6">
           {tiles.map(([label, value]) => (
@@ -96,10 +107,6 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-4">
-      {/*
-       * The title stays in the printed sheet; only the export buttons are dropped. It used to
-       * be duplicated by a second print-only block, which put two <h1>s on the screen.
-       */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-title text-foreground">{t('reports.title')}</h1>
@@ -128,6 +135,17 @@ export function ReportsPage() {
         title={t('reports.section.complaints')}
         t={t}
         tiles={[[t('reports.total'), r.complaints.total]]}
+        action={
+          <Button
+            variant="ghost"
+            size="sm"
+            className="print:hidden text-xs gap-1 text-primary"
+            onClick={() => exportComplaintsRegister(r.complaints?.recent || [], t)}
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            तक्रार वही एक्सेल / Complaints Register
+          </Button>
+        }
         breakdowns={[
           [t('reports.byStatus'), r.complaints.byStatus, 'complaint.status'],
           [t('reports.byCategory'), r.complaints.byCategory, 'complaint.category'],
@@ -138,6 +156,17 @@ export function ReportsPage() {
         title={t('reports.section.certificates')}
         t={t}
         tiles={[[t('reports.total'), r.certificates.total]]}
+        action={
+          <Button
+            variant="ghost"
+            size="sm"
+            className="print:hidden text-xs gap-1 text-primary"
+            onClick={() => exportCertificatesRegister(r.certificates?.recent || [], t)}
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            दाखला वही एक्सेल / Certificate Register
+          </Button>
+        }
         breakdowns={[
           [t('reports.byStatus'), r.certificates.byStatus, 'dakhala.status'],
           [t('reports.byType'), r.certificates.byType, 'dakhala.type'],
@@ -153,6 +182,17 @@ export function ReportsPage() {
           [t('reports.collected'), formatCurrency(r.tax.collected, locale)],
           [t('reports.outstanding'), formatCurrency(r.tax.outstanding, locale)],
         ]}
+        action={
+          <Button
+            variant="ghost"
+            size="sm"
+            className="print:hidden text-xs gap-1 text-primary"
+            onClick={() => exportTaxRegister(r.tax?.recent || [], t)}
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            कर वसूली वही एक्सेल / Tax Register
+          </Button>
+        }
         breakdowns={[[t('reports.byStatus'), r.tax.byStatus, 'tax.status']]}
       />
       <Section
@@ -189,8 +229,9 @@ export function ReportsPage() {
           [t('reports.total'), r.notices.total],
           [t('reports.published'), r.notices.published],
         ]}
-        breakdowns={[[t('reports.byCategory'), r.notices.byCategory, 'notice.category']]}
+        breakdowns={[[t('reports.category'), r.notices.byCategory, 'notice.category']]}
       />
     </div>
   );
 }
+

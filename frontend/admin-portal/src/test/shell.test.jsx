@@ -87,18 +87,17 @@ describe('MobileSidebar', () => {
       '/dakhala',
       '/tax',
       '/schemes',
-      '/users',
-      '/notifications',
-      '/reports',
-      '/audit',
       '/village',
       '/events',
-      // Phase 4 governance modules — an officer on a phone must reach these too.
       '/meetings',
       '/projects',
       '/polls',
       '/documents',
       '/feedback',
+      '/users',
+      '/notifications',
+      '/reports',
+      '/audit',
       '/help',
     ]);
   });

@@ -17,39 +17,36 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t('nav.home')}
-      // pb-safe keeps the bar clear of the iOS/Android home indicator when installed.
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-card/80"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-[#6495ED]/40 bg-[#1E3A8A] text-white pb-[env(safe-area-inset-bottom)] shadow-lg"
     >
-      <ul className="mx-auto flex max-w-md items-stretch justify-between px-1">
+      <ul className="mx-auto flex max-w-md items-stretch justify-between px-2">
         {items.map(({ to, label, icon: Icon, end }) => (
-          // min-w-0 lets a cell shrink below its label's intrinsic width. Without it, flex
-          // items default to min-width:auto and a longer label (Marathi runs wider than the
-          // English one) pushes the whole bar past a 320px viewport.
           <li key={to} className="min-w-0 flex-1">
             <NavLink
               to={to}
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'group flex min-h-[56px] flex-col items-center justify-center gap-1 py-1.5',
-                  'text-caption font-medium text-muted-foreground transition-colors duration-150',
+                  'group flex min-h-[58px] flex-col items-center justify-center gap-1 py-1.5',
+                  'text-[0.75rem] font-medium transition-all duration-150',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
-                  isActive && 'text-primary',
+                  isActive ? 'text-white font-bold' : 'text-slate-300 hover:text-white',
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  {/* Material-style active pill behind the icon — the only "selected" affordance. */}
                   <span
                     className={cn(
-                      'flex h-7 w-full max-w-14 items-center justify-center rounded-full transition-colors duration-150',
-                      isActive ? 'bg-primary-subtle' : 'group-hover:bg-accent',
+                      'flex h-7 w-12 items-center justify-center rounded-full transition-all duration-150',
+                      isActive
+                        ? 'bg-[#4169E1] text-white shadow-xs scale-105'
+                        : 'group-hover:bg-white/10 text-slate-300 group-hover:text-white',
                     )}
                   >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                    <Icon className="h-4.5 w-4.5 shrink-0" aria-hidden="true" />
                   </span>
-                  <span className="max-w-full truncate px-0.5">{t(label)}</span>
+                  <span className="max-w-full truncate px-0.5 tracking-tight">{t(label)}</span>
                 </>
               )}
             </NavLink>
@@ -59,3 +56,4 @@ export function BottomNav() {
     </nav>
   );
 }
+

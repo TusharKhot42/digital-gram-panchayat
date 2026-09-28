@@ -22,7 +22,8 @@
     "projects": "Works",
     "polls": "Polls",
     "feedback": "Feedback",
-    "downloads": "Downloads"
+    "downloads": "Downloads",
+    "timetable": "Timetable"
   },
   "home": {
     "welcome": "Welcome",
@@ -407,7 +408,7 @@
   },
   "dakhala": {
     "type": {
-      "Residence": "Residence Certificate",
+      "Marriage": "Marriage Certificate",
       "Birth": "Birth Certificate",
       "Death": "Death Certificate",
       "SevenTwelve": "7/12 & 8A Certificate",
@@ -420,6 +421,11 @@
       "Rejected": "Rejected"
     },
     "field": {
+      "husbandName": "Husband's full name",
+      "wifeName": "Wife's full name",
+      "dateOfMarriage": "Date of marriage",
+      "placeOfMarriage": "Place of marriage",
+      "applicantMobile": "Applicant mobile number",
       "fullName": "Full name",
       "address": "Address",
       "purpose": "Purpose",

@@ -18,17 +18,19 @@ const PNG = Buffer.from(
   'base64',
 );
 
-const RESIDENCE_DATA = {
-  fullName: 'Test Citizen',
-  mobile: '9876500001',
+const MARRIAGE_DATA = {
+  husbandName: 'Rahul Patil',
+  wifeName: 'Priya Patil',
+  dateOfMarriage: '2024-01-15',
+  placeOfMarriage: 'Sakharale',
+  applicantMobile: '9876500001',
   address: '12 Main Road, Sakharale',
 };
 
-// Residence needs one identity + one address proof + a self declaration.
-const RESIDENCE_DOCS = [
+const MARRIAGE_DOCS = [
   { group: 'identity', docType: 'Aadhaar' },
+  { group: 'marriageProof', docType: 'SelfDeclaration' },
   { group: 'address', docType: 'RationCard' },
-  { group: 'selfDeclaration', docType: 'SelfDeclaration' },
 ];
 
 beforeAll(async () => {
@@ -76,15 +78,15 @@ async function citizenToken(mobile = '9876500001') {
   return res.body.data.token;
 }
 
-function applyResidence(token, data = RESIDENCE_DATA, withDoc = true) {
+function applyMarriage(token, data = MARRIAGE_DATA, withDoc = true) {
   const req = request(app)
     .post('/api/v1/dakhala')
     .set('Authorization', `Bearer ${token}`)
-    .field('certificateType', 'Residence')
+    .field('certificateType', 'Marriage')
     .field('applicationData', JSON.stringify(data));
   if (withDoc) {
-    req.field('documentMeta', JSON.stringify(RESIDENCE_DOCS));
-    RESIDENCE_DOCS.forEach((d, i) =>
+    req.field('documentMeta', JSON.stringify(MARRIAGE_DOCS));
+    MARRIAGE_DOCS.forEach((d, i) =>
       req.attach('documents', PNG, { filename: `${d.docType}-${i}.png`, contentType: 'image/png' }),
     );
   }
@@ -96,8 +98,8 @@ describe('pdf.service (unit)', () => {
     const buffer = await generateCertificatePdf({
       application: {
         applicationId: 'DKH-2026-000001',
-        certificateType: 'Residence',
-        applicationData: RESIDENCE_DATA,
+        certificateType: 'Marriage',
+        applicationData: MARRIAGE_DATA,
       },
       citizen: { fullName: 'Test Citizen', mobile: '9876500001', village: 'Sakharale' },
       officer: { fullName: 'Officer' },
@@ -110,7 +112,7 @@ describe('pdf.service (unit)', () => {
 describe('citizen apply', () => {
   test('applies with documents and gets a DKH id', async () => {
     const token = await citizenToken();
-    const res = await applyResidence(token);
+    const res = await applyMarriage(token);
     expect(res.status).toBe(201);
     expect(res.body.data.applicationId).toMatch(/^DKH-\d{4}-\d{6}$/);
     expect(res.body.data.status).toBe('Submitted');
@@ -124,7 +126,7 @@ describe('citizen apply', () => {
 
   test('rejects missing required field for the type (400)', async () => {
     const token = await citizenToken();
-    const res = await applyResidence(token, { fullName: 'X', mobile: '9876500001' }, false);
+    const res = await applyMarriage(token, { husbandName: 'X', applicantMobile: '9876500001' }, false);
     expect(res.status).toBe(400);
     expect(res.body.error.fields.address).toBeDefined();
   });
@@ -134,26 +136,26 @@ describe('citizen apply', () => {
     const res = await request(app)
       .post('/api/v1/dakhala')
       .set('Authorization', `Bearer ${token}`)
-      .field('certificateType', 'Residence')
-      .field('applicationData', JSON.stringify(RESIDENCE_DATA))
+      .field('certificateType', 'Marriage')
+      .field('applicationData', JSON.stringify(MARRIAGE_DATA))
       .field('documentMeta', JSON.stringify([{ group: 'identity', docType: 'Aadhaar' }]))
       .attach('documents', PNG, { filename: 'id.png', contentType: 'image/png' });
     expect(res.status).toBe(400);
     expect(res.body.error.fields['documents.address']).toBeDefined();
-    expect(res.body.error.fields['documents.selfDeclaration']).toBeDefined();
+    expect(res.body.error.fields['documents.marriageProof']).toBeDefined();
   });
 
   test('rejects an unauthenticated apply (401)', async () => {
     const res = await request(app)
       .post('/api/v1/dakhala')
-      .field('certificateType', 'Residence')
-      .field('applicationData', JSON.stringify(RESIDENCE_DATA));
+      .field('certificateType', 'Marriage')
+      .field('applicationData', JSON.stringify(MARRIAGE_DATA));
     expect(res.status).toBe(401);
   });
 
   test('officer cannot apply (403)', async () => {
     const token = await officerToken();
-    const res = await applyResidence(token, RESIDENCE_DATA, false);
+    const res = await applyMarriage(token, MARRIAGE_DATA, false);
     expect(res.status).toBe(403);
   });
 });
@@ -162,7 +164,7 @@ describe('officer approve + PDF + notify', () => {
   test('approve generates PDF, notifies, audits', async () => {
     const cToken = await citizenToken();
     const oToken = await officerToken();
-    const created = await applyResidence(cToken);
+    const created = await applyMarriage(cToken);
     const id = created.body.data.id;
 
     const res = await request(app)
@@ -182,7 +184,7 @@ describe('officer approve + PDF + notify', () => {
     const cToken = await citizenToken('9876500001');
     const otherToken = await citizenToken('9876500002');
     const oToken = await officerToken();
-    const created = await applyResidence(cToken);
+    const created = await applyMarriage(cToken);
     const id = created.body.data.id;
 
     // not ready before approval
@@ -212,7 +214,7 @@ describe('officer reject', () => {
   test('reject requires a reason (400) then rejects + notifies', async () => {
     const cToken = await citizenToken();
     const oToken = await officerToken();
-    const created = await applyResidence(cToken);
+    const created = await applyMarriage(cToken);
     const id = created.body.data.id;
 
     const noReason = await request(app)
@@ -238,7 +240,7 @@ describe('ownership + authorization', () => {
   test('citizen cannot read another citizen application (403)', async () => {
     const aToken = await citizenToken('9876500001');
     const bToken = await citizenToken('9876500002');
-    const created = await applyResidence(aToken);
+    const created = await applyMarriage(aToken);
     const res = await request(app)
       .get(`/api/v1/dakhala/${created.body.data.id}`)
       .set('Authorization', `Bearer ${bToken}`);
@@ -256,7 +258,7 @@ describe('ownership + authorization', () => {
   test('officer lists + filters by status', async () => {
     const cToken = await citizenToken();
     const oToken = await officerToken();
-    await applyResidence(cToken);
+    await applyMarriage(cToken);
     const all = await request(app)
       .get('/api/v1/admin/dakhala')
       .set('Authorization', `Bearer ${oToken}`);

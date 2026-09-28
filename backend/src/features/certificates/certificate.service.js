@@ -18,7 +18,7 @@ function buildApplicationId(year, seq) {
 
 // Short per-type code for the human-facing certificate serial.
 const CERT_TYPE_CODE = {
-  Residence: 'RES',
+  Marriage: 'MAR',
   Birth: 'BIR',
   Death: 'DEA',
   SevenTwelve: '712',
@@ -33,12 +33,17 @@ async function buildCertificateNumber(type, year) {
 
 /** Public shape returned by the certificate verification page. */
 function toVerification(app) {
+  const data = app.applicationData || {};
+  const applicantName = data.husbandName && data.wifeName
+    ? `${data.husbandName} & ${data.wifeName}`
+    : data.husbandName || data.fullName || data.childName || null;
+
   return {
     valid: app.status === 'Approved' && Boolean(app.certificateNumber),
     status: app.status,
     certificateType: app.certificateType,
     certificateNumber: app.certificateNumber || null,
-    applicantName: app.applicationData?.fullName || app.applicationData?.childName || null,
+    applicantName,
     issuedAt: app.issuedAt || null,
   };
 }

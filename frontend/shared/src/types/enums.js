@@ -124,7 +124,7 @@ export const PaymentStatus = {
 };
 
 export const CertType = {
-  Residence: 'Residence',
+  Marriage: 'Marriage',
   Income: 'Income',
   Birth: 'Birth',
   Death: 'Death',

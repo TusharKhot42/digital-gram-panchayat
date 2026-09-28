@@ -20,7 +20,7 @@ const MUTED = '#475569';
 const HAIRLINE = '#CBD5E1';
 
 const TITLES = {
-  Residence: 'Residence Certificate',
+  Marriage: 'Marriage Certificate',
   Birth: 'Birth Certificate',
   Death: 'Death Certificate',
   SevenTwelve: '7/12 & 8A Extract Certificate',

@@ -12,7 +12,7 @@ const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icons
 mkdirSync(OUT, { recursive: true });
 
 // Brand palette.
-const GREEN = [21, 128, 61]; // #15803d
+const BRAND_BLUE = [30, 58, 138]; // #1E3A8A
 const WHITE = [255, 255, 255];
 
 function crc32(buf) {
@@ -67,7 +67,7 @@ function draw(size, { padding }) {
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
       const d = Math.hypot(x + 0.5 - cx, y + 0.5 - cy);
-      let color = GREEN;
+      let color = BRAND_BLUE;
       if (d <= rDot) color = WHITE;
       else if (d <= rOuter && d >= rInner) color = WHITE;
       const i = (y * size + x) * 4;
