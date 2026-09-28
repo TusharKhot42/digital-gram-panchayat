@@ -26,7 +26,7 @@
     "test:coverage": "npm run test:coverage -w backend",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky",
+    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') require('child_process').execSync('husky', {stdio:'inherit'})\"install",
     "clean": "npm run clean --workspaces --if-present",
     "e2e": "playwright test",
     "e2e:report": "playwright show-report e2e/report"
