@@ -46,9 +46,6 @@ const SERVICES = [
   ['nav.tax', '/tax'],
   ['nav.schemes', '/schemes'],
   ['nav.notices', '/notices'],
-  ['nav.directory', '/directory'],
-  ['nav.verify', '/verify'],
-  ['nav.notifications', '/notifications'],
   ['nav.meetings', '/meetings'],
   ['nav.projects', '/projects'],
   ['nav.polls', '/polls'],
@@ -147,7 +144,7 @@ export function GlobalSearch({
       ]);
     }
     for (const m of profile?.members ?? []) {
-      add('member', m.id, '/directory', m.name, [
+      add('member', m.id, '/', m.name, [
         m.name,
         m.designation,
         m.ward,

@@ -1,4 +1,3 @@
-import villageWelcome from '@dgp/shared/assets/images/hero/village-welcome.svg';
 import gramPanchayatBanner from '@dgp/shared/assets/images/hero/gram-panchayat-banner.jpg';
 import gramPanchayatOffice from '@dgp/shared/assets/images/hero/gram-panchayat-office.svg';
 import digitalVillage from '@dgp/shared/assets/images/hero/digital-village.svg';

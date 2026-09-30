@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Truck, Droplets, Clock, MapPin, Phone, Search, AlertCircle, Calendar } from 'lucide-react';
-import { ModuleHeader } from '@/components/ModuleHeader';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Truck, Droplets, Clock, Phone, Search, Calendar } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 // Mock schedule data for Ghantagadi & Water Supply
 const GHANTAGADI_SCHEDULE = [
@@ -97,20 +94,19 @@ const WATER_SCHEDULE = [
 ];
 
 export function Timetable() {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('ghantagadi'); // 'ghantagadi' | 'water'
   const [search, setSearch] = useState('');
 
   const filteredGhantagadi = GHANTAGADI_SCHEDULE.filter(
     (item) =>
       item.ward.toLowerCase().includes(search.toLowerCase()) ||
-      item.driverName.toLowerCase().includes(search.toLowerCase())
+      item.driverName.toLowerCase().includes(search.toLowerCase()),
   );
 
   const filteredWater = WATER_SCHEDULE.filter(
     (item) =>
       item.zone.toLowerCase().includes(search.toLowerCase()) ||
-      item.operatorName.toLowerCase().includes(search.toLowerCase())
+      item.operatorName.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -179,7 +175,8 @@ export function Timetable() {
                   Ghantagadi Garbage Collection Guidelines
                 </h3>
                 <p className="text-caption text-muted-foreground">
-                  Keep wet waste (Green Bin) and dry waste (Blue Bin) segregated. Hand over waste directly to the Ghantagadi vehicle staff.
+                  Keep wet waste (Green Bin) and dry waste (Blue Bin) segregated. Hand over waste
+                  directly to the Ghantagadi vehicle staff.
                 </p>
               </div>
             </div>
@@ -187,7 +184,10 @@ export function Timetable() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {filteredGhantagadi.map((item) => (
-              <Card key={item.id} className="flex flex-col justify-between p-5 transition-shadow hover:shadow-md">
+              <Card
+                key={item.id}
+                className="flex flex-col justify-between p-5 transition-shadow hover:shadow-md"
+              >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -196,7 +196,9 @@ export function Timetable() {
                       </span>
                       <div>
                         <h4 className="text-body font-bold text-foreground">{item.ward}</h4>
-                        <span className="text-caption text-muted-foreground">Vehicle: {item.vehicleNo}</span>
+                        <span className="text-caption text-muted-foreground">
+                          Vehicle: {item.vehicleNo}
+                        </span>
                       </div>
                     </div>
                     <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
@@ -207,11 +209,15 @@ export function Timetable() {
                   <div className="space-y-2 rounded-xl bg-secondary/50 p-3 text-caption">
                     <div className="flex items-center gap-2 text-foreground">
                       <Clock className="h-4 w-4 text-primary shrink-0" />
-                      <span><strong>Morning:</strong> {item.timingMorning}</span>
+                      <span>
+                        <strong>Morning:</strong> {item.timingMorning}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-foreground">
                       <Clock className="h-4 w-4 text-primary shrink-0" />
-                      <span><strong>Evening:</strong> {item.timingEvening}</span>
+                      <span>
+                        <strong>Evening:</strong> {item.timingEvening}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="h-4 w-4 shrink-0" />
@@ -222,7 +228,9 @@ export function Timetable() {
 
                 <div className="mt-4 pt-3 border-t border-border flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-xs text-muted-foreground">Driver: {item.driverName}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      Driver: {item.driverName}
+                    </p>
                   </div>
                   <a
                     href={`tel:${item.driverMobile}`}
@@ -249,7 +257,8 @@ export function Timetable() {
                   Water Supply & Storage Guidelines
                 </h3>
                 <p className="text-caption text-muted-foreground">
-                  Please store required drinking water in clean covered containers. For emergency water tanker requests, contact the operator directly.
+                  Please store required drinking water in clean covered containers. For emergency
+                  water tanker requests, contact the operator directly.
                 </p>
               </div>
             </div>
@@ -257,7 +266,10 @@ export function Timetable() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {filteredWater.map((item) => (
-              <Card key={item.id} className="flex flex-col justify-between p-5 transition-shadow hover:shadow-md">
+              <Card
+                key={item.id}
+                className="flex flex-col justify-between p-5 transition-shadow hover:shadow-md"
+              >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -266,7 +278,9 @@ export function Timetable() {
                       </span>
                       <div>
                         <h4 className="text-body font-bold text-foreground">{item.zone}</h4>
-                        <span className="text-caption text-muted-foreground">Source: {item.source}</span>
+                        <span className="text-caption text-muted-foreground">
+                          Source: {item.source}
+                        </span>
                       </div>
                     </div>
                     <span className="rounded-full bg-sky-500/10 px-2.5 py-0.5 text-xs font-bold text-sky-700 dark:text-sky-300">
@@ -277,7 +291,9 @@ export function Timetable() {
                   <div className="space-y-2 rounded-xl bg-secondary/50 p-3 text-caption">
                     <div className="flex items-center gap-2 text-foreground">
                       <Clock className="h-4 w-4 text-primary shrink-0" />
-                      <span><strong>Supply Timing:</strong> {item.timing}</span>
+                      <span>
+                        <strong>Supply Timing:</strong> {item.timing}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="h-4 w-4 shrink-0" />
@@ -288,7 +304,9 @@ export function Timetable() {
 
                 <div className="mt-4 pt-3 border-t border-border flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-xs text-muted-foreground">Operator: {item.operatorName}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      Operator: {item.operatorName}
+                    </p>
                   </div>
                   <a
                     href={`tel:${item.operatorMobile}`}

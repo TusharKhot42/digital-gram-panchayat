@@ -101,7 +101,6 @@ export function PublicHome() {
   const events = (eventsData?.data ?? []).slice(0, 4);
   const gallery = (profile?.gallery ?? []).slice(0, 6);
   const awards = profile?.awards ?? [];
-  const contacts = profile?.emergencyContacts ?? [];
   const hasMap = typeof g.latitude === 'number' && typeof g.longitude === 'number';
 
   const lead = profile?.leadership ?? {};
@@ -124,9 +123,15 @@ export function PublicHome() {
       <header className="sticky top-0 z-30 border-b border-[#6495ED]/40 bg-[#1E3A8A] text-white shadow-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <SafeImage src={g.logo || logo} alt="" className="h-9 w-9 rounded-lg bg-white/10 p-0.5" />
+            <SafeImage
+              src={g.logo || logo}
+              alt=""
+              className="h-9 w-9 rounded-lg bg-white/10 p-0.5"
+            />
             <div className="min-w-0">
-              <p className="truncate text-base font-bold text-white tracking-tight">{villageName}</p>
+              <p className="truncate text-base font-bold text-white tracking-tight">
+                {villageName}
+              </p>
               {g.panchayatName ? (
                 <p className="truncate text-xs font-medium text-[#93C5FD]">{g.panchayatName}</p>
               ) : null}
@@ -168,7 +173,9 @@ export function PublicHome() {
               {g.description}
             </p>
           ) : (
-            <p className="mx-auto mt-3 max-w-2xl text-body text-white/95 drop-shadow-xs">{t('public.tagline')}</p>
+            <p className="mx-auto mt-3 max-w-2xl text-body text-white/95 drop-shadow-xs">
+              {t('public.tagline')}
+            </p>
           )}
           {(g.taluka || g.district) && (
             <p className="mt-4 inline-flex items-center gap-1.5 text-caption font-semibold text-white/90">
@@ -246,7 +253,9 @@ export function PublicHome() {
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#DBEAFE] text-[#1E3A8A] transition-colors duration-200 group-hover:bg-[#1E3A8A] group-hover:text-white">
                   <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
-                <span className="text-body font-bold text-foreground transition-colors group-hover:text-[#1E3A8A]">{title}</span>
+                <span className="text-body font-bold text-foreground transition-colors group-hover:text-[#1E3A8A]">
+                  {title}
+                </span>
               </Link>
             );
           })}
@@ -423,19 +432,21 @@ export function PublicHome() {
           {/* Identity */}
           <div className="space-y-2">
             <div className="flex items-center gap-2.5">
-              <SafeImage src={g.logo || logo} alt="" className="h-8.5 w-8.5 rounded-lg bg-white/10 p-0.5" />
-              <p className="text-body font-bold text-white">
-                {g.panchayatName || villageName}
-              </p>
+              <SafeImage
+                src={g.logo || logo}
+                alt=""
+                className="h-8.5 w-8.5 rounded-lg bg-white/10 p-0.5"
+              />
+              <p className="text-body font-bold text-white">{g.panchayatName || villageName}</p>
             </div>
-            <p className="text-caption leading-relaxed text-[#93C5FD]">
-              {t('public.tagline')}
-            </p>
+            <p className="text-caption leading-relaxed text-[#93C5FD]">{t('public.tagline')}</p>
           </div>
 
           {/* Quick links */}
           <nav aria-label={t('public.quickLinks')} className="space-y-2.5">
-            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.quickLinks')}</p>
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">
+              {t('public.quickLinks')}
+            </p>
             <ul className="space-y-1.5 text-caption">
               {QUICK_LINKS.map((q) => (
                 <li key={q.href}>
@@ -457,22 +468,6 @@ export function PublicHome() {
               </li>
               <li>
                 <Link
-                  to="/directory"
-                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
-                >
-                  {t('directory.heading')}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/verify"
-                  className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline"
-                >
-                  {t('verify.heading')}
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/login"
                   className="text-slate-200 transition-colors duration-150 hover:text-white hover:underline font-semibold"
                 >
@@ -484,7 +479,9 @@ export function PublicHome() {
 
           {/* Government links */}
           <nav aria-label={t('public.govLinks')} className="space-y-2.5">
-            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.govLinks')}</p>
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">
+              {t('public.govLinks')}
+            </p>
             <ul className="space-y-1.5 text-caption">
               {GOV_LINKS.map((l) => (
                 <li key={l.href}>
@@ -504,11 +501,16 @@ export function PublicHome() {
 
           {/* Office */}
           <div className="space-y-2.5">
-            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">{t('public.office')}</p>
+            <p className="text-label font-bold text-white uppercase tracking-wider text-xs">
+              {t('public.office')}
+            </p>
             <address className="space-y-1.5 not-italic text-caption text-slate-200">
               {officeAddress ? (
                 <p className="flex items-start gap-1.5">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
+                  <MapPin
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#93C5FD]"
+                    aria-hidden="true"
+                  />
                   <span>{officeAddress}</span>
                 </p>
               ) : null}
@@ -521,7 +523,10 @@ export function PublicHome() {
               {lead.contactNumbers ? (
                 <p className="flex items-center gap-1.5">
                   <Phone className="h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
-                  <a href={`tel:${lead.contactNumbers}`} className="hover:text-white hover:underline">
+                  <a
+                    href={`tel:${lead.contactNumbers}`}
+                    className="hover:text-white hover:underline"
+                  >
                     {lead.contactNumbers}
                   </a>
                 </p>
@@ -529,7 +534,10 @@ export function PublicHome() {
               {lead.officeEmail ? (
                 <p className="flex items-center gap-1.5">
                   <Mail className="h-3.5 w-3.5 shrink-0 text-[#93C5FD]" aria-hidden="true" />
-                  <a href={`mailto:${lead.officeEmail}`} className="hover:text-white hover:underline">
+                  <a
+                    href={`mailto:${lead.officeEmail}`}
+                    className="hover:text-white hover:underline"
+                  >
                     {lead.officeEmail}
                   </a>
                 </p>

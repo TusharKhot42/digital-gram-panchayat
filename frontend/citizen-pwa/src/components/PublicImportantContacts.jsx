@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Phone, Copy, Search, UserCheck, MapPin, Building2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -60,7 +59,6 @@ const DEFAULT_OFFICERS = [
 ];
 
 export function PublicImportantContacts() {
-  const { t } = useTranslation();
   const { data: profile } = useVillageProfile();
   const [search, setSearch] = useState('');
 
@@ -68,13 +66,34 @@ export function PublicImportantContacts() {
   const lead = profile?.leadership ?? {};
 
   const leadContacts = [
-    { name: lead.sarpanch, designation: 'Sarpanch (सरपंच)', mobile: lead.contactNumbers || '+91 98220 12345', ward: 'Gram Panchayat Office' },
-    { name: lead.gramSevak, designation: 'Gram Sevak (ग्रामसेवक)', mobile: lead.contactNumbers || '+91 94231 67890', ward: 'Gram Panchayat Office' },
-    { name: lead.policePatil, designation: 'Police Patil (पोलीस पाटील)', mobile: lead.contactNumbers || '+91 98500 54321', ward: 'Village Ward 1' },
-    { name: lead.talathi, designation: 'Talathi (तलाठी)', mobile: lead.contactNumbers || '+91 97644 11223', ward: 'Circle Office' },
+    {
+      name: lead.sarpanch,
+      designation: 'Sarpanch (सरपंच)',
+      mobile: lead.contactNumbers || '+91 98220 12345',
+      ward: 'Gram Panchayat Office',
+    },
+    {
+      name: lead.gramSevak,
+      designation: 'Gram Sevak (ग्रामसेवक)',
+      mobile: lead.contactNumbers || '+91 94231 67890',
+      ward: 'Gram Panchayat Office',
+    },
+    {
+      name: lead.policePatil,
+      designation: 'Police Patil (पोलीस पाटील)',
+      mobile: lead.contactNumbers || '+91 98500 54321',
+      ward: 'Village Ward 1',
+    },
+    {
+      name: lead.talathi,
+      designation: 'Talathi (तलाठी)',
+      mobile: lead.contactNumbers || '+91 97644 11223',
+      ward: 'Circle Office',
+    },
   ].filter((c) => c.name && c.name.trim());
 
-  const displayList = members.length > 0 ? members : (leadContacts.length > 0 ? leadContacts : DEFAULT_OFFICERS);
+  const displayList =
+    members.length > 0 ? members : leadContacts.length > 0 ? leadContacts : DEFAULT_OFFICERS;
 
   const filteredMembers = displayList.filter((m) => {
     if (!search.trim()) return true;
@@ -106,11 +125,15 @@ export function PublicImportantContacts() {
               <Building2 className="h-4 w-4" aria-hidden="true" />
               <span>Public Directory</span>
             </div>
-            <h2 id="important-contacts-h" className="mt-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            <h2
+              id="important-contacts-h"
+              className="mt-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+            >
               Gram Panchayat Important Officers & Contacts
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Direct contact details of Key Administrative Officers & Representatives (Accessible to Everyone)
+              Direct contact details of Key Administrative Officers & Representatives (Accessible to
+              Everyone)
             </p>
           </div>
 
@@ -137,7 +160,7 @@ export function PublicImportantContacts() {
 
         {filteredMembers.length === 0 ? (
           <Card className="p-8 text-center text-muted-foreground rounded-2xl border-dashed">
-            No officer or contact found matching "{search}".
+            No officer or contact found matching &quot;{search}&quot;.
           </Card>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -198,7 +221,9 @@ export function PublicImportantContacts() {
                       </button>
                     </div>
                   ) : (
-                    <p className="text-xs text-muted-foreground italic text-center">No mobile number listed</p>
+                    <p className="text-xs text-muted-foreground italic text-center">
+                      No mobile number listed
+                    </p>
                   )}
                 </div>
               </Card>

@@ -14,31 +14,43 @@ export function GpsCapture({ coords, status, address, onRequest }) {
       {/* A heading, not a <label> — this block heads a button, not a form control. */}
       <p className="block text-sm font-medium text-foreground">{t('complaint.form.location')}</p>
 
-      <Button type="button" variant="outline" onClick={onRequest} disabled={status === 'loading'}>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onRequest}
+        disabled={status === 'loading'}
+        className="w-full sm:w-auto inline-flex items-center justify-center gap-2"
+      >
         {status === 'loading' ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin shrink-0" />
         ) : (
-          <LocateFixed className="h-4 w-4" />
+          <LocateFixed className="h-4 w-4 shrink-0" />
         )}
-        {status === 'loading'
-          ? t('complaint.form.gpsLoading')
-          : coords
-            ? t('complaint.form.updateLocation')
-            : t('complaint.form.captureLocation')}
+        <span className="truncate">
+          {status === 'loading'
+            ? t('complaint.form.gpsLoading')
+            : coords
+              ? t('complaint.form.updateLocation')
+              : t('complaint.form.captureLocation')}
+        </span>
       </Button>
 
       {coords ? (
-        <p className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="h-3.5 w-3.5 text-primary" />
-          {t('complaint.form.gpsCoords', {
-            lat: coords.latitude.toFixed(5),
-            lng: coords.longitude.toFixed(5),
-          })}
-          {coords.accuracy ? ` (±${Math.round(coords.accuracy)}m)` : ''}
+        <p className="flex items-center gap-1.5 text-xs text-muted-foreground break-words">
+          <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+          <span>
+            {t('complaint.form.gpsCoords', {
+              lat: coords.latitude.toFixed(5),
+              lng: coords.longitude.toFixed(5),
+            })}
+            {coords.accuracy ? ` (±${Math.round(coords.accuracy)}m)` : ''}
+          </span>
         </p>
       ) : null}
 
-      {coords && address ? <p className="text-xs text-muted-foreground">{address}</p> : null}
+      {coords && address ? (
+        <p className="text-xs text-muted-foreground break-words">{address}</p>
+      ) : null}
 
       {!coords && status === 'loading' ? (
         <p className="text-xs text-muted-foreground">{t('complaint.form.gpsFetching')}</p>

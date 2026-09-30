@@ -53,15 +53,15 @@ export function VillageHero({ profile, firstName }) {
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/45 to-black/20" />
 
       <div className="flex flex-col gap-4 p-5 text-white sm:p-7">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="truncate text-display font-semibold leading-tight">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-display font-semibold leading-tight text-white drop-shadow-xs break-words">
               {g.villageName || t('appName')}
             </h1>
             {place ? (
-              <p className="mt-1 flex items-center gap-1.5 text-body opacity-95">
-                <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{place}</span>
+              <p className="mt-1.5 inline-flex items-center gap-1.5 text-caption sm:text-body text-white/90">
+                <MapPin className="h-4 w-4 shrink-0 text-white/90" aria-hidden="true" />
+                <span className="break-words">{place}</span>
               </p>
             ) : null}
           </div>

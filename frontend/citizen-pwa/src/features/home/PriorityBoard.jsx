@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   AlertCircle,
-  Bell,
   CalendarClock,
   CheckCircle2,
   ChevronRight,
@@ -68,7 +67,6 @@ export function PriorityBoard({
   activeComplaints,
   pendingCerts,
   outstanding,
-  unread,
   todayEvent,
   latestNotice,
   officeTimings,
@@ -105,16 +103,6 @@ export function PriorityBoard({
       title: t('home.priority.tax', { amount: formatCurrency(outstanding, locale) }),
       detail: t('home.priority.taxHint'),
       to: '/tax',
-    });
-  }
-  if (unread > 0) {
-    personal.push({
-      key: 'unread',
-      icon: Bell,
-      tone: 'info',
-      title: t('home.priority.unread', { count: unread }),
-      detail: t('home.priority.unreadHint'),
-      to: '/notifications',
     });
   }
 

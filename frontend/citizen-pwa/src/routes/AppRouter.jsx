@@ -11,8 +11,6 @@ const lazyNamed = (loader, name) => lazy(() => loader().then((m) => ({ default: 
 
 const Home = lazyNamed(() => import('@/pages/Home'), 'Home');
 const PublicHome = lazyNamed(() => import('@/pages/PublicHome'), 'PublicHome');
-const VerifyCertificate = lazyNamed(() => import('@/pages/VerifyCertificate'), 'VerifyCertificate');
-const Directory = lazyNamed(() => import('@/pages/Directory'), 'Directory');
 const Help = lazyNamed(() => import('@/pages/Help'), 'Help');
 const NotFound = lazyNamed(() => import('@/pages/NotFound'), 'NotFound');
 const Login = lazyNamed(() => import('@/features/auth/pages/Login'), 'Login');
@@ -59,18 +57,6 @@ const ApplicationDetail = lazyNamed(
   () => import('@/features/dakhala/pages/ApplicationDetail'),
   'ApplicationDetail',
 );
-const NotificationCenter = lazyNamed(
-  () => import('@/features/notifications/pages/NotificationCenter'),
-  'NotificationCenter',
-);
-const NotificationDetail = lazyNamed(
-  () => import('@/features/notifications/pages/NotificationDetail'),
-  'NotificationDetail',
-);
-const NotificationSettings = lazyNamed(
-  () => import('@/features/notifications/pages/NotificationSettings'),
-  'NotificationSettings',
-);
 const Settings = lazyNamed(() => import('@/features/settings/pages/Settings'), 'Settings');
 
 // Suspense wrapper so a lazily-loaded route shows a spinner while its chunk downloads.
@@ -79,11 +65,6 @@ const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Susp
 const router = createBrowserRouter([
   // Public village landing — the entry point for signed-out visitors (no app shell).
   { path: '/welcome', element: page(<PublicHome />) },
-  // Public certificate verification (QR target + manual lookup) — no auth, no app shell.
-  { path: '/verify', element: page(<VerifyCertificate />) },
-  { path: '/verify/:id', element: page(<VerifyCertificate />) },
-  // Public Gram Panchayat directory (leadership + office contact) — no auth, no app shell.
-  { path: '/directory', element: page(<Directory />) },
   // Public auth screens (no app shell / bottom nav).
   { path: '/login', element: page(<Login />) },
   { path: '/register', element: page(<Register />) },
@@ -114,9 +95,6 @@ const router = createBrowserRouter([
           { path: 'dakhala', element: page(<ApplicationList />) },
           { path: 'dakhala/new', element: page(<ApplyCertificate />) },
           { path: 'dakhala/:id', element: page(<ApplicationDetail />) },
-          { path: 'notifications', element: page(<NotificationCenter />) },
-          { path: 'notifications/settings', element: page(<NotificationSettings />) },
-          { path: 'notifications/:id', element: page(<NotificationDetail />) },
           { path: 'settings', element: page(<Settings />) },
           { path: 'help', element: page(<Help />) },
           { path: 'profile', element: page(<Profile />) },

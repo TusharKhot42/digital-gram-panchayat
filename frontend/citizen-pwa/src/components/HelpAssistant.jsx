@@ -302,7 +302,7 @@ function Reply({ result, lang, t, onAsk, officePhone }) {
           </a>
         ) : (
           <Link
-            to="/directory"
+            to="/help"
             className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-border px-3 text-caption font-medium text-foreground transition-colors duration-150 hover:bg-accent"
           >
             <Phone className="h-3.5 w-3.5" aria-hidden="true" />

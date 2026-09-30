@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Phone, Copy, Search, User, ShieldCheck } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -18,7 +17,6 @@ function initials(name = '') {
 }
 
 export function MemberContactsSection({ members = [] }) {
-  const { t } = useTranslation();
   const [filter, setFilter] = useState('');
 
   const sorted = sortMembers(members);
@@ -49,9 +47,12 @@ export function MemberContactsSection({ members = [] }) {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-caption font-semibold text-primary">
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>{t('directory.officials')}</span>
+              <span>Member Contacts</span>
             </div>
-            <h2 id="member-contacts-heading" className="text-section font-bold tracking-tight text-foreground">
+            <h2
+              id="member-contacts-heading"
+              className="text-section font-bold tracking-tight text-foreground"
+            >
               Gram Panchayat Member Contacts
             </h2>
             <p className="text-caption text-muted-foreground">
@@ -77,7 +78,9 @@ export function MemberContactsSection({ members = [] }) {
       {filteredMembers.length === 0 ? (
         <Card className="p-6 text-center">
           <User className="mx-auto h-8 w-8 text-muted-foreground opacity-60" />
-          <p className="mt-2 text-caption text-muted-foreground">No member contact details found.</p>
+          <p className="mt-2 text-caption text-muted-foreground">
+            No member contact details found.
+          </p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,7 +103,9 @@ export function MemberContactsSection({ members = [] }) {
                 )}
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate text-body font-semibold text-foreground">{m.name}</h3>
-                  <p className="truncate text-caption font-medium text-primary">{m.designation || 'Panchayat Member'}</p>
+                  <p className="truncate text-caption font-medium text-primary">
+                    {m.designation || 'Panchayat Member'}
+                  </p>
                   {m.ward ? (
                     <span className="mt-0.5 inline-block text-caption text-muted-foreground">
                       Ward: {m.ward}
@@ -131,7 +136,9 @@ export function MemberContactsSection({ members = [] }) {
                     </button>
                   </div>
                 ) : (
-                  <p className="text-caption text-muted-foreground italic text-center">Mobile number not available</p>
+                  <p className="text-caption text-muted-foreground italic text-center">
+                    Mobile number not available
+                  </p>
                 )}
               </div>
             </Card>
