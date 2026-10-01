@@ -23,7 +23,10 @@
     "polls": "Polls",
     "feedback": "Feedback",
     "downloads": "Downloads",
-    "timetable": "Timetable"
+    "timetable": "Timetable",
+    "mainNav": "Main navigation",
+    "toggleMenu": "Toggle navigation menu",
+    "mobileDrawer": "Mobile navigation drawer"
   },
   "home": {
     "welcome": "Welcome",
@@ -846,5 +849,54 @@
       "DevelopmentReport": "Development reports",
       "Other": "Other"
     }
+  },
+  "timetable": {
+    "title": "Gram Panchayat Timetable",
+    "subtitle": "Live schedule for Ghantagadi waste collection and Water Supply distribution",
+    "ghantagadiTab": "Ghantagadi Schedule",
+    "waterTab": "Water Supply Schedule",
+    "searchPlaceholder": "Filter by Ward, Area, or Operator…",
+    "ghantagadiGuideTitle": "Ghantagadi Garbage Collection Guidelines",
+    "ghantagadiGuideDesc": "Keep wet waste (Green Bin) and dry waste (Blue Bin) segregated. Hand over waste directly to the Ghantagadi vehicle staff.",
+    "waterGuideTitle": "Water Supply & Storage Guidelines",
+    "waterGuideDesc": "Please store required drinking water in clean covered containers. For emergency water tanker requests, contact the operator directly.",
+    "vehicle": "Vehicle",
+    "morning": "Morning",
+    "evening": "Evening",
+    "days": "Days",
+    "driver": "Driver",
+    "callDriver": "Call Driver",
+    "supplyTiming": "Supply Timing",
+    "frequency": "Frequency",
+    "source": "Source",
+    "operator": "Operator",
+    "callOperator": "Call Operator",
+    "noRecords": "No schedule matching your search."
+  },
+  "members": {
+    "badge": "Member Contacts",
+    "title": "Gram Panchayat Member Contacts",
+    "subtitle": "Direct official contact details of elected members and officers",
+    "searchPlaceholder": "Search member or designation…",
+    "noMembers": "No member contact details found.",
+    "defaultDesignation": "Panchayat Member",
+    "ward": "Ward",
+    "noMobile": "Mobile number not available",
+    "copied": "{{name}}: {{number}} copied!",
+    "copyFailed": "Failed to copy phone number",
+    "callAria": "Call {{name}} at {{number}}",
+    "copyAria": "Copy {{name}}'s phone number"
+  },
+  "publicContacts": {
+    "badge": "Public Directory",
+    "title": "Gram Panchayat Important Officers & Contacts",
+    "subtitle": "Direct contact details of Key Administrative Officers & Representatives (Accessible to Everyone)",
+    "searchPlaceholder": "Search officer name, designation, ward...",
+    "keyOfficers": "Gram Panchayat Key Officers & Representatives",
+    "ward": "Ward",
+    "copied": "{{name}}: {{number}} copied!",
+    "copyFailed": "Failed to copy phone number",
+    "callAria": "Call {{name}} at {{number}}",
+    "copyAria": "Copy {{name}}'s phone number"
   }
 }

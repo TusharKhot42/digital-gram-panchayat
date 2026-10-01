@@ -6,14 +6,15 @@ const LanguageContext = createContext(undefined);
 
 export function LanguageProvider({ children }) {
   const { i18n } = useTranslation();
-  const language = i18n.language || 'mr';
+  const rawLang = i18n.resolvedLanguage || i18n.language || 'mr';
+  const language = rawLang.toLowerCase().startsWith('mr') ? 'mr' : 'en';
 
   // Keep <html lang> in step with the active language so assistive tech announces the page in
   // the right language (WCAG 3.1.1). index.html ships a static default; this corrects it at
   // runtime and on every switch.
   useEffect(() => {
     const apply = (lng) => {
-      document.documentElement.lang = lng;
+      document.documentElement.lang = (lng || '').toLowerCase().startsWith('mr') ? 'mr' : 'en';
     };
     apply(i18n.language);
     i18n.on('languageChanged', apply);
@@ -24,7 +25,8 @@ export function LanguageProvider({ children }) {
     () => ({
       language,
       setLanguage: (lang) => {
-        void i18n.changeLanguage(lang);
+        const next = String(lang).toLowerCase().startsWith('mr') ? 'mr' : 'en';
+        void i18n.changeLanguage(next);
       },
       toggleLanguage: () => {
         const next = language === 'mr' ? 'en' : 'mr';

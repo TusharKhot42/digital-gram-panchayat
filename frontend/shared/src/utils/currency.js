@@ -6,7 +6,8 @@
  */
 export function formatCurrency(amount, locale = 'en') {
   const value = Number.isFinite(amount) ? amount : 0;
-  return new Intl.NumberFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', {
+  const isMr = String(locale).toLowerCase().startsWith('mr');
+  return new Intl.NumberFormat(isMr ? 'mr-IN' : 'en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,

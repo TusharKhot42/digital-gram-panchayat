@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu, Moon, Sun, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme, useLanguage } from '@/store';
+import { getBackRoute } from '@/utils/navigation';
 
 /** Prefix match, so /complaints/:id still reads as "Complaints". */
 const SECTIONS = [
@@ -54,8 +55,8 @@ export function Header({ onOpenNav }) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(-1)}
-            className="h-8 rounded-xl px-2.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 flex items-center gap-1 shrink-0"
+            onClick={() => navigate(getBackRoute(pathname))}
+            className="h-8 rounded-xl px-2.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 flex items-center gap-1 shrink-0 cursor-pointer"
             aria-label={t('common.back', 'Back')}
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -97,10 +98,13 @@ export function Header({ onOpenNav }) {
           onClick={toggleTheme}
           aria-label={t(theme === 'dark' ? 'nav.themeLight' : 'nav.themeDark')}
         >
-          {theme === 'dark' ? <Sun className="h-4.5 w-4.5 text-amber-300" /> : <Moon className="h-4.5 w-4.5 text-slate-100" />}
+          {theme === 'dark' ? (
+            <Sun className="h-4.5 w-4.5 text-amber-300" />
+          ) : (
+            <Moon className="h-4.5 w-4.5 text-slate-100" />
+          )}
         </Button>
       </div>
     </header>
   );
 }
-

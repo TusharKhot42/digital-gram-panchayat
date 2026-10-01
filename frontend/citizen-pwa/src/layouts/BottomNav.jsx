@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Home, ClipboardList, Megaphone, FileText, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
@@ -13,6 +13,7 @@ const items = [
 
 export function BottomNav() {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
 
   return (
     <nav
@@ -25,6 +26,7 @@ export function BottomNav() {
             <NavLink
               to={to}
               end={end}
+              replace={pathname !== '/' && to !== '/'}
               className={({ isActive }) =>
                 cn(
                   'group flex min-h-[58px] flex-col items-center justify-center gap-1 py-1.5',
@@ -56,4 +58,3 @@ export function BottomNav() {
     </nav>
   );
 }
-

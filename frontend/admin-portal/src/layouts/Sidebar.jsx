@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import logo from '@dgp/shared/assets/logo.svg';
 import {
@@ -72,13 +72,16 @@ function Brand() {
   return (
     <span className="flex min-w-0 items-center gap-2.5">
       <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 rounded-lg shadow-xs" />
-      <span className="truncate text-base font-extrabold tracking-tight text-[#1E3A8A]">{t('appName')}</span>
+      <span className="truncate text-base font-extrabold tracking-tight text-[#1E3A8A]">
+        {t('appName')}
+      </span>
     </span>
   );
 }
 
 function NavItems() {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
 
   return (
     <div className="space-y-4">
@@ -94,13 +97,15 @@ function NavItems() {
               key={to}
               to={to}
               end={end}
+              replace={pathname !== '/' && to !== '/'}
               className={({ isActive }) =>
                 cn(
                   'group relative flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold',
                   'text-slate-600 transition-all duration-150',
                   'hover:bg-[#EBF2FF] hover:text-[#1E3A8A]',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
-                  isActive && 'bg-[#4169E1] text-white font-bold shadow-sm shadow-[#4169E1]/30 hover:bg-[#4169E1] hover:text-white',
+                  isActive &&
+                    'bg-[#4169E1] text-white font-bold shadow-sm shadow-[#4169E1]/30 hover:bg-[#4169E1] hover:text-white',
                 )
               }
             >
@@ -113,7 +118,13 @@ function NavItems() {
                       isActive ? 'bg-amber-400' : 'bg-transparent',
                     )}
                   />
-                  <Icon className={cn('h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-110', isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#1E3A8A]')} aria-hidden="true" />
+                  <Icon
+                    className={cn(
+                      'h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-110',
+                      isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#1E3A8A]',
+                    )}
+                    aria-hidden="true"
+                  />
                   <span className="truncate">{t(label)}</span>
                 </>
               )}
@@ -124,7 +135,6 @@ function NavItems() {
     </div>
   );
 }
-
 
 /** Signed-in officer plus the sign-out control, shared by the fixed rail and the drawer. */
 function AccountFooter() {
@@ -145,12 +155,19 @@ function AccountFooter() {
             {user.fullName?.slice(0, 1)?.toUpperCase()}
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-label font-bold text-slate-900">{user.fullName}</span>
+            <span className="block truncate text-label font-bold text-slate-900">
+              {user.fullName}
+            </span>
             <span className="block truncate text-caption text-slate-500">{user.email}</span>
           </span>
         </div>
       ) : null}
-      <Button variant="ghost" size="sm" className="w-full justify-start text-slate-700 hover:bg-rose-50 hover:text-rose-600 font-semibold" onClick={handleLogout}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start text-slate-700 hover:bg-rose-50 hover:text-rose-600 font-semibold"
+        onClick={handleLogout}
+      >
         <LogOut className="h-4 w-4" />
         {t('auth.logout')}
       </Button>
@@ -241,7 +258,13 @@ export function MobileSidebar({ open, onClose }) {
       >
         <div className="flex h-16 items-center justify-between gap-2 border-b border-[#6495ED]/20 px-4 bg-white">
           <Brand />
-          <Button variant="ghost" size="icon" onClick={onClose} className="text-slate-700 hover:bg-slate-100" aria-label={t('common.close')}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="text-slate-700 hover:bg-slate-100"
+            aria-label={t('common.close')}
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>

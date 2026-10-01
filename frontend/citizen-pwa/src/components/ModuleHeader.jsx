@@ -1,15 +1,25 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
+import { getBackRoute } from '@/utils/navigation';
 
 /**
  * A module's title, on a soft branded band with the module's own motif behind it.
  * Features an integrated Back navigation button.
  */
-export function ModuleHeader({ art: Art, title, description, action, className, backTo, showBack = true }) {
-  const navigate = useNavigate();
+export function ModuleHeader({
+  art: Art,
+  title,
+  description,
+  action,
+  className,
+  backTo,
+  showBack = true,
+}) {
+  const { pathname } = useLocation();
   const { t } = useTranslation();
+  const targetBack = getBackRoute(pathname, backTo);
 
   return (
     <div
@@ -30,24 +40,13 @@ export function ModuleHeader({ art: Art, title, description, action, className, 
       ) : null}
 
       {showBack ? (
-        backTo ? (
-          <Link
-            to={backTo}
-            className="mb-2.5 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-primary/20 bg-white/80 dark:bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs transition-all hover:bg-primary hover:text-white active:scale-95"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{t('common.back', 'Back')}</span>
-          </Link>
-        ) : (
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="mb-2.5 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-primary/20 bg-white/80 dark:bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs transition-all hover:bg-primary hover:text-white active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{t('common.back', 'Back')}</span>
-          </button>
-        )
+        <Link
+          to={targetBack}
+          className="mb-2.5 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-primary/20 bg-white/80 dark:bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs transition-all hover:bg-primary hover:text-white active:scale-95"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>{t('common.back', 'Back')}</span>
+        </Link>
       ) : null}
 
       <div className="relative flex flex-wrap items-center justify-between gap-3">

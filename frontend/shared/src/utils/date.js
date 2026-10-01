@@ -5,7 +5,8 @@
  */
 export function formatDate(input, locale = 'en') {
   const date = typeof input === 'string' ? new Date(input) : input;
-  return new Intl.DateTimeFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', {
+  const isMr = String(locale).toLowerCase().startsWith('mr');
+  return new Intl.DateTimeFormat(isMr ? 'mr-IN' : 'en-IN', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -21,7 +22,8 @@ export function formatDate(input, locale = 'en') {
  */
 export function formatTime(input, locale = 'en') {
   const date = typeof input === 'string' ? new Date(input) : input;
-  return new Intl.DateTimeFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', {
+  const isMr = String(locale).toLowerCase().startsWith('mr');
+  return new Intl.DateTimeFormat(isMr ? 'mr-IN' : 'en-IN', {
     timeStyle: 'short',
   }).format(date);
 }
@@ -33,7 +35,8 @@ export function formatTime(input, locale = 'en') {
  */
 export function formatDateTime(input, locale = 'en') {
   const date = typeof input === 'string' ? new Date(input) : input;
-  return new Intl.DateTimeFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', {
+  const isMr = String(locale).toLowerCase().startsWith('mr');
+  return new Intl.DateTimeFormat(isMr ? 'mr-IN' : 'en-IN', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(date);

@@ -17,6 +17,9 @@ void i18next
     defaultNS: 'common',
     fallbackLng: DEFAULT_LANGUAGE,
     supportedLngs: [...SUPPORTED_LANGUAGES],
+    load: 'languageOnly',
+    cleanCode: true,
+    nonExplicitSupportedLngs: true,
     interpolation: { escapeValue: false },
     detection: {
       order: ['localStorage', 'navigator'],

@@ -10,9 +10,16 @@
  * @param {string} [fallback] - the original plain field value
  */
 export function pickLocale(i18n, field, lang, fallback = '') {
+  const isMr = String(lang || '')
+    .toLowerCase()
+    .startsWith('mr');
+  const targetKey = isMr ? 'mr' : 'en';
   const entry = i18n && i18n[field];
-  if (entry && (entry[lang] || entry.en || entry.mr)) {
-    return entry[lang] || entry.en || entry.mr;
+  if (entry) {
+    if (entry[targetKey]) return entry[targetKey];
+    if (isMr && entry.mr) return entry.mr;
+    if (!isMr && entry.en) return entry.en;
+    if (entry.en || entry.mr) return entry.en || entry.mr;
   }
   return fallback;
 }

@@ -1,37 +1,36 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
+import { getBackRoute } from '@/utils/navigation';
 
 /**
  * Title block for a page: back button (default enabled), title, optional subtitle, optional trailing action.
  */
-export function PageHeader({ title, subtitle, backTo, backLabel, action, className, showBack = true }) {
-  const navigate = useNavigate();
+export function PageHeader({
+  title,
+  subtitle,
+  backTo,
+  backLabel,
+  action,
+  className,
+  showBack = true,
+}) {
+  const { pathname } = useLocation();
   const { t } = useTranslation();
   const label = backLabel || t('common.back', 'Back');
+  const targetBack = getBackRoute(pathname, backTo);
 
   return (
     <div className={cn('mb-5', className)}>
       {showBack ? (
-        backTo ? (
-          <Link
-            to={backTo}
-            className="mb-3 inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-[#6495ED]/30 bg-card px-3 py-1 text-xs font-bold text-muted-foreground shadow-2xs transition-all hover:bg-primary/10 hover:text-primary active:scale-95"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{label}</span>
-          </Link>
-        ) : (
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="mb-3 inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-[#6495ED]/30 bg-card px-3 py-1 text-xs font-bold text-muted-foreground shadow-2xs transition-all hover:bg-primary/10 hover:text-primary active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{label}</span>
-          </button>
-        )
+        <Link
+          to={targetBack}
+          className="mb-3 inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-[#6495ED]/30 bg-card px-3 py-1 text-xs font-bold text-muted-foreground shadow-2xs transition-all hover:bg-primary/10 hover:text-primary active:scale-95"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>{label}</span>
+        </Link>
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">

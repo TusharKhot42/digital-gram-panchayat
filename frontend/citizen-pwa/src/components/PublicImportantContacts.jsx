@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Phone, Copy, Search, UserCheck, MapPin, Building2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -59,6 +60,7 @@ const DEFAULT_OFFICERS = [
 ];
 
 export function PublicImportantContacts() {
+  const { t } = useTranslation();
   const { data: profile } = useVillageProfile();
   const [search, setSearch] = useState('');
 
@@ -109,9 +111,9 @@ export function PublicImportantContacts() {
   const handleCopy = async (number, name) => {
     try {
       await navigator.clipboard.writeText(number);
-      toast.success(`${name}: ${number} copied!`);
+      toast.success(t('publicContacts.copied', { name, number }));
     } catch {
-      toast.error('Failed to copy phone number');
+      toast.error(t('publicContacts.copyFailed'));
     }
   };
 
@@ -123,18 +125,15 @@ export function PublicImportantContacts() {
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
               <Building2 className="h-4 w-4" aria-hidden="true" />
-              <span>Public Directory</span>
+              <span>{t('publicContacts.badge')}</span>
             </div>
             <h2
               id="important-contacts-h"
               className="mt-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
             >
-              Gram Panchayat Important Officers & Contacts
+              {t('publicContacts.title')}
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Direct contact details of Key Administrative Officers & Representatives (Accessible to
-              Everyone)
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{t('publicContacts.subtitle')}</p>
           </div>
 
           {/* Quick Search */}
@@ -144,7 +143,7 @@ export function PublicImportantContacts() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search officer name, designation, ward..."
+              placeholder={t('publicContacts.searchPlaceholder')}
               className="h-11 w-full rounded-xl border border-border bg-card pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -155,12 +154,12 @@ export function PublicImportantContacts() {
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <UserCheck className="h-4 w-4 text-primary" />
-          Gram Panchayat Key Officers & Representatives
+          {t('publicContacts.keyOfficers')}
         </h3>
 
         {filteredMembers.length === 0 ? (
           <Card className="p-8 text-center text-muted-foreground rounded-2xl border-dashed">
-            No officer or contact found matching &quot;{search}&quot;.
+            {t('timetable.noRecords', 'No officer or contact found matching your search.')}
           </Card>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -187,7 +186,7 @@ export function PublicImportantContacts() {
                         {m.name}
                       </h4>
                       <span className="mt-1 inline-block rounded-lg bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
-                        {m.designation || 'Gram Panchayat Official'}
+                        {m.designation || t('members.defaultDesignation', 'Panchayat Member')}
                       </span>
                     </div>
                   </div>
@@ -206,6 +205,10 @@ export function PublicImportantContacts() {
                     <div className="flex items-center gap-2">
                       <a
                         href={`tel:${m.mobile}`}
+                        aria-label={t('publicContacts.callAria', {
+                          name: m.name,
+                          number: m.mobile,
+                        })}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-xs font-bold text-primary-foreground shadow-xs transition-all hover:bg-primary-hover active:scale-[0.98]"
                       >
                         <Phone className="h-4 w-4" />
@@ -214,15 +217,16 @@ export function PublicImportantContacts() {
                       <button
                         type="button"
                         onClick={() => handleCopy(m.mobile, m.name)}
+                        aria-label={t('publicContacts.copyAria', { name: m.name })}
+                        title={t('publicContacts.copyAria', { name: m.name })}
                         className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground transition-colors hover:bg-accent hover:text-foreground active:scale-[0.98]"
-                        title="Copy phone number"
                       >
                         <Copy className="h-4 w-4" />
                       </button>
                     </div>
                   ) : (
                     <p className="text-xs text-muted-foreground italic text-center">
-                      No mobile number listed
+                      {t('members.noMobile', 'No mobile number available')}
                     </p>
                   )}
                 </div>

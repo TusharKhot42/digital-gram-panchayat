@@ -22,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useTheme, useLanguage } from '@/store';
 import { useOnline } from '@/hooks/useOnline';
+import { getBackRoute } from '@/utils/navigation';
 
 export function Header() {
   const { t } = useTranslation();
@@ -54,8 +55,8 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(-1)}
-              className="h-8 rounded-xl px-2 sm:px-2.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 flex items-center gap-1 shrink-0"
+              onClick={() => navigate(getBackRoute(pathname))}
+              className="h-8 rounded-xl px-2 sm:px-2.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 flex items-center gap-1 shrink-0 cursor-pointer"
               aria-label={t('common.back', 'Back')}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -72,11 +73,15 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 ml-4" aria-label="Main Navigation">
+          <nav
+            className="hidden md:flex items-center gap-1.5 ml-4"
+            aria-label={t('nav.mainNav', 'Main Navigation')}
+          >
             {navLinks.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
+                replace={pathname !== '/' && to !== '/'}
                 className={({ isActive }) =>
                   `inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
                     isActive
@@ -112,10 +117,10 @@ export function Header() {
             variant="ghost"
             size="sm"
             onClick={toggleLanguage}
-            className="h-8 rounded-xl px-2 sm:px-2.5 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20"
+            className="h-8 rounded-xl px-2.5 sm:px-3 text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20"
             aria-label={t('nav.toggleLanguage')}
           >
-            {language === 'mr' ? 'EN' : 'मर'}
+            {language === 'mr' ? 'English' : 'मराठी'}
           </Button>
 
           <Button
@@ -162,7 +167,7 @@ export function Header() {
             size="icon"
             className="h-9 w-9 rounded-xl text-white hover:bg-white/15 md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
+            aria-label={t('nav.toggleMenu', 'Toggle navigation menu')}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -172,11 +177,15 @@ export function Header() {
       {/* Mobile Drawer Menu — positioned cleanly below the header */}
       {mobileMenuOpen && (
         <div className="absolute inset-x-0 top-full z-50 border-b border-[#6495ED]/40 bg-[#1E3A8A] p-4 text-white shadow-xl md:hidden animate-in slide-in-from-top duration-150">
-          <nav className="grid grid-cols-2 gap-2" aria-label="Mobile Navigation Drawer">
+          <nav
+            className="grid grid-cols-2 gap-2"
+            aria-label={t('nav.mobileDrawer', 'Mobile Navigation Drawer')}
+          >
             {fullMobileMenu.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
+                replace={pathname !== '/' && to !== '/'}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 rounded-xl p-3 text-caption font-semibold transition-all ${

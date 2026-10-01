@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/PageHeader';
 import { SafeImage } from '@/components/SafeImage';
+import { pickLocale } from '@dgp/shared';
 import { useScheme } from '../hooks';
 
 /** One titled block of scheme copy. Renders nothing when the field is empty. */
@@ -36,7 +37,8 @@ const proseClass = 'whitespace-pre-wrap text-body leading-relaxed text-body-fore
 
 export function SchemeDetail() {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = (i18n.language || '').toLowerCase().startsWith('mr') ? 'mr' : 'en';
   const { data: s, isLoading, isError } = useScheme(id);
 
   if (isLoading)
@@ -46,9 +48,16 @@ export function SchemeDetail() {
       <p className="dgp-page text-body text-destructive-strong">{t('scheme.detail.notFound')}</p>
     );
 
+  const title = pickLocale(s.i18n, 'title', locale, s.title);
+  const summary = pickLocale(s.i18n, 'summary', locale, s.summary);
+  const description = pickLocale(s.i18n, 'description', locale, s.description);
+  const eligibility = pickLocale(s.i18n, 'eligibility', locale, s.eligibility);
+  const benefits = pickLocale(s.i18n, 'benefits', locale, s.benefits);
+  const applicationProcess = pickLocale(s.i18n, 'applicationProcess', locale, s.applicationProcess);
+
   return (
     <div className="dgp-page">
-      <PageHeader backTo="/schemes" backLabel={t('scheme.detail.back')} title={s.title} />
+      <PageHeader backTo="/schemes" backLabel={t('scheme.detail.back')} title={title} />
 
       {/* Hero */}
       {s.imageUrl ? (
@@ -66,14 +75,14 @@ export function SchemeDetail() {
         {t(`scheme.category.${s.category}`, s.category)}
       </span>
 
-      {s.summary ? <p className="mt-3 text-body text-foreground">{s.summary}</p> : null}
+      {summary ? <p className="mt-3 text-body text-foreground">{summary}</p> : null}
 
       <Section title={t('scheme.detail.description')} icon={FileText}>
-        {s.description ? <p className={proseClass}>{s.description}</p> : null}
+        {description ? <p className={proseClass}>{description}</p> : null}
       </Section>
 
       <Section title={t('scheme.detail.eligibility')} icon={CheckCircle2}>
-        {s.eligibility ? <p className={proseClass}>{s.eligibility}</p> : null}
+        {eligibility ? <p className={proseClass}>{eligibility}</p> : null}
       </Section>
 
       <Section title={t('scheme.detail.requiredDocuments')} icon={FileText}>
@@ -93,11 +102,11 @@ export function SchemeDetail() {
       </Section>
 
       <Section title={t('scheme.detail.benefits')} icon={Gift}>
-        {s.benefits ? <p className={proseClass}>{s.benefits}</p> : null}
+        {benefits ? <p className={proseClass}>{benefits}</p> : null}
       </Section>
 
       <Section title={t('scheme.detail.applicationProcess')} icon={ListOrdered}>
-        {s.applicationProcess ? <p className={proseClass}>{s.applicationProcess}</p> : null}
+        {applicationProcess ? <p className={proseClass}>{applicationProcess}</p> : null}
       </Section>
 
       {/* Downloadable forms/circulars the officer attached to the scheme. */}

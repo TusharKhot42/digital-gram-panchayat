@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Phone, Copy, Search, User, ShieldCheck } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -17,6 +18,7 @@ function initials(name = '') {
 }
 
 export function MemberContactsSection({ members = [] }) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState('');
 
   const sorted = sortMembers(members);
@@ -33,9 +35,9 @@ export function MemberContactsSection({ members = [] }) {
   const handleCopy = async (number, name) => {
     try {
       await navigator.clipboard.writeText(number);
-      toast.success(`${name}: ${number} copied!`);
+      toast.success(t('members.copied', { name, number }));
     } catch {
-      toast.error('Failed to copy phone number');
+      toast.error(t('members.copyFailed'));
     }
   };
 
@@ -47,17 +49,15 @@ export function MemberContactsSection({ members = [] }) {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-caption font-semibold text-primary">
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>Member Contacts</span>
+              <span>{t('members.badge')}</span>
             </div>
             <h2
               id="member-contacts-heading"
               className="text-section font-bold tracking-tight text-foreground"
             >
-              Gram Panchayat Member Contacts
+              {t('members.title')}
             </h2>
-            <p className="text-caption text-muted-foreground">
-              Direct official contact details of elected members and officers
-            </p>
+            <p className="text-caption text-muted-foreground">{t('members.subtitle')}</p>
           </div>
 
           {/* Search Input */}
@@ -67,7 +67,7 @@ export function MemberContactsSection({ members = [] }) {
               type="text"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              placeholder="Search member or designation…"
+              placeholder={t('members.searchPlaceholder')}
               className="h-10 w-full rounded-xl border border-border bg-card pl-9 pr-3 text-caption text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -78,9 +78,7 @@ export function MemberContactsSection({ members = [] }) {
       {filteredMembers.length === 0 ? (
         <Card className="p-6 text-center">
           <User className="mx-auto h-8 w-8 text-muted-foreground opacity-60" />
-          <p className="mt-2 text-caption text-muted-foreground">
-            No member contact details found.
-          </p>
+          <p className="mt-2 text-caption text-muted-foreground">{t('members.noMembers')}</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,11 +102,11 @@ export function MemberContactsSection({ members = [] }) {
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate text-body font-semibold text-foreground">{m.name}</h3>
                   <p className="truncate text-caption font-medium text-primary">
-                    {m.designation || 'Panchayat Member'}
+                    {m.designation || t('members.defaultDesignation')}
                   </p>
                   {m.ward ? (
                     <span className="mt-0.5 inline-block text-caption text-muted-foreground">
-                      Ward: {m.ward}
+                      {t('members.ward')}: {m.ward}
                     </span>
                   ) : null}
                 </div>
@@ -120,7 +118,7 @@ export function MemberContactsSection({ members = [] }) {
                   <div className="flex items-center gap-2">
                     <a
                       href={`tel:${m.mobile}`}
-                      aria-label={`Call ${m.name} at ${m.mobile}`}
+                      aria-label={t('members.callAria', { name: m.name, number: m.mobile })}
                       className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2 text-caption font-semibold text-primary-foreground shadow-2xs transition-all duration-150 hover:bg-primary-hover active:scale-[0.98]"
                     >
                       <Phone className="h-4 w-4" aria-hidden="true" />
@@ -129,7 +127,7 @@ export function MemberContactsSection({ members = [] }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(m.mobile, m.name)}
-                      aria-label={`Copy ${m.name}'s phone number`}
+                      aria-label={t('members.copyAria', { name: m.name })}
                       className="inline-flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground transition-colors hover:bg-accent hover:text-foreground active:scale-[0.98]"
                     >
                       <Copy className="h-4 w-4" aria-hidden="true" />
@@ -137,7 +135,7 @@ export function MemberContactsSection({ members = [] }) {
                   </div>
                 ) : (
                   <p className="text-caption text-muted-foreground italic text-center">
-                    Mobile number not available
+                    {t('members.noMobile')}
                   </p>
                 )}
               </div>

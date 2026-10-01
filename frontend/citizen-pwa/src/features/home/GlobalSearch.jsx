@@ -50,6 +50,7 @@ const SERVICES = [
   ['nav.projects', '/projects'],
   ['nav.polls', '/polls'],
   ['nav.downloads', '/downloads'],
+  ['nav.timetable', '/timetable'],
 ];
 
 const MAX_PER_GROUP = 4;
