@@ -69,7 +69,7 @@ export async function getMetrics() {
 /** Complaint distribution charts via aggregation pipelines. */
 export async function getCharts() {
   return cached('charts', async () => {
-    const [byCategory, byStatus] = await Promise.all([
+    const [byCategory, byStatus, byWard] = await Promise.all([
       Complaint.aggregate([
         { $group: { _id: '$category', value: { $sum: 1 } } },
         { $project: { _id: 0, label: '$_id', value: 1 } },
@@ -79,8 +79,18 @@ export async function getCharts() {
         { $group: { _id: '$status', value: { $sum: 1 } } },
         { $project: { _id: 0, label: '$_id', value: 1 } },
       ]),
+      Complaint.aggregate([
+        { $match: { ward: { $exists: true, $ne: null } } },
+        { $group: { _id: '$ward', value: { $sum: 1 } } },
+        { $project: { _id: 0, label: '$_id', value: 1 } },
+        { $sort: { label: 1 } },
+      ]),
     ]);
-    return { complaintsByCategory: byCategory, complaintsByStatus: byStatus };
+    return {
+      complaintsByCategory: byCategory,
+      complaintsByStatus: byStatus,
+      complaintsByWard: byWard,
+    };
   });
 }
 
@@ -113,11 +123,14 @@ export async function getReport() {
     const [
       complaintsByStatus,
       complaintsByCategory,
+      complaintsByWard,
       certificatesByStatus,
       certificatesByType,
+      certificatesByWard,
       taxByStatus,
       taxTotals,
       usersByActive,
+      usersByWard,
       schemesByPublished,
       noticesByCategory,
       noticesPublished,
@@ -130,8 +143,10 @@ export async function getReport() {
     ] = await Promise.all([
       group(Complaint, 'status'),
       group(Complaint, 'category'),
+      group(Complaint, 'ward'),
       group(CertificateApplication, 'status', { isActive: true }),
       group(CertificateApplication, 'certificateType', { isActive: true }),
+      group(CertificateApplication, 'ward', { isActive: true }),
       group(TaxRecord, 'paymentStatus', { isActive: true }),
       TaxRecord.aggregate([
         { $match: { isActive: true } },
@@ -145,6 +160,7 @@ export async function getReport() {
         },
       ]),
       group(User, 'isActive', { role: 'citizen' }),
+      group(User, 'ward', { role: 'citizen' }),
       group(Scheme, 'isPublished', { isActive: true }),
       group(Notice, 'category', { isActive: true }),
       Notice.countDocuments({ isActive: true, isPublished: true }),
@@ -164,11 +180,13 @@ export async function getReport() {
         total: totalComplaints,
         byStatus: complaintsByStatus,
         byCategory: complaintsByCategory,
+        byWard: complaintsByWard,
       },
       certificates: {
         total: totalCertificates,
         byStatus: certificatesByStatus,
         byType: certificatesByType,
+        byWard: certificatesByWard,
       },
       tax: {
         total: totalTaxRecords,
@@ -177,7 +195,7 @@ export async function getReport() {
         outstanding: totals.outstanding,
         byStatus: taxByStatus,
       },
-      users: { total: totalCitizens, byActive: usersByActive },
+      users: { total: totalCitizens, byActive: usersByActive, byWard: usersByWard },
       schemes: { total: totalSchemes, byPublished: schemesByPublished },
       notices: { total: totalNotices, published: noticesPublished, byCategory: noticesByCategory },
     };

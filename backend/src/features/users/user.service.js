@@ -20,6 +20,7 @@ export async function listUsers(query) {
   filter.role = query.role || ROLES.CITIZEN;
   // Account state is stored as the boolean isActive; the API exposes active|inactive.
   if (query.status) filter.isActive = query.status === 'active';
+  if (query.ward) filter.ward = query.ward;
   if (query.q) {
     const rx = new RegExp(escapeRegex(query.q), 'i');
     filter.$or = [{ fullName: rx }, { mobile: rx }, { email: rx }];
@@ -50,6 +51,31 @@ export async function setStatus(id, officerId, status) {
   }
   const user = await User.findById(id).catch(() => null);
   if (!user) throw new AppError(404, 'USER_NOT_FOUND', 'User not found');
+
+  const isTargetRoot = Boolean(
+    user.isRootAdmin ||
+    (user.role === ROLES.OFFICER &&
+      user.email === (process.env.SEED_ADMIN_EMAIL || 'admin@dgp.local').toLowerCase()),
+  );
+  if (isTargetRoot && status === 'inactive') {
+    throw new AppError(400, 'CANNOT_DEACTIVATE_ROOT_ADMIN', 'Root admin cannot be deactivated');
+  }
+
+  if (user.role === ROLES.OFFICER) {
+    const caller = await User.findById(officerId);
+    const callerIsRoot = Boolean(
+      caller?.isRootAdmin ||
+      (caller?.role === ROLES.OFFICER &&
+        caller?.email === (process.env.SEED_ADMIN_EMAIL || 'admin@dgp.local').toLowerCase()),
+    );
+    if (!callerIsRoot) {
+      throw new AppError(
+        403,
+        'FORBIDDEN',
+        'Only root admin can change another administrator’s status',
+      );
+    }
+  }
 
   const before = { isActive: user.isActive };
   user.isActive = status === 'active';

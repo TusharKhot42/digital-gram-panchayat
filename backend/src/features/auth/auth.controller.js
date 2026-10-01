@@ -1,10 +1,21 @@
-import { successResponse } from '@dgp/shared';
+import { ROLES, successResponse } from '@dgp/shared';
 import { asyncHandler } from '../../utils/async-handler.js';
 import * as authService from './auth.service.js';
+import { listUsers } from '../users/user.service.js';
 
 export const register = asyncHandler(async (req, res) => {
   const result = await authService.registerCitizen(req.body);
   res.status(201).json(successResponse(result));
+});
+
+export const registerOfficer = asyncHandler(async (req, res) => {
+  const user = await authService.registerOfficer(req.body, req.user.id);
+  res.status(201).json(successResponse({ user }));
+});
+
+export const listAdmins = asyncHandler(async (req, res) => {
+  const result = await listUsers({ ...req.query, role: ROLES.OFFICER });
+  res.status(200).json(successResponse(result));
 });
 
 export const login = asyncHandler(async (req, res) => {

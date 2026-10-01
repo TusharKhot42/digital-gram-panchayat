@@ -33,6 +33,10 @@ export function useReviewMutations(id) {
       mutationFn: (edits) => certificateService.approve(id, edits),
       onSuccess,
     }),
+    uploadCertificate: useMutation({
+      mutationFn: (params) => certificateService.uploadCertificate(id, params),
+      onSuccess,
+    }),
     reject: useMutation({
       mutationFn: (reason) => certificateService.reject(id, reason),
       onSuccess,

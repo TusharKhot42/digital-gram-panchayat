@@ -18,14 +18,17 @@ import {
   Megaphone,
   Receipt,
   ArrowLeft,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme, useLanguage } from '@/store';
+import { useAuth } from '@/hooks/useAuth';
 import { useOnline } from '@/hooks/useOnline';
 import { getBackRoute } from '@/utils/navigation';
 
 export function Header() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -98,6 +101,17 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {user?.ward && (
+            <Link
+              to="/profile"
+              className="inline-flex items-center gap-1 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/30 px-2 py-0.5 text-xs font-semibold hover:bg-amber-400/30 transition-colors"
+              title={`${t('auth.ward')}: ${user.ward}`}
+            >
+              <MapPin className="h-3 w-3 text-amber-300" />
+              <span>{user.ward}</span>
+            </Link>
+          )}
+
           <span
             className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${
               isOnline

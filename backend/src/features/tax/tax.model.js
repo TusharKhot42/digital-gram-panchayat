@@ -33,6 +33,7 @@ const taxRecordSchema = new Schema(
   {
     taxRecordId: { type: String, required: true, unique: true },
     citizenId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    ward: { type: String, trim: true, index: true },
     propertyNumber: { type: String, required: true, trim: true, index: true },
     taxType: { type: String, enum: TAX_TYPES, required: true, index: true },
     financialYear: { type: String, required: true, index: true },
@@ -78,6 +79,7 @@ const taxRecordSchema = new Schema(
 );
 
 taxRecordSchema.index({ createdAt: -1 });
+taxRecordSchema.index({ ward: 1, createdAt: -1 });
 // Citizen "my taxes", newest first.
 taxRecordSchema.index({ citizenId: 1, createdAt: -1 });
 

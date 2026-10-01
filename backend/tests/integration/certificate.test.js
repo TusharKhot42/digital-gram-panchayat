@@ -126,7 +126,11 @@ describe('citizen apply', () => {
 
   test('rejects missing required field for the type (400)', async () => {
     const token = await citizenToken();
-    const res = await applyMarriage(token, { husbandName: 'X', applicantMobile: '9876500001' }, false);
+    const res = await applyMarriage(
+      token,
+      { husbandName: 'X', applicantMobile: '9876500001' },
+      false,
+    );
     expect(res.status).toBe(400);
     expect(res.body.error.fields.address).toBeDefined();
   });
@@ -160,8 +164,8 @@ describe('citizen apply', () => {
   });
 });
 
-describe('officer approve + PDF + notify', () => {
-  test('approve generates PDF, notifies, audits', async () => {
+describe('officer approve + manual certificate upload + notify', () => {
+  test('approve approves documents without auto-generating PDF, notifies, audits', async () => {
     const cToken = await citizenToken();
     const oToken = await officerToken();
     const created = await applyMarriage(cToken);
@@ -172,7 +176,8 @@ describe('officer approve + PDF + notify', () => {
       .set('Authorization', `Bearer ${oToken}`);
     expect(res.status).toBe(200);
     expect(res.body.data.status).toBe('Approved');
-    expect(res.body.data.pdfUrl).toBeDefined();
+    expect(res.body.data.pdfUrl).toBeUndefined();
+    expect(res.body.data.certificateUrl).toBeUndefined();
 
     const notifs = await Notification.countDocuments({ purpose: 'dakhalaUpdate' });
     expect(notifs).toBe(1);
@@ -180,7 +185,7 @@ describe('officer approve + PDF + notify', () => {
     expect(audits).toBe(1);
   });
 
-  test('citizen can download own approved certificate; others cannot', async () => {
+  test('citizen can download own approved certificate after manual upload; others cannot', async () => {
     const cToken = await citizenToken('9876500001');
     const otherToken = await citizenToken('9876500002');
     const oToken = await officerToken();
@@ -193,15 +198,35 @@ describe('officer approve + PDF + notify', () => {
       .set('Authorization', `Bearer ${cToken}`);
     expect(early.status).toBe(404);
 
+    // approve application
     await request(app)
       .patch(`/api/v1/admin/dakhala/${id}/approve`)
       .set('Authorization', `Bearer ${oToken}`);
+
+    // not ready before manual upload
+    const beforeUpload = await request(app)
+      .get(`/api/v1/dakhala/${id}/certificate`)
+      .set('Authorization', `Bearer ${cToken}`);
+    expect(beforeUpload.status).toBe(404);
+
+    // officer manually uploads original certificate (PDF or Image)
+    const uploadRes = await request(app)
+      .post(`/api/v1/admin/dakhala/${id}/certificate`)
+      .set('Authorization', `Bearer ${oToken}`)
+      .attach('certificate', PNG, {
+        filename: 'marriage-certificate.png',
+        contentType: 'image/png',
+      });
+    expect(uploadRes.status).toBe(200);
+    expect(uploadRes.body.data.certificateUrl).toBeDefined();
+    expect(uploadRes.body.data.certificateFileType).toBe('image');
 
     const own = await request(app)
       .get(`/api/v1/dakhala/${id}/certificate`)
       .set('Authorization', `Bearer ${cToken}`);
     expect(own.status).toBe(200);
-    expect(own.body.data.pdfUrl).toBeDefined();
+    expect(own.body.data.certificateUrl).toBeDefined();
+    expect(own.body.data.type).toBe('image');
 
     const other = await request(app)
       .get(`/api/v1/dakhala/${id}/certificate`)

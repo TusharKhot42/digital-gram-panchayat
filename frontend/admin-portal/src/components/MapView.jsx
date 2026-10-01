@@ -18,7 +18,10 @@ L.Marker.prototype.options.icon = DefaultIcon;
 export function MapView({ latitude, longitude, height = 280 }) {
   const center = [latitude, longitude];
   return (
-    <div className="overflow-hidden rounded-md border border-border" style={{ height }}>
+    <div
+      className="relative isolate z-0 overflow-hidden rounded-md border border-border"
+      style={{ height }}
+    >
       <MapContainer center={center} zoom={16} style={{ height: '100%', width: '100%' }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={center} />

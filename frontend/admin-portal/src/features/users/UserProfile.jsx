@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { formatDate } from '@dgp/shared';
+import { formatDate, WARD_DETAILS } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
@@ -32,7 +32,14 @@ export function UserProfile() {
     }
   };
 
+  const wardDisplay = u.ward
+    ? locale === 'mr' && WARD_DETAILS[u.ward]?.name_mr
+      ? WARD_DETAILS[u.ward].name_mr
+      : u.ward
+    : '—';
+
   const rows = [
+    [t('users.ward'), wardDisplay],
     [t('users.mobile'), u.mobile],
     [t('users.email'), u.email],
     [t('users.village'), u.village],

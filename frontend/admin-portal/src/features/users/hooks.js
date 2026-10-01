@@ -29,6 +29,26 @@ export function useSetUserStatus(id) {
     onSuccess: (updated) => {
       if (updated?.id) qc.setQueryData(userKeys.detail(updated.id), updated);
       qc.invalidateQueries({ queryKey: ['admin-users', 'list'] });
+      qc.invalidateQueries({ queryKey: ['admin-officers', 'list'] });
+    },
+  });
+}
+
+export function useAdmins(params) {
+  return useQuery({
+    queryKey: ['admin-officers', 'list', params ?? {}],
+    queryFn: () => userService.listAdmins(params),
+    placeholderData: (prev) => prev,
+  });
+}
+
+export function useRegisterAdmin() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) => userService.registerAdmin(payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-officers', 'list'] });
+      qc.invalidateQueries({ queryKey: ['admin-users', 'list'] });
     },
   });
 }

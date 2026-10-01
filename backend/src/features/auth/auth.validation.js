@@ -11,6 +11,7 @@ export const registerValidation = [
     .isLength({ min: VALIDATION.PASSWORD_MIN_LENGTH })
     .withMessage(`Password must be at least ${VALIDATION.PASSWORD_MIN_LENGTH} characters`),
   body('village').trim().notEmpty().withMessage('Village is required'),
+  body('ward').optional({ values: 'falsy' }).trim(),
   body('address').trim().notEmpty().withMessage('Address is required'),
   body('email').optional({ values: 'falsy' }).isEmail().withMessage('Enter a valid email'),
 ];
@@ -23,6 +24,23 @@ export const loginValidation = [
 export const officerLoginValidation = [
   body('email').isEmail().withMessage('Enter a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
+];
+
+export const registerOfficerValidation = [
+  body('fullName')
+    .trim()
+    .isLength({ min: VALIDATION.FULLNAME_MIN_LENGTH, max: VALIDATION.FULLNAME_MAX_LENGTH })
+    .withMessage('Full name is required'),
+  body('email').isEmail().withMessage('Enter a valid email address'),
+  body('password')
+    .isLength({ min: VALIDATION.PASSWORD_MIN_LENGTH })
+    .withMessage(`Password must be at least ${VALIDATION.PASSWORD_MIN_LENGTH} characters`),
+  body('mobile')
+    .optional({ values: 'falsy' })
+    .matches(VALIDATION.MOBILE_REGEX)
+    .withMessage(VALIDATION.MOBILE_MESSAGE),
+  body('village').optional({ values: 'falsy' }).trim(),
+  body('address').optional({ values: 'falsy' }).trim(),
 ];
 
 /** Shared login page: one field holding either a mobile number or an email address. */
@@ -42,6 +60,7 @@ export const updateProfileValidation = [
     .isLength({ min: VALIDATION.FULLNAME_MIN_LENGTH, max: VALIDATION.FULLNAME_MAX_LENGTH })
     .withMessage('Full name is required'),
   body('village').trim().notEmpty().withMessage('Village is required'),
+  body('ward').optional({ values: 'falsy' }).trim(),
   body('address').trim().notEmpty().withMessage('Address is required'),
   body('email').optional({ values: 'falsy' }).isEmail().withMessage('Enter a valid email'),
 ];

@@ -25,6 +25,7 @@ export const createComplaintSchema = z.object({
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
   address: z.string().trim().max(300).optional().or(z.literal('')),
+  ward: z.string().trim().optional().or(z.literal('')),
 });
 
 export const updateComplaintStatusSchema = z

@@ -20,7 +20,7 @@ function greetingKey(hour) {
  * photo an officer uploads in the Village Profile; with none, the same government-blue scrim
  * used elsewhere stands in.
  */
-export function VillageHero({ profile, firstName }) {
+export function VillageHero({ profile, firstName, ward }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const { theme, toggleTheme } = useTheme();
@@ -99,6 +99,12 @@ export function VillageHero({ profile, firstName }) {
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
+          {ward && (
+            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-amber-400/25 border border-amber-300/40 px-3 text-caption font-semibold backdrop-blur text-amber-100 shadow-xs">
+              <MapPin className="h-4 w-4 text-amber-300" aria-hidden="true" />
+              <span>{ward}</span>
+            </span>
+          )}
           <span className={chip}>
             <CalendarDays className="h-4 w-4" aria-hidden="true" />
             {formatDate(now, locale)}

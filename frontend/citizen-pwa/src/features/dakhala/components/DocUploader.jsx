@@ -54,7 +54,7 @@ export function DocUploader({ group, entries, totalCount, onAdd, onRemove }) {
   };
 
   return (
-    <div className="space-y-2 rounded-lg border border-border p-3">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-2xs">
       <div className="flex items-center justify-between gap-2">
         <label className="text-sm font-medium text-foreground">
           {t(`dakhala.docGroup.${group.key}`, group.key)}
@@ -81,7 +81,7 @@ export function DocUploader({ group, entries, totalCount, onAdd, onRemove }) {
           {entries.map((entry, idx) => (
             <li
               key={`${entry.file.name}-${idx}`}
-              className="flex items-center gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-sm"
+              className="flex items-center gap-2.5 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm"
             >
               {previews[idx] ? (
                 <img src={previews[idx]} alt="" className="h-9 w-9 rounded object-cover" />
@@ -89,7 +89,9 @@ export function DocUploader({ group, entries, totalCount, onAdd, onRemove }) {
                 <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
               )}
               <span className="min-w-0 flex-1">
-                <span className="block truncate">{entry.file.name}</span>
+                <span className="block truncate font-medium text-foreground">
+                  {entry.file.name}
+                </span>
                 <span className="block text-xs text-muted-foreground">
                   {t(`dakhala.doc.${entry.docType}`, entry.docType)}
                 </span>
@@ -98,8 +100,9 @@ export function DocUploader({ group, entries, totalCount, onAdd, onRemove }) {
                 type="button"
                 onClick={() => onRemove(entry)}
                 aria-label={t('dakhala.form.removeDoc')}
+                className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
-                <X className="h-4 w-4 text-muted-foreground" />
+                <X className="h-4 w-4" />
               </button>
             </li>
           ))}
@@ -107,7 +110,7 @@ export function DocUploader({ group, entries, totalCount, onAdd, onRemove }) {
       ) : null}
 
       {totalCount < MAX_CERT_DOCUMENTS ? (
-        <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-input px-3 py-2 text-sm text-muted-foreground">
+        <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-input bg-background/50 px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:bg-accent/40">
           <FilePlus className="h-4 w-4" />
           {t('dakhala.form.addDoc')}
           <input

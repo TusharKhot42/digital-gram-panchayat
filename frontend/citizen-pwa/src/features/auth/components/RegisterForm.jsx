@@ -2,13 +2,15 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { VALIDATION } from '@dgp/shared';
+import { VALIDATION, WARD_DETAILS } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
+import { controlClass } from '@/components/ui/input';
+import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
 import { FormField } from './FormField';
 
 export function RegisterForm() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
 
@@ -62,6 +64,31 @@ export function RegisterForm() {
         error={errors.village}
         register={register('village', { required: t('auth.required') })}
       />
+      <div className="space-y-1.5">
+        <label htmlFor="register-ward" className="block text-label text-foreground">
+          {t('auth.ward', 'Ward (Prabhag)')} *
+        </label>
+        <select
+          id="register-ward"
+          className={cn(
+            controlClass,
+            errors.ward && 'border-destructive focus-visible:ring-destructive',
+          )}
+          {...register('ward', { required: t('auth.wardRequired', 'Please select your ward') })}
+        >
+          <option value="">{t('auth.selectWard', 'Select Ward (1 to 6)')}</option>
+          {WARD_DETAILS.map((w) => (
+            <option key={w.id} value={w.id}>
+              {i18n.language === 'mr' ? w.name_mr : w.name_en}
+            </option>
+          ))}
+        </select>
+        {errors.ward && (
+          <p role="alert" className="text-caption text-destructive-strong">
+            {errors.ward.message}
+          </p>
+        )}
+      </div>
       <FormField
         label={t('auth.address')}
         error={errors.address}

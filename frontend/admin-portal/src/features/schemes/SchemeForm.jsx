@@ -173,7 +173,11 @@ export function SchemeForm() {
         {isEdit ? t('scheme.form.editTitle') : t('scheme.form.createTitle')}
       </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm"
+        noValidate
+      >
         <div className="space-y-1">
           <label htmlFor="scheme-title" className="block text-label text-foreground">
             {t('scheme.form.title')}

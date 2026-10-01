@@ -14,6 +14,79 @@ export const PAGINATION_DEFAULTS = {
 
 export const COMPLAINT_CATEGORIES = ['Road', 'WaterSupply', 'Sanitation', 'Electricity', 'Other'];
 
+export const WARDS = ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5', 'Ward 6'];
+
+export const WARD_DETAILS = [
+  { id: 'Ward 1', number: 1, name_en: 'Ward 1', name_mr: 'प्रभाग १', en: 'Ward 1', mr: 'प्रभाग १' },
+  { id: 'Ward 2', number: 2, name_en: 'Ward 2', name_mr: 'प्रभाग २', en: 'Ward 2', mr: 'प्रभाग २' },
+  { id: 'Ward 3', number: 3, name_en: 'Ward 3', name_mr: 'प्रभाग ३', en: 'Ward 3', mr: 'प्रभाग ३' },
+  { id: 'Ward 4', number: 4, name_en: 'Ward 4', name_mr: 'प्रभाग ४', en: 'Ward 4', mr: 'प्रभाग ४' },
+  { id: 'Ward 5', number: 5, name_en: 'Ward 5', name_mr: 'प्रभाग ५', en: 'Ward 5', mr: 'प्रभाग ५' },
+  { id: 'Ward 6', number: 6, name_en: 'Ward 6', name_mr: 'प्रभाग ६', en: 'Ward 6', mr: 'प्रभाग ६' },
+];
+
+export const WARD_MAP = {
+  'Ward 1': {
+    id: 'Ward 1',
+    number: 1,
+    name_en: 'Ward 1',
+    name_mr: 'प्रभाग १',
+    en: 'Ward 1',
+    mr: 'प्रभाग १',
+  },
+  'Ward 2': {
+    id: 'Ward 2',
+    number: 2,
+    name_en: 'Ward 2',
+    name_mr: 'प्रभाग २',
+    en: 'Ward 2',
+    mr: 'प्रभाग २',
+  },
+  'Ward 3': {
+    id: 'Ward 3',
+    number: 3,
+    name_en: 'Ward 3',
+    name_mr: 'प्रभाग ३',
+    en: 'Ward 3',
+    mr: 'प्रभाग ३',
+  },
+  'Ward 4': {
+    id: 'Ward 4',
+    number: 4,
+    name_en: 'Ward 4',
+    name_mr: 'प्रभाग ४',
+    en: 'Ward 4',
+    mr: 'प्रभाग ४',
+  },
+  'Ward 5': {
+    id: 'Ward 5',
+    number: 5,
+    name_en: 'Ward 5',
+    name_mr: 'प्रभाग ५',
+    en: 'Ward 5',
+    mr: 'प्रभाग ५',
+  },
+  'Ward 6': {
+    id: 'Ward 6',
+    number: 6,
+    name_en: 'Ward 6',
+    name_mr: 'प्रभाग ६',
+    en: 'Ward 6',
+    mr: 'प्रभाग ६',
+  },
+};
+
+WARD_DETAILS.forEach((item) => {
+  WARD_DETAILS[item.id] = item;
+});
+
+export const formatWard = (ward, locale = 'mr') => {
+  if (!ward) return '';
+  const item = WARD_MAP[ward] || WARD_DETAILS[ward];
+  if (!item) return ward;
+  return locale === 'mr' ? item.mr : item.en;
+};
+
 export const COMPLAINT_STATUSES = ['Pending', 'InProgress', 'Resolved'];
 
 export const COMPLAINT_PRIORITIES = ['Low', 'Medium', 'High'];

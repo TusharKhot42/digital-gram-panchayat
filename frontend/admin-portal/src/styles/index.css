@@ -59,47 +59,52 @@
   }
 
   :root[data-theme='dark'] {
-    --background: 222 47% 8%;
-    --foreground: 210 40% 98%;
-    --card: 222 42% 12%;
-    --card-foreground: 210 40% 98%;
-    --surface: 222 38% 16%;
+    /* Surfaces — comfortable soft dark slate background #19202E; elevated cards #232C3E pop with clear depth */
+    --background: 222 28% 14%;
+    --foreground: 210 30% 96%;
+    --card: 222 28% 19%;
+    --card-foreground: 210 30% 96%;
+    --surface: 222 26% 23%;
 
-    --primary: 219 85% 66%;
-    --primary-hover: 219 90% 74%;
+    /* Brand — bright clear cornflower blue with soft subtle glow */
+    --primary: 219 88% 68%;
+    --primary-hover: 219 92% 76%;
     --primary-foreground: 222 47% 8%;
-    --primary-subtle: 219 45% 18%;
+    --primary-subtle: 219 45% 24%;
 
-    --secondary: 222 38% 16%;
-    --secondary-foreground: 210 40% 92%;
+    /* Neutrals — refined slate with comfortable readability */
+    --secondary: 222 24% 22%;
+    --secondary-foreground: 210 25% 94%;
     --slate: 215 20% 75%;
-    --muted: 222 38% 16%;
-    --muted-foreground: 215 20% 70%;
-    --body-foreground: 213 27% 84%;
-    --accent: 222 38% 16%;
-    --accent-foreground: 210 40% 98%;
+    --muted: 222 22% 21%;
+    --muted-foreground: 215 18% 72%;
+    --body-foreground: 214 22% 88%;
+    --accent: 222 26% 23%;
+    --accent-foreground: 210 30% 98%;
 
-    --destructive: 0 72% 58%;
+    /* Semantic highlights & status badges */
+    --destructive: 0 76% 62%;
     --destructive-foreground: 222 47% 8%;
-    --destructive-subtle: 0 50% 16%;
+    --destructive-subtle: 0 50% 20%;
     --destructive-strong: 0 84% 72%;
-    --success: 158 65% 48%;
+    --success: 158 68% 50%;
     --success-foreground: 222 47% 8%;
-    --success-subtle: 158 40% 16%;
+    --success-subtle: 158 40% 19%;
     --success-strong: 158 60% 64%;
-    --warning: 38 92% 60%;
+    --warning: 38 92% 62%;
     --warning-foreground: 222 47% 8%;
-    --warning-subtle: 38 50% 16%;
+    --warning-subtle: 38 50% 19%;
     --warning-strong: 43 96% 70%;
-    --info: 219 90% 66%;
+    --info: 219 90% 68%;
     --info-foreground: 222 47% 8%;
-    --info-subtle: 219 50% 18%;
+    --info-subtle: 219 50% 22%;
     --info-strong: 219 94% 76%;
-    --pending: 38 92% 60%;
+    --pending: 38 92% 62%;
 
-    --border: 222 38% 19%;
-    --input: 222 38% 22%;
-    --ring: 219 85% 66%;
+    /* Crisp, clean borders that define sections and cards smoothly */
+    --border: 222 22% 27%;
+    --input: 222 24% 23%;
+    --ring: 219 88% 68%;
   }
 
   * {

@@ -59,7 +59,8 @@ export function LoginForm({ mode = 'villager' }) {
       }
 
       adoptSession(user, token);
-      toast.success(t('auth.loginSuccess'));
+      const wardSuffix = user.ward ? ` (${user.ward})` : '';
+      toast.success(`${t('auth.loginSuccess')}${wardSuffix}`);
       navigate(from, { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.error?.message || t('auth.loginFailed'));

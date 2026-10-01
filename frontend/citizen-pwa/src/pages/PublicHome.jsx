@@ -25,8 +25,6 @@ import { MapView } from '@/components/MapView';
 import { LanguageGate } from '@/components/LanguageGate';
 import { useLanguage } from '@/store';
 import { useVillageProfile, useVillageEvents } from '@/features/village/hooks';
-import { useNotices } from '@/features/notices/hooks';
-import { useSchemes } from '@/features/schemes/hooks';
 import { PublicImportantContacts } from '@/components/PublicImportantContacts';
 
 // The portal's built-in services — shown when an officer hasn't configured custom cards.
@@ -43,8 +41,7 @@ const DEFAULT_SERVICES = [
 // In-page anchor links for the footer.
 const QUICK_LINKS = [
   { href: '#services', key: 'public.services' },
-  { href: '#notices', key: 'public.latestNotices' },
-  { href: '#schemes', key: 'public.latestSchemes' },
+  { href: '#events', key: 'public.events' },
   { href: '#emergency', key: 'public.emergency' },
 ];
 
@@ -89,15 +86,12 @@ export function PublicHome() {
   const { language, toggleLanguage } = useLanguage();
   const { data: profile } = useVillageProfile();
   const { data: eventsData } = useVillageEvents();
-  const { data: noticesData } = useNotices();
-  const { data: schemesData } = useSchemes();
 
   const g = profile?.general ?? {};
   const villageName = g.villageName || t('appName');
   const stats = Object.entries(profile?.statistics ?? {}).filter(([, v]) => v !== '' && v != null);
   const services = profile?.services?.length ? profile.services : DEFAULT_SERVICES;
-  const notices = (noticesData?.data ?? []).slice(0, 5);
-  const schemes = (schemesData?.data ?? []).slice(0, 5);
+
   const events = (eventsData?.data ?? []).slice(0, 4);
   const gallery = (profile?.gallery ?? []).slice(0, 6);
   const awards = profile?.awards ?? [];
@@ -261,65 +255,6 @@ export function PublicHome() {
           })}
         </div>
       </Section>
-
-      {/* Latest notices + schemes. One page-level container (identical width to every other
-          section) holding a two-column inner grid — previously each list was its own centred
-          max-w-5xl Section nested inside the grid, so it centred within its column instead of
-          the page and rendered narrow and off-axis whenever only one list had content. */}
-      {notices.length || schemes.length ? (
-        <section
-          aria-labelledby={notices.length ? 'notices-h' : 'schemes-h'}
-          className="mx-auto w-full max-w-5xl px-4 py-8"
-        >
-          {/* min-w-0 on each column: a grid item's default `min-width: auto` sized the column
-              to its longest notice title (367px inside a 288px grid at 320px), so `truncate`
-              below never engaged and the page scrolled sideways. */}
-          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
-            {notices.length ? (
-              <div className="min-w-0">
-                <h2 id="notices-h" className="mb-5 text-title text-foreground">
-                  {t('public.latestNotices')}
-                </h2>
-                <ul className="space-y-2">
-                  {notices.map((n) => (
-                    <li
-                      key={n.id}
-                      className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
-                    >
-                      <p className="truncate text-body font-medium text-foreground">{n.title}</p>
-                      <p className="mt-0.5 text-caption text-muted-foreground">
-                        {formatDate(n.publishDate || n.createdAt, locale)}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-            {schemes.length ? (
-              <div className="min-w-0">
-                <h2 id="schemes-h" className="mb-5 text-title text-foreground">
-                  {t('public.latestSchemes')}
-                </h2>
-                <ul className="space-y-2">
-                  {schemes.map((s) => (
-                    <li
-                      key={s.id}
-                      className="rounded-lg border border-border bg-card px-4 py-3 shadow-xs"
-                    >
-                      <p className="truncate text-body font-medium text-foreground">{s.title}</p>
-                      {s.summary ? (
-                        <p className="mt-0.5 line-clamp-1 text-caption text-muted-foreground">
-                          {s.summary}
-                        </p>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
 
       {/* Upcoming events */}
       {events.length ? (

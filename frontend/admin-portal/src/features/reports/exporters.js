@@ -28,7 +28,7 @@ export function reportRows(report, t) {
       push(section, t('reports.outstanding'), mod.outstanding);
     }
     if (key === 'notices') push(section, t('reports.published'), mod.published);
-    for (const list of ['byStatus', 'byCategory', 'byType', 'byActive', 'byPublished']) {
+    for (const list of ['byStatus', 'byCategory', 'byType', 'byActive', 'byPublished', 'byWard']) {
       for (const item of mod[list] ?? []) {
         push(section, String(item.label), item.value);
       }
@@ -72,9 +72,17 @@ export function exportExcel(report, t) {
 }
 
 /** Specialized Tax Register Excel export */
-export function exportTaxRegister(taxData, t) {
+export function exportTaxRegister(taxData, _t) {
   const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const header = ['कर नोंद क्र. / Tax ID', 'मालमत्ता / Property', 'मालक / Owner', 'आकारणी / Assessed (₹)', 'भरणा / Paid (₹)', 'थकबाकी / Dues (₹)', 'स्थिती / Status'];
+  const header = [
+    'कर नोंद क्र. / Tax ID',
+    'मालमत्ता / Property',
+    'मालक / Owner',
+    'आकारणी / Assessed (₹)',
+    'भरणा / Paid (₹)',
+    'थकबाकी / Dues (₹)',
+    'स्थिती / Status',
+  ];
   const tr = (cells, tag) => `<tr>${cells.map((c) => `<${tag}>${esc(c)}</${tag}>`).join('')}</tr>`;
   const rows = (taxData ?? []).map((row) => [
     row.taxId || row.id || '-',
@@ -95,9 +103,16 @@ export function exportTaxRegister(taxData, t) {
 }
 
 /** Specialized Complaints Audit Register Excel export */
-export function exportComplaintsRegister(complaintsData, t) {
+export function exportComplaintsRegister(complaintsData, _t) {
   const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const header = ['तक्रार क्र. / ID', 'विषय / Subject', 'प्रवर्ग / Category', 'तक्रारदार / Complainant', 'दिनांक / Date', 'स्थिती / Status'];
+  const header = [
+    'तक्रार क्र. / ID',
+    'विषय / Subject',
+    'प्रवर्ग / Category',
+    'तक्रारदार / Complainant',
+    'दिनांक / Date',
+    'स्थिती / Status',
+  ];
   const tr = (cells, tag) => `<tr>${cells.map((c) => `<${tag}>${esc(c)}</${tag}>`).join('')}</tr>`;
   const rows = (complaintsData ?? []).map((c) => [
     c.complaintId || c.id || '-',
@@ -117,9 +132,15 @@ export function exportComplaintsRegister(complaintsData, t) {
 }
 
 /** Specialized Certificate Issuance Register Excel export */
-export function exportCertificatesRegister(certificatesData, t) {
+export function exportCertificatesRegister(certificatesData, _t) {
   const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const header = ['अर्ज क्र. / Application ID', 'प्रमाणपत्र प्रकार / Type', 'अर्जदार / Applicant', 'अर्ज दिनांक / Applied Date', 'स्थिती / Status'];
+  const header = [
+    'अर्ज क्र. / Application ID',
+    'प्रमाणपत्र प्रकार / Type',
+    'अर्जदार / Applicant',
+    'अर्ज दिनांक / Applied Date',
+    'स्थिती / Status',
+  ];
   const tr = (cells, tag) => `<tr>${cells.map((c) => `<${tag}>${esc(c)}</${tag}>`).join('')}</tr>`;
   const rows = (certificatesData ?? []).map((a) => [
     a.applicationId || a.id || '-',
@@ -140,4 +161,3 @@ export function exportCertificatesRegister(certificatesData, t) {
 export function exportPdf() {
   window.print();
 }
-

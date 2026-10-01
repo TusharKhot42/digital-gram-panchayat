@@ -80,10 +80,19 @@ export function ComplaintDetail() {
         <div className="space-y-4 lg:col-span-2">
           <Card>
             <CardContent className="p-5">
-              <p className="text-caption text-muted-foreground">
-                {t(`complaint.category.${c.category}`, c.category)} ·{' '}
-                {formatDateTime(c.createdAt, locale)}
-              </p>
+              <div className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
+                <span>{t(`complaint.category.${c.category}`, c.category)}</span>
+                <span>·</span>
+                <span>{formatDateTime(c.createdAt, locale)}</span>
+                {c.ward ? (
+                  <>
+                    <span>·</span>
+                    <span className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-xs font-semibold text-primary">
+                      {c.ward}
+                    </span>
+                  </>
+                ) : null}
+              </div>
               <p className="mt-2 whitespace-pre-wrap text-body text-body-foreground">
                 {c.description}
               </p>

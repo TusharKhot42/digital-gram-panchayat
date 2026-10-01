@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { VALIDATION } from '@dgp/shared';
+import { VALIDATION, WARD_DETAILS } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { controlClass } from '@/components/ui/input';
 import { cn } from '@/utils/cn';
@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { FormField } from './FormField';
 
 export function ProfileForm() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, updateProfile } = useAuth();
 
   const {
@@ -20,6 +20,7 @@ export function ProfileForm() {
     defaultValues: {
       fullName: user?.fullName ?? '',
       village: user?.village ?? '',
+      ward: user?.ward ?? '',
       address: user?.address ?? '',
       email: user?.email ?? '',
     },
@@ -62,6 +63,19 @@ export function ProfileForm() {
         error={errors.village}
         register={register('village', { required: t('auth.required') })}
       />
+      <div className="space-y-1.5">
+        <label htmlFor="profile-ward" className="block text-label text-foreground">
+          {t('auth.ward', 'Ward (Prabhag)')}
+        </label>
+        <select id="profile-ward" className={cn(controlClass)} {...register('ward')}>
+          <option value="">{t('auth.selectWard', 'Select Ward (1 to 6)')}</option>
+          {WARD_DETAILS.map((w) => (
+            <option key={w.id} value={w.id}>
+              {i18n.language === 'mr' ? w.name_mr : w.name_en}
+            </option>
+          ))}
+        </select>
+      </div>
       <FormField
         label={t('auth.address')}
         error={errors.address}

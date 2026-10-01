@@ -27,7 +27,16 @@ export async function authenticate(req, _res, next) {
       throw new AppError(401, 'UNAUTHORIZED', 'Account is no longer active');
     }
 
-    req.user = { id: user.id, role: user.role };
+    req.user = {
+      id: user.id,
+      role: user.role,
+      ward: user.ward,
+      isRootAdmin: Boolean(
+        user.isRootAdmin ||
+        (user.role === 'officer' &&
+          user.email === (process.env.SEED_ADMIN_EMAIL || 'admin@dgp.local').toLowerCase()),
+      ),
+    };
     next();
   } catch (err) {
     next(err);

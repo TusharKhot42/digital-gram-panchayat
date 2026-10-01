@@ -18,7 +18,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t('nav.home')}
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-[#6495ED]/40 bg-[#1E3A8A] text-white pb-[env(safe-area-inset-bottom)] shadow-lg"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[#6495ED]/40 bg-[#1E3A8A] text-white pb-[env(safe-area-inset-bottom)] shadow-lg"
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-between px-2">
         {items.map(({ to, label, icon: Icon, end }) => (

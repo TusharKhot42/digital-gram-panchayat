@@ -13,8 +13,9 @@ export const taxService = {
     const { data } = await apiClient.get(`/admin/tax/${id}/history`);
     return data.data;
   },
-  async lookupCitizen(mobile) {
-    const { data } = await apiClient.get('/admin/tax/lookup', { params: { mobile } });
+  async lookupCitizen(query) {
+    const params = typeof query === 'string' ? { q: query } : query;
+    const { data } = await apiClient.get('/admin/tax/lookup', { params });
     return data.data;
   },
   async create(values, files = []) {

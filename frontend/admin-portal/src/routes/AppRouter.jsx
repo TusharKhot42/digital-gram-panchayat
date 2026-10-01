@@ -35,6 +35,7 @@ const CertificateReview = lazyNamed(
   'CertificateReview',
 );
 const UsersList = lazyNamed(() => import('@/features/users/UsersList'), 'UsersList');
+const AdminList = lazyNamed(() => import('@/features/users/AdminList'), 'AdminList');
 const UserProfile = lazyNamed(() => import('@/features/users/UserProfile'), 'UserProfile');
 const NotificationsList = lazyNamed(
   () => import('@/features/notifications/NotificationsList'),
@@ -69,9 +70,9 @@ const DocumentsAdmin = lazyNamed(
   () => import('@/features/governance/DocumentsAdmin'),
   'DocumentsAdmin',
 );
-const FeedbackAnalytics = lazyNamed(
-  () => import('@/features/governance/FeedbackAnalytics'),
-  'FeedbackAnalytics',
+const TimetableAdmin = lazyNamed(
+  () => import('@/features/timetable/TimetableAdmin'),
+  'TimetableAdmin',
 );
 
 const page = (element) => <Suspense fallback={<LoadingScreen />}>{element}</Suspense>;
@@ -103,6 +104,7 @@ const router = createBrowserRouter([
           { path: 'dakhala/:id', element: page(<CertificateReview />) },
           { path: 'users', element: page(<UsersList />) },
           { path: 'users/:id', element: page(<UserProfile />) },
+          { path: 'admins', element: page(<AdminList />) },
           { path: 'notifications', element: page(<NotificationsList />) },
           { path: 'notifications/broadcast', element: page(<BroadcastForm />) },
           { path: 'notifications/:id', element: page(<NotificationDetail />) },
@@ -114,7 +116,7 @@ const router = createBrowserRouter([
           { path: 'projects', element: page(<ProjectsAdmin />) },
           { path: 'polls', element: page(<PollsAdmin />) },
           { path: 'documents', element: page(<DocumentsAdmin />) },
-          { path: 'feedback', element: page(<FeedbackAnalytics />) },
+          { path: 'timetable', element: page(<TimetableAdmin />) },
           { path: 'help', element: page(<Help />) },
           { path: '*', element: page(<NotFound />) },
         ],

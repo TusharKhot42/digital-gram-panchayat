@@ -77,17 +77,20 @@ export function HelpAssistant() {
         onClick={() => setOpen(true)}
         aria-label={t('assistant.open')}
         title={t('assistant.open')}
-        // Sits above the bottom navigation on mobile so it never covers a nav item.
-        className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform duration-150 hover:bg-primary-hover active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:bottom-6"
+        // Floats safely above the bottom navigation bar on all screen sizes (mobile & desktop)
+        className="group fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-4 sm:bottom-[calc(5.25rem+env(safe-area-inset-bottom))] sm:right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl ring-2 ring-white/20 transition-all duration-200 hover:scale-105 hover:bg-primary-hover active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <MessageCircleQuestion className="h-6 w-6" aria-hidden="true" />
+        <MessageCircleQuestion
+          className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
+          aria-hidden="true"
+        />
       </button>
     );
   }
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-end justify-center sm:items-end sm:justify-end sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-end sm:justify-end p-2 sm:p-6 sm:pb-[calc(5.5rem+env(safe-area-inset-bottom))]"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) setOpen(false);
       }}

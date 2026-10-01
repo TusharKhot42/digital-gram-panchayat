@@ -3,16 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Camera, ImageUp, X } from 'lucide-react';
 import { MAX_COMPLAINT_PHOTOS, MAX_UPLOAD_SIZE_BYTES } from '@dgp/shared';
 import toast from 'react-hot-toast';
+import { CameraCaptureModal } from './CameraCaptureModal';
 
 /**
- * Two distinct image sources: Capture Photo (opens the rear camera on mobile via
- * `capture="environment"`) and Upload Photo (gallery / file picker, multi-select). On desktop
- * the camera input degrades to a normal file picker. Both paths share the same count/size/type
- * validation; the server re-checks. Multiple images remain supported (up to the max).
+ * Two distinct image sources: Capture Photo (opens the live camera viewfinder modal with
+ * getUserMedia, supporting instant snapshot, camera flipping, and fallback) and
+ * Upload Photo (gallery / file picker, multi-select). Multiple images remain supported.
  */
 export function PhotoUploader({ files, onChange }) {
   const { t } = useTranslation();
   const [previews, setPreviews] = useState([]);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const cameraRef = useRef(null);
   const galleryRef = useRef(null);
 
@@ -47,6 +48,28 @@ export function PhotoUploader({ files, onChange }) {
   const removeAt = (idx) => onChange(files.filter((_, i) => i !== idx));
   const atMax = files.length >= MAX_COMPLAINT_PHOTOS;
 
+  const handleCaptureClick = () => {
+    // If browser supports getUserMedia, open the live camera viewfinder modal!
+    if (navigator?.mediaDevices?.getUserMedia) {
+      setIsCameraOpen(true);
+    } else {
+      // Fallback for environments lacking mediaDevices (e.g. non-HTTPS remote browsers)
+      cameraRef.current?.click();
+    }
+  };
+
+  const handleCameraCapture = (file) => {
+    if (files.length >= MAX_COMPLAINT_PHOTOS) {
+      toast.error(t('complaint.form.maxPhotos', { count: MAX_COMPLAINT_PHOTOS }));
+      return;
+    }
+    if (file.size > MAX_UPLOAD_SIZE_BYTES) {
+      toast.error(t('complaint.form.imageTooLarge'));
+      return;
+    }
+    onChange([...files, file]);
+  };
+
   return (
     <div className="space-y-2">
       {/* A heading, not a <label> — the file inputs are hidden and driven by their own buttons. */}
@@ -75,7 +98,7 @@ export function PhotoUploader({ files, onChange }) {
         </div>
       ) : null}
 
-      {/* Hidden inputs: one forces the camera, one opens the gallery/file picker. */}
+      {/* Hidden inputs: one forces the camera fallback, one opens the gallery/file picker. */}
       <input
         ref={cameraRef}
         type="file"
@@ -93,12 +116,12 @@ export function PhotoUploader({ files, onChange }) {
         onChange={handleAdd}
       />
 
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <button
           type="button"
           disabled={atMax}
-          onClick={() => cameraRef.current?.click()}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium text-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={handleCaptureClick}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-medium text-foreground shadow-2xs transition-all duration-150 hover:bg-accent hover:border-foreground/20 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Camera className="h-4 w-4" />
           {t('complaint.form.capturePhoto')}
@@ -107,12 +130,20 @@ export function PhotoUploader({ files, onChange }) {
           type="button"
           disabled={atMax}
           onClick={() => galleryRef.current?.click()}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium text-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-medium text-foreground shadow-2xs transition-all duration-150 hover:bg-accent hover:border-foreground/20 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ImageUp className="h-4 w-4" />
           {t('complaint.form.uploadPhoto')}
         </button>
       </div>
+
+      {/* Live camera viewfinder capture modal */}
+      <CameraCaptureModal
+        open={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCameraCapture}
+        onFallbackToFile={() => cameraRef.current?.click()}
+      />
     </div>
   );
 }

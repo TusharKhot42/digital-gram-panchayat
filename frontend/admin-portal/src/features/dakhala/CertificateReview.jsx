@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Check, X, FileText, Eye, BadgeCheck } from 'lucide-react';
+import { Check, X, FileText, Eye, Upload, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { formatDateTime, formatDate } from '@dgp/shared';
+import { formatDateTime, formatDate, WARD_DETAILS } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { controlClass } from '@/components/ui/input';
@@ -34,27 +34,54 @@ export function CertificateReview() {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [confirmApprove, setConfirmApprove] = useState(false);
   const [preview, setPreview] = useState(null);
-  // Officer edits applied just before the certificate is generated.
+  // Officer edits applied just before approval.
   const [edits, setEdits] = useState({});
   const [remarks, setRemarks] = useState('');
+  const [approveFile, setApproveFile] = useState(null);
+  const [manualFile, setManualFile] = useState(null);
+  const [isReplacing, setIsReplacing] = useState(false);
 
   if (isLoading) return <p className="text-body text-muted-foreground">{t('common.loading')}</p>;
   if (isError || !a)
     return <p className="text-body text-destructive-strong">{t('dakhala.review.notFound')}</p>;
 
   const pending = a.status === 'Submitted' || a.status === 'UnderReview';
+  const certUrl = a.certificateUrl || a.pdfUrl;
+  const hasCertificate = Boolean(certUrl);
 
   const startApprove = () => {
     setEdits({ ...(a.applicationData || {}) });
     setRemarks(a.officerRemarks || '');
+    setApproveFile(null);
     setConfirmApprove(true);
   };
 
   const doApprove = async () => {
     try {
-      await m.approve.mutateAsync({ applicationData: edits, officerRemarks: remarks });
-      toast.success(t('dakhala.review.approved'));
+      await m.approve.mutateAsync({
+        applicationData: edits,
+        officerRemarks: remarks,
+        file: approveFile,
+      });
+      toast.success(
+        approveFile
+          ? t('dakhala.review.uploadSuccess', 'Certificate uploaded successfully')
+          : t('dakhala.review.approved'),
+      );
       setConfirmApprove(false);
+      setApproveFile(null);
+    } catch (err) {
+      toast.error(err.response?.data?.error?.message || t('dakhala.review.actionFailed'));
+    }
+  };
+
+  const doManualUpload = async () => {
+    if (!manualFile) return;
+    try {
+      await m.uploadCertificate.mutateAsync({ file: manualFile });
+      toast.success(t('dakhala.review.uploadSuccess', 'Certificate uploaded successfully'));
+      setManualFile(null);
+      setIsReplacing(false);
     } catch (err) {
       toast.error(err.response?.data?.error?.message || t('dakhala.review.actionFailed'));
     }
@@ -76,7 +103,18 @@ export function CertificateReview() {
         backTo="/dakhala"
         backLabel={t('dakhala.review.back')}
         title={t(`dakhala.type.${a.certificateType}`, a.certificateType)}
-        subtitle={a.applicationId}
+        subtitle={
+          <span className="flex items-center gap-2">
+            <span>{a.applicationId}</span>
+            {a.ward && (
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                {locale === 'mr' && WARD_DETAILS[a.ward]?.name_mr
+                  ? WARD_DETAILS[a.ward].name_mr
+                  : a.ward}
+              </span>
+            )}
+          </span>
+        }
         action={<DakhalaStatusBadge status={a.status} />}
       />
 
@@ -84,6 +122,18 @@ export function CertificateReview() {
         <div className="space-y-4 lg:col-span-2">
           <Panel title={t('dakhala.review.details')}>
             <dl className="divide-y divide-border">
+              {a.ward && (
+                <div className="flex justify-between gap-3 px-5 py-2.5 bg-primary/5">
+                  <dt className="text-body font-medium text-primary">
+                    {t('dakhala.dash.ward', 'Ward')}
+                  </dt>
+                  <dd className="text-right text-body font-semibold text-primary">
+                    {locale === 'mr' && WARD_DETAILS[a.ward]?.name_mr
+                      ? WARD_DETAILS[a.ward].name_mr
+                      : a.ward}
+                  </dd>
+                </div>
+              )}
               {Object.entries(a.applicationData || {}).map(([key, value]) => (
                 <div key={key} className="flex justify-between gap-3 px-5 py-2.5">
                   <dt className="text-body text-muted-foreground">
@@ -151,45 +201,145 @@ export function CertificateReview() {
             </CardContent>
           </Panel>
 
-          {a.status === 'Approved' && a.pdfUrl ? (
-            <Panel title={t('dakhala.review.pdf')}>
-              <CardContent className="space-y-3 p-5">
-                {a.certificateNumber ? (
-                  <dl className="space-y-1.5">
-                    <div className="flex justify-between gap-3">
-                      <dt className="text-caption text-muted-foreground">
-                        {t('dakhala.review.certNumber')}
-                      </dt>
-                      <dd className="text-caption font-medium tabular-nums text-foreground">
-                        {a.certificateNumber}
-                      </dd>
-                    </div>
-                    {a.issuedAt ? (
+          {a.status === 'Approved' ? (
+            <Panel title={t('dakhala.review.certificateTitle', 'Original Certificate')}>
+              <CardContent className="space-y-4 p-5">
+                {hasCertificate ? (
+                  <div className="space-y-3">
+                    <dl className="space-y-1.5">
+                      {a.certificateNumber ? (
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-caption text-muted-foreground">
+                            {t('dakhala.review.certNumber')}
+                          </dt>
+                          <dd className="text-caption font-medium tabular-nums text-foreground">
+                            {a.certificateNumber}
+                          </dd>
+                        </div>
+                      ) : null}
+                      {a.issuedAt ? (
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-caption text-muted-foreground">
+                            {t('dakhala.review.issuedOn')}
+                          </dt>
+                          <dd className="text-caption font-medium text-foreground">
+                            {formatDate(a.issuedAt, locale)}
+                          </dd>
+                        </div>
+                      ) : null}
                       <div className="flex justify-between gap-3">
                         <dt className="text-caption text-muted-foreground">
-                          {t('dakhala.review.issuedOn')}
+                          {t('dakhala.review.format', 'File format')}
                         </dt>
-                        <dd className="text-caption font-medium text-foreground">
-                          {formatDate(a.issuedAt, locale)}
+                        <dd className="text-caption font-medium uppercase text-foreground">
+                          {a.certificateFileType ||
+                            (certUrl?.match(/\.(png|jpe?g|webp)/i) ? 'Image' : 'PDF')}
                         </dd>
                       </div>
+                    </dl>
+
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setPreview({
+                            url: certUrl,
+                            type:
+                              a.certificateFileType ||
+                              (certUrl?.match(/\.(png|jpe?g|webp)/i) ? 'image' : 'pdf'),
+                            name:
+                              a.certificateFileName ||
+                              `${a.certificateNumber || a.applicationId}.${
+                                a.certificateFileType === 'image' ? 'jpg' : 'pdf'
+                              }`,
+                          })
+                        }
+                      >
+                        <Eye className="h-4 w-4" aria-hidden="true" />
+                        {t('dakhala.review.viewCertificate', 'View Certificate')}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsReplacing((p) => !p)}
+                      >
+                        <Upload className="h-4 w-4" aria-hidden="true" />
+                        {isReplacing
+                          ? t('common.cancel', 'Cancel')
+                          : t('dakhala.review.replaceCertificate', 'Replace Certificate')}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900 dark:border-amber-900/30 dark:bg-amber-950/20 dark:text-amber-200">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <p className="text-body font-medium">
+                        {t('dakhala.review.certPendingTitle', 'Certificate Pending Upload')}
+                      </p>
+                    </div>
+                    <p className="mt-1 text-caption text-amber-800 dark:text-amber-300">
+                      {t(
+                        'dakhala.review.certPendingDesc',
+                        'Application and documents are approved. Please upload the original signed/stamped certificate so the citizen can view and download it.',
+                      )}
+                    </p>
+                  </div>
+                )}
+
+                {(!hasCertificate || isReplacing) && (
+                  <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+                    <h3 className="text-body font-medium text-foreground">
+                      {hasCertificate
+                        ? t('dakhala.review.replaceCertHeading', 'Upload New Certificate')
+                        : t('dakhala.review.uploadCertHeading', 'Upload Original Certificate')}
+                    </h3>
+                    <p className="text-caption text-muted-foreground">
+                      {t(
+                        'dakhala.review.uploadCertHint',
+                        'Select the original certificate file (PDF, JPG, PNG, WEBP, max 5MB).',
+                      )}
+                    </p>
+                    <input
+                      type="file"
+                      id="manual-cert-upload"
+                      accept=".pdf,image/jpeg,image/png,image/webp"
+                      onChange={(e) => setManualFile(e.target.files?.[0] || null)}
+                      className="block w-full text-caption file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-caption file:font-medium file:text-primary-foreground hover:file:opacity-90 cursor-pointer"
+                    />
+                    {manualFile ? (
+                      <div className="flex items-center justify-between text-caption text-muted-foreground">
+                        <span className="truncate">
+                          {manualFile.name} ({(manualFile.size / 1024).toFixed(0)} KB)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setManualFile(null);
+                            const el = document.getElementById('manual-cert-upload');
+                            if (el) el.value = '';
+                          }}
+                          className="text-destructive hover:underline ml-2"
+                        >
+                          {t('common.clear', 'Clear')}
+                        </button>
+                      </div>
                     ) : null}
-                  </dl>
-                ) : null}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setPreview({
-                      url: a.pdfUrl,
-                      type: 'pdf',
-                      name: `${a.certificateNumber || a.applicationId}.pdf`,
-                    })
-                  }
-                  className="inline-flex items-center gap-2 text-body font-medium text-primary transition-colors duration-150 hover:text-primary-hover"
-                >
-                  <Eye className="h-4 w-4" aria-hidden="true" />
-                  {t('dakhala.review.openPdf')}
-                </button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!manualFile}
+                      loading={m.uploadCertificate.isPending}
+                      onClick={doManualUpload}
+                    >
+                      <Upload className="h-4 w-4" aria-hidden="true" />
+                      {t('dakhala.review.uploadButton', 'Upload Certificate')}
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Panel>
           ) : null}
@@ -245,11 +395,48 @@ export function CertificateReview() {
                           onChange={(e) => setRemarks(e.target.value)}
                         />
                       </label>
+
+                      {/* Optional Original Certificate File Upload during Approval */}
+                      <div className="space-y-1 pt-1">
+                        <span className="block text-label font-medium text-foreground">
+                          {t('dakhala.review.uploadOriginalCert')}
+                        </span>
+                        <p className="text-caption text-muted-foreground">
+                          {t('dakhala.review.uploadOriginalCertHint')}
+                        </p>
+                        <input
+                          type="file"
+                          id="approve-cert-file"
+                          accept=".pdf,image/jpeg,image/png,image/webp"
+                          onChange={(e) => setApproveFile(e.target.files?.[0] || null)}
+                          className="block w-full text-caption file:mr-3 file:rounded-md file:border-0 file:bg-primary-subtle file:px-3 file:py-1.5 file:text-caption file:font-medium file:text-primary hover:file:bg-primary/20 cursor-pointer"
+                        />
+                        {approveFile ? (
+                          <div className="flex items-center justify-between text-caption text-muted-foreground">
+                            <span className="truncate">
+                              {approveFile.name} ({(approveFile.size / 1024).toFixed(0)} KB)
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setApproveFile(null);
+                                const el = document.getElementById('approve-cert-file');
+                                if (el) el.value = '';
+                              }}
+                              className="text-destructive hover:underline ml-2"
+                            >
+                              {t('common.clear', 'Clear')}
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 pt-2">
                       <Button size="sm" onClick={doApprove} loading={m.approve.isPending}>
-                        <BadgeCheck className="h-4 w-4" aria-hidden="true" />
-                        {t('dakhala.review.generateApprove')}
+                        <Check className="h-4 w-4" aria-hidden="true" />
+                        {approveFile
+                          ? t('dakhala.review.approveAndUpload')
+                          : t('dakhala.review.approveOnly')}
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => setConfirmApprove(false)}>
                         {t('dakhala.review.cancel')}
@@ -272,8 +459,19 @@ export function CertificateReview() {
             </Panel>
           ) : (
             <Card>
-              <CardContent className="p-5">
-                <p className="text-body text-muted-foreground">{t('dakhala.review.decided')}</p>
+              <CardContent className="space-y-2 p-5">
+                <p className="text-body font-medium text-foreground">
+                  {a.status === 'Approved'
+                    ? t('dakhala.review.approvedTitle', 'Application Approved')
+                    : t('dakhala.review.decided')}
+                </p>
+                <p className="text-caption text-muted-foreground">
+                  {a.status === 'Approved'
+                    ? hasCertificate
+                      ? t('dakhala.review.approvedWithCert')
+                      : t('dakhala.review.approvedNoCert')
+                    : null}
+                </p>
               </CardContent>
             </Card>
           )}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -93,8 +94,9 @@ describe('MobileSidebar', () => {
       '/projects',
       '/polls',
       '/documents',
-      '/feedback',
+      '/timetable',
       '/users',
+      '/admins',
       '/notifications',
       '/reports',
       '/audit',
@@ -163,5 +165,33 @@ describe('Dialog viewport fit', () => {
     const scroller = panel.querySelector('.overflow-y-auto');
     expect(scroller).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Send' })).toBeInTheDocument();
+  });
+
+  it('preserves input focus when parent state re-renders while typing inside Dialog', () => {
+    function TestParent() {
+      const [text, setText] = useState('');
+      const [open, setOpen] = useState(true);
+      return (
+        <Dialog open={open} onClose={() => setOpen(false)} title="Test">
+          <input
+            data-testid="dialog-input"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </Dialog>
+      );
+    }
+    render(<TestParent />);
+    const input = screen.getByTestId('dialog-input');
+    input.focus();
+    expect(document.activeElement).toBe(input);
+
+    fireEvent.change(input, { target: { value: 'a' } });
+    expect(input.value).toBe('a');
+    expect(document.activeElement).toBe(input);
+
+    fireEvent.change(input, { target: { value: 'ab' } });
+    expect(input.value).toBe('ab');
+    expect(document.activeElement).toBe(input);
   });
 });

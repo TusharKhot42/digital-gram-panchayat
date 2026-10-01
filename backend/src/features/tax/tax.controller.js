@@ -10,7 +10,8 @@ export const listMine = asyncHandler(async (req, res) => {
 
 // ---- Officer ----
 export const lookupCitizen = asyncHandler(async (req, res) => {
-  const citizen = await taxService.lookupCitizen(req.query.mobile);
+  const queryParam = req.query.q || req.query.mobile || req.query.name;
+  const citizen = await taxService.lookupCitizen(queryParam);
   res.status(200).json(successResponse(citizen));
 });
 

@@ -139,7 +139,11 @@ export async function uploadPdfBuffer(buffer, folder = 'certificates') {
  * @returns {Promise<{ url: string, type: 'pdf'|'image' }>}
  */
 export async function uploadAttachment(file, folder = 'notices') {
-  const type = file.mimetype === 'application/pdf' ? 'pdf' : 'image';
+  const isPdf =
+    file.mimetype === 'application/pdf' ||
+    file.mimetype === 'application/x-pdf' ||
+    file.originalname?.toLowerCase().endsWith('.pdf');
+  const type = isPdf ? 'pdf' : 'image';
 
   if (!isCloudinaryConfigured) {
     return { url: mockUrl(file), type };

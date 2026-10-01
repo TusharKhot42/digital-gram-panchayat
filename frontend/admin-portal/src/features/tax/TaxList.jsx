@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Receipt } from 'lucide-react';
-import { TAX_TYPES, PAYMENT_STATUSES, formatCurrency } from '@dgp/shared';
+import { TAX_TYPES, PAYMENT_STATUSES, formatCurrency, WARD_DETAILS } from '@dgp/shared';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/input';
 import { SkeletonRows } from '@/components/Skeleton';
@@ -29,12 +29,13 @@ const LIMIT = 20;
  */
 const unknownAmount = (r) => r.amount === null || r.amount === undefined;
 
-const COLS = 6;
+const COLS = 7;
 
 export function TaxList() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'mr' ? 'mr' : 'en';
   const [q, setQ] = useState('');
+  const [ward, setWard] = useState('');
   const [taxType, setTaxType] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('');
   const [page, setPage] = useState(1);
@@ -43,6 +44,7 @@ export function TaxList() {
     page,
     limit: LIMIT,
     ...(q ? { q } : {}),
+    ...(ward ? { ward } : {}),
     ...(taxType ? { taxType } : {}),
     ...(paymentStatus ? { paymentStatus } : {}),
   };
@@ -70,6 +72,19 @@ export function TaxList() {
 
       <FilterBar>
         <SearchInput value={q} onChange={onFilter(setQ)} placeholder={t('tax.dash.search')} />
+        <Select
+          value={ward}
+          onChange={(e) => onFilter(setWard)(e.target.value)}
+          aria-label={t('tax.dash.allWards')}
+          className="w-auto"
+        >
+          <option value="">{t('tax.dash.allWards')}</option>
+          {WARD_DETAILS.map((w) => (
+            <option key={w.id} value={w.id}>
+              {locale === 'mr' ? w.name_mr : w.name_en}
+            </option>
+          ))}
+        </Select>
         <Select
           value={taxType}
           onChange={(e) => onFilter(setTaxType)(e.target.value)}
@@ -103,6 +118,7 @@ export function TaxList() {
           <THead>
             <tr>
               <TH>{t('tax.dash.record')}</TH>
+              <TH>{t('tax.dash.ward')}</TH>
               <TH>{t('tax.dash.type')}</TH>
               <TH>{t('tax.dash.year')}</TH>
               <TH className="text-right">{t('tax.dash.amount')}</TH>
@@ -138,6 +154,22 @@ export function TaxList() {
                       {r.taxRecordId}
                     </Link>
                     <p className="text-caption text-muted-foreground">{r.propertyNumber}</p>
+                    {r.citizen?.fullName && (
+                      <p className="mt-0.5 text-xs font-medium text-foreground">
+                        {r.citizen.fullName} {r.citizen.mobile ? `· ${r.citizen.mobile}` : ''}
+                      </p>
+                    )}
+                  </TD>
+                  <TD className="whitespace-nowrap text-xs">
+                    {r.ward ? (
+                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
+                        {locale === 'mr' && WARD_DETAILS[r.ward]?.name_mr
+                          ? WARD_DETAILS[r.ward].name_mr
+                          : r.ward}
+                      </span>
+                    ) : (
+                      '—'
+                    )}
                   </TD>
                   <TD>{t(`tax.type.${r.taxType}`, r.taxType)}</TD>
                   <TD className="whitespace-nowrap text-muted-foreground">{r.financialYear}</TD>

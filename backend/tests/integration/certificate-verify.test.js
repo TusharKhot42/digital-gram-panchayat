@@ -97,10 +97,17 @@ async function issueCertificate(edits) {
   await request(app)
     .patch(`/api/v1/admin/dakhala/${id}/review`)
     .set('Authorization', `Bearer ${oToken}`);
-  const approveRes = await request(app)
+  const req = request(app)
     .patch(`/api/v1/admin/dakhala/${id}/approve`)
     .set('Authorization', `Bearer ${oToken}`)
-    .send(edits || {});
+    .attach('certificate', PNG, { filename: 'certificate.png', contentType: 'image/png' });
+  if (edits?.applicationData) {
+    req.field('applicationData', JSON.stringify(edits.applicationData));
+  }
+  if (edits?.officerRemarks) {
+    req.field('officerRemarks', edits.officerRemarks);
+  }
+  const approveRes = await req;
   return approveRes.body.data;
 }
 

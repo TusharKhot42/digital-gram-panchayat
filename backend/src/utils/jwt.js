@@ -11,12 +11,15 @@ const AUDIENCE = 'dgp-client';
 /**
  * Sign a stateless JWT. Citizens get the longer expiry, officers the shorter one
  * (blueprint: 24h citizen / 8h officer).
- * @param {{ id: string, role: 'citizen'|'officer' }} params
+ * @param {{ id: string, role: 'citizen'|'officer', ward?: string }} params
  * @returns {string}
  */
-export function signToken({ id, role }) {
+export function signToken({ id, role, ward, isRootAdmin }) {
   const expiresIn = role === ROLES.OFFICER ? env.JWT_EXPIRY_OFFICER : env.JWT_EXPIRY_CITIZEN;
-  return jwt.sign({ role }, env.JWT_SECRET, {
+  const payload = { role };
+  if (ward) payload.ward = ward;
+  if (isRootAdmin) payload.isRootAdmin = true;
+  return jwt.sign(payload, env.JWT_SECRET, {
     subject: String(id),
     expiresIn,
     algorithm: ALGORITHM,

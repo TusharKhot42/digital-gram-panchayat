@@ -31,11 +31,12 @@ async function run() {
     existingOfficer.passwordHash = passwordHash;
     existingOfficer.fullName = fullName;
     existingOfficer.isActive = true;
+    existingOfficer.isRootAdmin = true;
     await existingOfficer.save();
-    logger.info(`Officer updated: ${email}`);
+    logger.info(`Root Officer updated: ${email}`);
   } else {
-    await User.create({ role: ROLES.OFFICER, fullName, email, passwordHash });
-    logger.info(`Officer created: ${email}`);
+    await User.create({ role: ROLES.OFFICER, fullName, email, passwordHash, isRootAdmin: true });
+    logger.info(`Root Officer created: ${email}`);
   }
 
   // 2. Seed Villager / Citizen Account

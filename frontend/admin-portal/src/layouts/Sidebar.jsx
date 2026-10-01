@@ -22,7 +22,8 @@ import {
   HardHat,
   Vote,
   FolderDown,
-  Star,
+  CalendarClock,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useAuth } from '@/hooks/useAuth';
@@ -49,13 +50,14 @@ const SECTIONS = [
       { to: '/projects', label: 'nav.projects', icon: HardHat },
       { to: '/polls', label: 'nav.polls', icon: Vote },
       { to: '/documents', label: 'nav.documents', icon: FolderDown },
-      { to: '/feedback', label: 'nav.feedback', icon: Star },
+      { to: '/timetable', label: 'nav.timetable', icon: CalendarClock },
     ],
   },
   {
     title: 'Administration',
     items: [
       { to: '/users', label: 'nav.users', icon: Users },
+      { to: '/admins', label: 'nav.admins', icon: ShieldCheck },
       { to: '/notifications', label: 'nav.notifications', icon: Bell },
       { to: '/reports', label: 'nav.reports', icon: BarChart3 },
       { to: '/audit', label: 'nav.audit', icon: ScrollText },
@@ -72,7 +74,7 @@ function Brand() {
   return (
     <span className="flex min-w-0 items-center gap-2.5">
       <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 rounded-lg shadow-xs" />
-      <span className="truncate text-base font-extrabold tracking-tight text-[#1E3A8A]">
+      <span className="truncate text-base font-extrabold tracking-tight text-[#1E3A8A] dark:text-blue-300">
         {t('appName')}
       </span>
     </span>
@@ -88,7 +90,7 @@ function NavItems() {
       {SECTIONS.map((section, idx) => (
         <div key={section.title || idx} className="space-y-1">
           {section.title ? (
-            <div className="px-3 pt-2 pb-1 text-[0.6875rem] font-extrabold uppercase tracking-wider text-[#4169E1]">
+            <div className="px-3 pt-2 pb-1 text-[0.6875rem] font-extrabold uppercase tracking-wider text-[#4169E1] dark:text-blue-400">
               {section.title}
             </div>
           ) : null}
@@ -101,8 +103,8 @@ function NavItems() {
               className={({ isActive }) =>
                 cn(
                   'group relative flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold',
-                  'text-slate-600 transition-all duration-150',
-                  'hover:bg-[#EBF2FF] hover:text-[#1E3A8A]',
+                  'text-slate-600 dark:text-slate-300 transition-all duration-150',
+                  'hover:bg-[#EBF2FF] hover:text-[#1E3A8A] dark:hover:bg-primary-subtle dark:hover:text-primary',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
                   isActive &&
                     'bg-[#4169E1] text-white font-bold shadow-sm shadow-[#4169E1]/30 hover:bg-[#4169E1] hover:text-white',
@@ -121,7 +123,9 @@ function NavItems() {
                   <Icon
                     className={cn(
                       'h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-110',
-                      isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#1E3A8A]',
+                      isActive
+                        ? 'text-white'
+                        : 'text-slate-500 group-hover:text-[#1E3A8A] dark:text-slate-400 dark:group-hover:text-primary',
                     )}
                     aria-hidden="true"
                   />
@@ -148,24 +152,31 @@ function AccountFooter() {
   };
 
   return (
-    <div className="border-t border-[#6495ED]/20 bg-white/70 p-3">
+    <div className="border-t border-[#6495ED]/20 bg-white/70 dark:bg-card/80 dark:border-border p-3">
       {user ? (
         <div className="mb-2 flex items-center gap-2.5 px-1">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] text-caption font-extrabold text-[#1E3A8A]">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE] dark:bg-blue-950/60 text-caption font-extrabold text-[#1E3A8A] dark:text-blue-300">
             {user.fullName?.slice(0, 1)?.toUpperCase()}
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-label font-bold text-slate-900">
-              {user.fullName}
+            <span className="flex items-center gap-1.5 truncate text-label font-bold text-slate-900 dark:text-foreground">
+              <span className="truncate">{user.fullName}</span>
+              {user.isRootAdmin && (
+                <span className="inline-flex shrink-0 items-center rounded-full bg-amber-100 dark:bg-amber-950/50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800/60">
+                  {t('admins.role.root', 'Root Admin')}
+                </span>
+              )}
             </span>
-            <span className="block truncate text-caption text-slate-500">{user.email}</span>
+            <span className="block truncate text-caption text-slate-500 dark:text-muted-foreground">
+              {user.email}
+            </span>
           </span>
         </div>
       ) : null}
       <Button
         variant="ghost"
         size="sm"
-        className="w-full justify-start text-slate-700 hover:bg-rose-50 hover:text-rose-600 font-semibold"
+        className="w-full justify-start text-slate-700 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 font-semibold"
         onClick={handleLogout}
       >
         <LogOut className="h-4 w-4" />
@@ -180,8 +191,8 @@ export function Sidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-[#6495ED]/30 bg-[#F8FAFC] shadow-xs md:flex">
-      <div className="flex h-16 items-center border-b border-[#6495ED]/20 px-5 bg-white">
+    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-[#6495ED]/30 dark:border-border bg-[#F8FAFC] dark:bg-card shadow-xs md:flex">
+      <div className="flex h-16 items-center border-b border-[#6495ED]/20 dark:border-border px-5 bg-white dark:bg-card">
         <Brand />
       </div>
 
@@ -202,13 +213,15 @@ export function Sidebar() {
 export function MobileSidebar({ open, onClose }) {
   const { t } = useTranslation();
   const panelRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return undefined;
 
     const onKeyDown = (e) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current?.();
         return;
       }
       // aria-modal promises focus stays inside, so Tab has to wrap at both ends.
@@ -237,7 +250,7 @@ export function MobileSidebar({ open, onClose }) {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -254,15 +267,15 @@ export function MobileSidebar({ open, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-label={t('nav.primary')}
-        className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-[#6495ED]/30 bg-[#F8FAFC] shadow-xl"
+        className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-[#6495ED]/30 dark:border-border bg-[#F8FAFC] dark:bg-card shadow-xl"
       >
-        <div className="flex h-16 items-center justify-between gap-2 border-b border-[#6495ED]/20 px-4 bg-white">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-[#6495ED]/20 dark:border-border px-4 bg-white dark:bg-card">
           <Brand />
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-slate-700 hover:bg-slate-100"
+            className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-accent"
             aria-label={t('common.close')}
           >
             <X className="h-5 w-5" />

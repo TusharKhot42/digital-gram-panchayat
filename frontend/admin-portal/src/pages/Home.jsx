@@ -12,7 +12,7 @@ import {
   Receipt,
   Plus,
 } from 'lucide-react';
-import { formatCurrency, formatDate } from '@dgp/shared';
+import { formatCurrency, formatDate, WARD_DETAILS } from '@dgp/shared';
 import officeBanner from '@dgp/shared/assets/images/hero/gram-panchayat-office.svg';
 import { cn } from '@/utils/cn';
 import { Skeleton } from '@/components/Skeleton';
@@ -244,7 +244,8 @@ export function Home() {
 
       <Suspense
         fallback={
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Skeleton className="h-72" />
             <Skeleton className="h-72" />
             <Skeleton className="h-72" />
           </div>
@@ -266,6 +267,13 @@ export function Home() {
                     <span className="min-w-0 flex-1 truncate text-body text-foreground">
                       {c.title}
                     </span>
+                    {c.ward && (
+                      <span className="inline-flex shrink-0 items-center rounded-full bg-primary/10 px-2 py-0.5 text-2xs font-medium text-primary">
+                        {locale === 'mr' && WARD_DETAILS[c.ward]?.name_mr
+                          ? WARD_DETAILS[c.ward].name_mr
+                          : c.ward}
+                      </span>
+                    )}
                     <StatusBadge status={c.status} />
                   </Link>
                 </li>
@@ -288,6 +296,13 @@ export function Home() {
                     <span className="min-w-0 flex-1 truncate text-body text-foreground">
                       {t(`dakhala.type.${a.certificateType}`, a.certificateType)}
                     </span>
+                    {a.ward && (
+                      <span className="inline-flex shrink-0 items-center rounded-full bg-primary/10 px-2 py-0.5 text-2xs font-medium text-primary">
+                        {locale === 'mr' && WARD_DETAILS[a.ward]?.name_mr
+                          ? WARD_DETAILS[a.ward].name_mr
+                          : a.ward}
+                      </span>
+                    )}
                     <DakhalaStatusBadge status={a.status} />
                   </Link>
                 </li>

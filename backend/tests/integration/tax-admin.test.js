@@ -81,6 +81,28 @@ describe('officer tax lookup', () => {
     expect(res.body.data.fullName).toBe('Ramesh');
   });
 
+  test('finds a citizen by name using q param', async () => {
+    const token = await officer();
+    await citizen('9811110015');
+    const res = await request(app)
+      .get('/api/v1/admin/tax/lookup?q=Ramesh')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.fullName).toBe('Ramesh');
+    expect(res.body.data.results).toBeDefined();
+    expect(res.body.data.results.length).toBeGreaterThan(0);
+  });
+
+  test('finds a citizen by mobile using q param', async () => {
+    const token = await officer();
+    await citizen('9811110016');
+    const res = await request(app)
+      .get('/api/v1/admin/tax/lookup?q=9811110016')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data.mobile).toBe('9811110016');
+  });
+
   test('unknown mobile -> 404', async () => {
     const token = await officer();
     const res = await request(app)

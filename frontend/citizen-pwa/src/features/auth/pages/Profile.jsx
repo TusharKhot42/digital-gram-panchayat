@@ -122,9 +122,16 @@ export function Profile() {
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-title text-foreground">{user?.fullName}</h1>
             <p className="truncate text-body text-muted-foreground">{user?.mobile}</p>
-            {user?.village ? (
-              <p className="truncate text-caption text-muted-foreground">{user.village}</p>
-            ) : null}
+            <div className="mt-0.5 flex flex-wrap items-center gap-2">
+              {user?.village ? (
+                <span className="text-caption text-muted-foreground">{user.village}</span>
+              ) : null}
+              {user?.ward ? (
+                <span className="inline-flex items-center rounded-full bg-primary/10 border border-primary/25 px-2 py-0.5 text-xs font-semibold text-primary">
+                  {user.ward}
+                </span>
+              ) : null}
+            </div>
             {user?.createdAt ? (
               <p className="mt-1 inline-flex items-center gap-1.5 text-caption text-muted-foreground">
                 <CalendarCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

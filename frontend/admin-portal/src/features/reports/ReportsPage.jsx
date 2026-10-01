@@ -149,6 +149,7 @@ export function ReportsPage() {
         breakdowns={[
           [t('reports.byStatus'), r.complaints.byStatus, 'complaint.status'],
           [t('reports.byCategory'), r.complaints.byCategory, 'complaint.category'],
+          [t('dashboard.wardComplaints', 'By Ward'), r.complaints.byWard || [], null],
         ]}
       />
       <Section
@@ -170,6 +171,7 @@ export function ReportsPage() {
         breakdowns={[
           [t('reports.byStatus'), r.certificates.byStatus, 'dakhala.status'],
           [t('reports.byType'), r.certificates.byType, 'dakhala.type'],
+          [t('dashboard.wardCertificates', 'By Ward'), r.certificates.byWard || [], null],
         ]}
       />
       <Section
@@ -206,6 +208,7 @@ export function ReportsPage() {
             yesNo(r.users.byActive, t('users.active'), t('users.inactive')),
             null,
           ],
+          [t('dashboard.wardCitizens', 'By Ward'), r.users.byWard || [], null],
         ]}
       />
       <Section
@@ -234,4 +237,3 @@ export function ReportsPage() {
     </div>
   );
 }
-

@@ -12,7 +12,6 @@ import {
   Download,
   CalendarClock,
 } from 'lucide-react';
-import { MemberContactsSection } from '@/features/home/MemberContactsSection';
 import { SectionHeader } from '@/components/PageHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { NoEventsArt, NoNoticesArt, NoSchemesArt } from '@/components/Illustration';
@@ -28,7 +27,6 @@ import { SchemeCard } from '@/features/schemes/components/SchemeCard';
 import { VillageHero } from '@/features/home/VillageHero';
 import { GlobalSearch } from '@/features/home/GlobalSearch';
 import { PriorityBoard } from '@/features/home/PriorityBoard';
-import { VillageStats } from '@/features/home/VillageStats';
 import { EmergencyContacts } from '@/features/home/EmergencyContacts';
 import { EventCard, daysUntil } from '@/features/home/EventCard';
 import { useMeetings, useProjects, useDownloads } from '@/features/governance/hooks';
@@ -132,7 +130,7 @@ export function Home() {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-7 px-4 py-5 lg:px-6">
       {/* 1 — the village itself */}
-      <VillageHero profile={profile} firstName={firstName} />
+      <VillageHero profile={profile} firstName={firstName} ward={user?.ward} />
 
       {/* One box across everything already loaded — no extra request, works offline. */}
       <GlobalSearch
@@ -218,12 +216,6 @@ export function Home() {
           />
         )}
       </section>
-
-      {/* 5 — members contact numbers */}
-      <MemberContactsSection members={profile?.members ?? []} />
-
-      {/* 6 — the village in numbers */}
-      <VillageStats statistics={profile?.statistics} />
 
       {/* 7 + 8 — notices and schemes, side by side on desktop */}
       <div className="grid gap-6 lg:grid-cols-2">

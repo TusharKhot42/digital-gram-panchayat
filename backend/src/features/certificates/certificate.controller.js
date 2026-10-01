@@ -43,6 +43,16 @@ export const approve = asyncHandler(async (req, res) => {
   const app = await service.approve(req.params.id, req.user.id, {
     applicationData: req.body?.applicationData,
     officerRemarks: req.body?.officerRemarks,
+    file: req.file,
+  });
+  res.status(200).json(successResponse(app));
+});
+
+export const uploadCertificate = asyncHandler(async (req, res) => {
+  const app = await service.uploadCertificate(req.params.id, req.user.id, {
+    file: req.file,
+    certificateNumber: req.body?.certificateNumber,
+    officerRemarks: req.body?.officerRemarks,
   });
   res.status(200).json(successResponse(app));
 });

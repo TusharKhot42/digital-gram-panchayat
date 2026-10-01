@@ -13,10 +13,32 @@ export const certificateService = {
     const { data } = await apiClient.patch(`/admin/dakhala/${id}/review`);
     return data.data;
   },
-  async approve(id, edits = {}) {
-    // edits: optional { applicationData, officerRemarks } applied before the certificate is
-    // generated. Omitting it keeps the original behaviour (approve with no changes).
-    const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`, edits);
+  async approve(id, payload = {}) {
+    if (payload instanceof FormData) {
+      const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`, payload);
+      return data.data;
+    }
+    if (payload.file) {
+      const fd = new FormData();
+      fd.append('certificate', payload.file);
+      if (payload.applicationData) {
+        fd.append('applicationData', JSON.stringify(payload.applicationData));
+      }
+      if (payload.officerRemarks) {
+        fd.append('officerRemarks', payload.officerRemarks);
+      }
+      const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`, fd);
+      return data.data;
+    }
+    const { data } = await apiClient.patch(`/admin/dakhala/${id}/approve`, payload);
+    return data.data;
+  },
+  async uploadCertificate(id, { file, officerRemarks, certificateNumber } = {}) {
+    const fd = new FormData();
+    if (file) fd.append('certificate', file);
+    if (officerRemarks) fd.append('officerRemarks', officerRemarks);
+    if (certificateNumber) fd.append('certificateNumber', certificateNumber);
+    const { data } = await apiClient.post(`/admin/dakhala/${id}/certificate`, fd);
     return data.data;
   },
   async reject(id, reason) {

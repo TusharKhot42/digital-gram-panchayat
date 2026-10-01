@@ -3,7 +3,10 @@ import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
-import { uploadCertificateDocuments } from '../../middlewares/upload.middleware.js';
+import {
+  uploadCertificateDocuments,
+  uploadIssuedCertificate,
+} from '../../middlewares/upload.middleware.js';
 import { certificateLimiter, generalLimiter } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './certificate.controller.js';
 import {
@@ -46,6 +49,26 @@ adminDakhalaRouter.use(authenticate, authorize(ROLES.OFFICER));
 adminDakhalaRouter.get('/', listQueryValidation, validate, controller.adminList);
 adminDakhalaRouter.get('/:id', idParamValidation, validate, controller.adminGetOne);
 adminDakhalaRouter.patch('/:id/review', idParamValidation, validate, controller.review);
-adminDakhalaRouter.patch('/:id/approve', idParamValidation, validate, controller.approve);
+adminDakhalaRouter.patch(
+  '/:id/approve',
+  uploadIssuedCertificate,
+  idParamValidation,
+  validate,
+  controller.approve,
+);
+adminDakhalaRouter.post(
+  '/:id/certificate',
+  uploadIssuedCertificate,
+  idParamValidation,
+  validate,
+  controller.uploadCertificate,
+);
+adminDakhalaRouter.patch(
+  '/:id/certificate',
+  uploadIssuedCertificate,
+  idParamValidation,
+  validate,
+  controller.uploadCertificate,
+);
 adminDakhalaRouter.patch('/:id/reject', rejectValidation, validate, controller.reject);
 adminDakhalaRouter.delete('/:id', idParamValidation, validate, controller.remove);

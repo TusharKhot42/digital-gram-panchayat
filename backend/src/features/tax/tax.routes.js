@@ -34,9 +34,13 @@ adminTaxRouter.use(authenticate, authorize(ROLES.OFFICER));
 
 adminTaxRouter.get(
   '/lookup',
-  query('mobile')
-    .matches(/^[6-9]\d{9}$/)
-    .withMessage('Enter a valid 10-digit mobile'),
+  query().custom((_, { req }) => {
+    const q = req.query.q || req.query.mobile || req.query.name;
+    if (!q || !String(q).trim()) {
+      throw new Error('Enter a valid citizen name or mobile number');
+    }
+    return true;
+  }),
   validate,
   controller.lookupCitizen,
 );

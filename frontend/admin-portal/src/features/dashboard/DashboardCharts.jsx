@@ -42,9 +42,10 @@ export default function DashboardCharts({ charts }) {
   const { t } = useTranslation();
   const byCategory = charts?.complaintsByCategory ?? [];
   const byStatus = charts?.complaintsByStatus ?? [];
+  const byWard = charts?.complaintsByWard ?? [];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-6 lg:grid-cols-3">
       <ChartPanel title={t('dashboard.complaintsByCategory')}>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={byCategory}>
@@ -52,6 +53,21 @@ export default function DashboardCharts({ charts }) {
             <YAxis allowDecimals={false} tick={AXIS_TICK} tickLine={false} axisLine={false} />
             <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'hsl(var(--muted) / 0.4)' }} />
             <Bar dataKey="value" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartPanel>
+
+      <ChartPanel title={t('dashboard.wardComplaints')}>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={byWard}>
+            <XAxis dataKey="label" tick={AXIS_TICK} tickLine={false} axisLine={false} />
+            <YAxis allowDecimals={false} tick={AXIS_TICK} tickLine={false} axisLine={false} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'hsl(var(--muted) / 0.4)' }} />
+            <Bar
+              dataKey="value"
+              fill={CHART_COLORS[2 % CHART_COLORS.length]}
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </ChartPanel>

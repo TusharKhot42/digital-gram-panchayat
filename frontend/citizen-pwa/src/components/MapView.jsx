@@ -40,7 +40,10 @@ export function MapView({ latitude, longitude, height = 180, interactive = false
   const editable = typeof onMove === 'function';
 
   return (
-    <div className="overflow-hidden rounded-md border border-border" style={{ height }}>
+    <div
+      className="relative isolate z-0 overflow-hidden rounded-md border border-border"
+      style={{ height }}
+    >
       <MapContainer
         center={center}
         zoom={16}

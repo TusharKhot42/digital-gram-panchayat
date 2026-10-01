@@ -83,7 +83,11 @@ export function TaxDetail() {
         backTo="/tax"
         backLabel={t('tax.detail.back')}
         title={t(`tax.type.${r.taxType}`, r.taxType)}
-        subtitle={`${r.taxRecordId} · ${r.propertyNumber} · ${r.financialYear}`}
+        subtitle={`${r.taxRecordId} · ${r.propertyNumber}${
+          r.citizen?.fullName
+            ? ` · ${r.citizen.fullName}${r.citizen.mobile ? ` (${r.citizen.mobile})` : ''}`
+            : ''
+        } · ${r.financialYear}`}
         action={<PaymentStatusBadge status={r.paymentStatus} />}
       />
 
@@ -178,6 +182,23 @@ export function TaxDetail() {
         </div>
 
         <div className="space-y-4">
+          {r.citizen && (
+            <Card>
+              <h2 className="border-b border-border px-5 py-3 text-section text-foreground">
+                {t('tax.detail.citizen')}
+              </h2>
+              <CardContent className="space-y-1 p-5 text-sm">
+                <p className="font-medium text-foreground">{r.citizen.fullName}</p>
+                {r.citizen.mobile && <p className="text-muted-foreground">{r.citizen.mobile}</p>}
+                {(r.citizen.ward || r.citizen.village) && (
+                  <p className="text-xs text-muted-foreground">
+                    {[r.citizen.ward, r.citizen.village].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <form onSubmit={recordPayment}>
               <h2 className="border-b border-border px-5 py-3 text-section text-foreground">

@@ -17,16 +17,20 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
   const { t } = useTranslation();
   const panelRef = useRef(null);
   const restoreRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return undefined;
 
     restoreRef.current = document.activeElement;
-    // Focus the panel so the next Tab lands inside the dialog, not behind it.
-    panelRef.current?.focus();
+    // Focus the panel so the next Tab lands inside the dialog, not behind it (unless an inner element already has focus).
+    if (!panelRef.current?.contains(document.activeElement)) {
+      panelRef.current?.focus();
+    }
 
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') onClose?.();
+      if (e.key === 'Escape') onCloseRef.current?.();
     };
     document.addEventListener('keydown', onKeyDown);
 
@@ -39,7 +43,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
       document.body.style.overflow = prevOverflow;
       restoreRef.current?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -48,7 +52,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
       className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4 backdrop-blur-[2px]"
       onMouseDown={(e) => {
         // Only a click that both starts and ends on the scrim should dismiss.
-        if (e.target === e.currentTarget) onClose?.();
+        if (e.target === e.currentTarget) onCloseRef.current?.();
       }}
     >
       <div

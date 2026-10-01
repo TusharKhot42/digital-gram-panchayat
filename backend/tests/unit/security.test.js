@@ -50,6 +50,9 @@ describe('file signature validation', () => {
     expect(signatureMatches(PNG, 'image/png')).toBe(true);
     expect(signatureMatches(JPEG, 'image/jpeg')).toBe(true);
     expect(signatureMatches(PDF, 'application/pdf')).toBe(true);
+    // PDF with UTF-8 BOM or leading header bytes
+    const pdfWithBom = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), PDF]);
+    expect(signatureMatches(pdfWithBom, 'application/pdf')).toBe(true);
   });
 
   test('rejects a spoofed file (HTML bytes labelled image/png)', () => {

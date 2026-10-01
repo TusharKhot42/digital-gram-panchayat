@@ -24,6 +24,7 @@ import { meetingRouter, adminMeetingRouter } from './features/meetings/meeting.r
 import { projectRouter, adminProjectRouter } from './features/projects/project.routes.js';
 import { pollRouter, adminPollRouter } from './features/polls/poll.routes.js';
 import { feedbackRouter, adminFeedbackRouter } from './features/feedback/feedback.routes.js';
+import { timetableRouter, adminTimetableRouter } from './features/timetable/timetable.routes.js';
 import { downloadRouter, adminDownloadRouter } from './features/downloads/download.routes.js';
 import {
   notificationRouter,
@@ -97,6 +98,8 @@ export function createApp() {
   apiRouter.use('/admin/polls', adminPollRouter);
   apiRouter.use('/feedback', feedbackRouter);
   apiRouter.use('/admin/feedback', adminFeedbackRouter);
+  apiRouter.use('/timetable', timetableRouter);
+  apiRouter.use('/admin/timetable', adminTimetableRouter);
   apiRouter.use('/downloads', downloadRouter);
   apiRouter.use('/admin/downloads', adminDownloadRouter);
   apiRouter.use('/notifications', notificationRouter);

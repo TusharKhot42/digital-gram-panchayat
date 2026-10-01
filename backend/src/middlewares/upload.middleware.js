@@ -60,12 +60,20 @@ const ALLOWED_ATTACHMENT_MIME = new Set([
   'image/png',
   'image/webp',
   'application/pdf',
+  'application/x-pdf',
 ]);
 
 const attachmentUpload = multer({
   storage,
   limits: { fileSize: MAX_UPLOAD_SIZE_BYTES },
   fileFilter(_req, file, cb) {
+    const ext = file.originalname?.toLowerCase().split('.').pop();
+    if (
+      file.mimetype === 'application/x-pdf' ||
+      (file.mimetype === 'application/octet-stream' && ext === 'pdf')
+    ) {
+      file.mimetype = 'application/pdf';
+    }
     if (ALLOWED_ATTACHMENT_MIME.has(file.mimetype)) {
       cb(null, true);
       return;
@@ -303,5 +311,40 @@ export function uploadProjectPhotos(req, res, next) {
       return;
     }
     next(new AppError(400, 'UPLOAD_ERROR', 'Photo upload failed'));
+  });
+}
+
+/**
+ * Accept a single issued certificate file (PDF or image, <=5MB) under `certificate` or `file`.
+ * Optional for approving (can approve without uploading, or upload simultaneously).
+ */
+export function uploadIssuedCertificate(req, res, next) {
+  const handler = attachmentUpload.fields([
+    { name: 'certificate', maxCount: 1 },
+    { name: 'file', maxCount: 1 },
+  ]);
+  handler(req, res, (err) => {
+    if (!err) {
+      if (req.files?.certificate?.[0]) {
+        req.file = req.files.certificate[0];
+      } else if (req.files?.file?.[0]) {
+        req.file = req.files.file[0];
+      }
+      if (req.file) {
+        verifyUploadedFiles(req, res, next);
+        return;
+      }
+      next();
+      return;
+    }
+    if (err instanceof AppError) {
+      next(err);
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      next(new AppError(400, 'FILE_TOO_LARGE', 'The certificate file must be 5MB or smaller'));
+      return;
+    }
+    next(new AppError(400, 'UPLOAD_ERROR', 'Certificate upload failed'));
   });
 }

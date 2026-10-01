@@ -45,12 +45,22 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
+    ward: {
+      type: String,
+      trim: true,
+      index: true,
+    },
     address: {
       type: String,
       trim: true,
     },
     avatar: {
       type: String,
+    },
+    isRootAdmin: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
     isActive: {
       type: Boolean,
@@ -70,6 +80,11 @@ const userSchema = new Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.passwordHash;
+        ret.isRootAdmin = Boolean(
+          ret.isRootAdmin ||
+          (ret.role === ROLES.OFFICER &&
+            ret.email === (process.env.SEED_ADMIN_EMAIL || 'admin@dgp.local').toLowerCase()),
+        );
         return ret;
       },
     },

@@ -20,6 +20,7 @@ export const registerSchema = z.object({
       `Password must be at least ${VALIDATION.PASSWORD_MIN_LENGTH} characters`,
     ),
   village: z.string().trim().min(1, 'Village is required'),
+  ward: z.string().trim().min(1, 'Ward is required').optional().or(z.literal('')),
   address: z.string().trim().min(1, 'Address is required'),
   email: z
     .string()
@@ -45,6 +46,7 @@ export const updateProfileSchema = z.object({
     .min(VALIDATION.FULLNAME_MIN_LENGTH, 'Full name is too short')
     .max(VALIDATION.FULLNAME_MAX_LENGTH, 'Full name is too long'),
   village: z.string().trim().min(1, 'Village is required'),
+  ward: z.string().trim().optional().or(z.literal('')),
   address: z.string().trim().min(1, 'Address is required'),
   email: z
     .string()

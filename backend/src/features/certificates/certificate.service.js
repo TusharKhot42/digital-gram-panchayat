@@ -1,12 +1,11 @@
 import { ROLES, CERT_TYPE_FIELDS, CERT_DOC_REQUIREMENTS, CERT_DOC_TYPES } from '@dgp/shared';
 import { parsePagination } from '../../utils/pagination.js';
 import { CertificateApplication } from './certificate.model.js';
-import { generateCertificatePdf } from './pdf.service.js';
-import { generateVerificationId, generateQrPngBuffer } from './qr.service.js';
+import { generateVerificationId } from './qr.service.js';
 import { getNextSequence } from '../complaints/counter.model.js';
 import { User } from '../auth/user.model.js';
 import { AppError } from '../../utils/app-error.js';
-import { uploadAttachments, uploadPdfBuffer } from '../../utils/upload.js';
+import { uploadAttachments, uploadAttachment } from '../../utils/upload.js';
 import { translateToBoth } from '../translation/translation.service.js';
 import { getPublicProfile } from '../village/village.service.js';
 import { writeAudit } from '../audit/audit.service.js';
@@ -34,9 +33,10 @@ async function buildCertificateNumber(type, year) {
 /** Public shape returned by the certificate verification page. */
 function toVerification(app) {
   const data = app.applicationData || {};
-  const applicantName = data.husbandName && data.wifeName
-    ? `${data.husbandName} & ${data.wifeName}`
-    : data.husbandName || data.fullName || data.childName || null;
+  const applicantName =
+    data.husbandName && data.wifeName
+      ? `${data.husbandName} & ${data.wifeName}`
+      : data.husbandName || data.fullName || data.childName || null;
 
   return {
     valid: app.status === 'Approved' && Boolean(app.certificateNumber),
@@ -160,10 +160,14 @@ export async function apply({ citizenId, body, files }) {
   const year = new Date().getFullYear();
   const seq = await getNextSequence(`dakhala-${year}`);
 
+  const citizen = await User.findById(citizenId).select('ward');
+  const ward = body.ward || citizen?.ward || undefined;
+
   const app = await CertificateApplication.create({
     applicationId: buildApplicationId(year, seq),
     citizenId,
     certificateType,
+    ward,
     applicationData,
     uploadedDocuments,
     status: 'Submitted',
@@ -214,12 +218,19 @@ export async function getCertificate(id, user) {
   if (user.role !== ROLES.OFFICER && !isOwner) {
     throw new AppError(403, 'FORBIDDEN', 'You cannot access this certificate');
   }
-  if (app.status !== 'Approved' || !app.pdfUrl) {
+  const certUrl = app.certificateUrl || app.pdfUrl;
+  if (app.status !== 'Approved' || !certUrl) {
     throw new AppError(404, 'CERTIFICATE_NOT_READY', 'Certificate is not available yet');
   }
+  const isImage =
+    app.certificateFileType === 'image' || Boolean(certUrl.match(/\.(png|jpe?g|webp)(\?|$)/i));
   return {
     applicationId: app.applicationId,
-    pdfUrl: app.pdfUrl,
+    certificateUrl: certUrl,
+    pdfUrl: certUrl,
+    type: isImage ? 'image' : 'pdf',
+    certificateFileType: isImage ? 'image' : 'pdf',
+    certificateFileName: app.certificateFileName || null,
     certificateNumber: app.certificateNumber || null,
     verificationId: app.verificationId || null,
     issuedAt: app.issuedAt || null,
@@ -232,6 +243,7 @@ export async function adminList(query) {
   const filter = { isActive: true };
   if (query.status) filter.status = query.status;
   if (query.certificateType) filter.certificateType = query.certificateType;
+  if (query.ward) filter.ward = query.ward;
   if (query.q) {
     const rx = new RegExp(escapeRegex(query.q), 'i');
     filter.$or = [{ applicationId: rx }];
@@ -272,7 +284,7 @@ export async function review(id, officerId) {
 }
 
 /** Village Profile is optional branding — never let its absence block issuance. */
-async function loadVillageSafe() {
+async function _loadVillageSafe() {
   try {
     return await getPublicProfile();
   } catch {
@@ -281,21 +293,20 @@ async function loadVillageSafe() {
 }
 
 /**
- * Approve: optionally apply officer edits, then generate the official certificate (number,
- * verification id, QR, PDF), store it, mark Approved, notify + audit.
- *
- * `edits` is optional and backward compatible — an approve with no body behaves exactly as
- * before. Supported edits (all optional): `applicationData` (merged over the existing data and
- * re-validated for the type) and `officerRemarks` (printed on the certificate).
+ * Approve: optionally apply officer edits, marks status Approved.
+ * Does NOT auto-generate a certificate. If the officer provided a manual certificate
+ * file (PDF or image) during approval, it is uploaded and attached immediately.
+ * Otherwise, the application and documents are marked Approved and the certificate
+ * can be uploaded manually from the admin portal afterwards.
  *
  * @param {string} id
  * @param {string} officerId
- * @param {{ applicationData?: object, officerRemarks?: string }} [edits]
+ * @param {{ applicationData?: object, officerRemarks?: string, file?: object }} [edits]
  */
 export async function approve(id, officerId, edits = {}) {
   const app = await findActive(id);
-  if (app.status === 'Approved') {
-    // Idempotent — already approved.
+  if (app.status === 'Approved' && !edits.file) {
+    // Idempotent — already approved and no new file to attach.
     return app.toJSON();
   }
   if (app.status === 'Rejected') {
@@ -313,46 +324,133 @@ export async function approve(id, officerId, edits = {}) {
     app.officerRemarks = edits.officerRemarks.trim() || undefined;
   }
 
-  const [citizen, officer, village] = await Promise.all([
-    User.findById(app.citizenId).select('fullName mobile village'),
-    User.findById(officerId).select('fullName'),
-    loadVillageSafe(),
-  ]);
-
-  const year = new Date().getFullYear();
-  const certificateNumber = await buildCertificateNumber(app.certificateType, year);
-  const verificationId = generateVerificationId();
-  const issuedAt = new Date();
-  const qrBuffer = await generateQrPngBuffer(verificationId).catch(() => null);
-
-  const pdfBuffer = await generateCertificatePdf({
-    application: app.toJSON(),
-    citizen,
-    officer,
-    village,
-    qrBuffer,
-    certificateNumber,
-    verificationId,
-    issuedAt,
-  });
-  const pdfUrl = await uploadPdfBuffer(pdfBuffer, 'certificates/pdf');
+  if (!app.certificateNumber) {
+    const year = new Date().getFullYear();
+    app.certificateNumber = await buildCertificateNumber(app.certificateType, year);
+  }
+  if (!app.verificationId) {
+    app.verificationId = generateVerificationId();
+  }
 
   const before = { status: app.status };
   app.status = 'Approved';
-  app.pdfUrl = pdfUrl;
-  app.certificateNumber = certificateNumber;
-  app.verificationId = verificationId;
-  app.issuedAt = issuedAt;
   app.reviewedBy = officerId;
   app.updatedBy = officerId;
   app.rejectionReason = undefined;
-  app.history.push({ status: 'Approved', by: officerId, at: issuedAt });
+
+  let note = 'Approved documents';
+  if (edits.file) {
+    const { url, type } = await uploadAttachment(edits.file, 'certificates/issued');
+    app.certificateUrl = url;
+    app.pdfUrl = url;
+    app.certificateFileType = type;
+    app.certificateFileName = edits.file.originalname;
+    app.issuedAt = new Date();
+    note = 'Approved and original certificate uploaded';
+  }
+
+  app.history.push({ status: 'Approved', by: officerId, note, at: new Date() });
   await app.save();
 
   await audit(officerId, ROLES.OFFICER, 'dakhala.approve', app, before, {
     status: 'Approved',
-    certificateNumber,
+    certificateNumber: app.certificateNumber,
+    hasCertificate: Boolean(app.certificateUrl),
   });
+
+  const citizen = await User.findById(app.citizenId).select('mobile');
+  await notifyDakhalaStatus({
+    recipientId: app.citizenId,
+    mobile: citizen?.mobile,
+    applicationId: app.applicationId,
+    status: 'Approved',
+    entityId: app.id,
+  });
+
+  return app.toJSON();
+}
+
+/**
+ * Manually upload or replace the original certificate (PDF or Image) from the admin portal.
+ *
+ * @param {string} id
+ * @param {string} officerId
+ * @param {{ file: object, certificateNumber?: string, officerRemarks?: string }} params
+ */
+export async function uploadCertificate(
+  id,
+  officerId,
+  { file, certificateNumber, officerRemarks } = {},
+) {
+  if (!file) {
+    throw new AppError(
+      400,
+      'VALIDATION_ERROR',
+      'A certificate document (PDF or image) is required',
+      {
+        certificate: 'File is required',
+      },
+    );
+  }
+
+  const app = await findActive(id);
+  if (app.status === 'Rejected') {
+    throw new AppError(
+      409,
+      'ALREADY_REJECTED',
+      'Cannot upload certificate for a rejected application',
+    );
+  }
+
+  const { url, type } = await uploadAttachment(file, 'certificates/issued');
+
+  if (certificateNumber && typeof certificateNumber === 'string' && certificateNumber.trim()) {
+    app.certificateNumber = certificateNumber.trim();
+  } else if (!app.certificateNumber) {
+    const year = new Date().getFullYear();
+    app.certificateNumber = await buildCertificateNumber(app.certificateType, year);
+  }
+
+  if (!app.verificationId) {
+    app.verificationId = generateVerificationId();
+  }
+
+  if (typeof officerRemarks === 'string') {
+    app.officerRemarks = officerRemarks.trim() || undefined;
+  }
+
+  const isReissue = Boolean(app.certificateUrl || app.pdfUrl);
+  if (isReissue) {
+    app.reissueCount = (app.reissueCount || 0) + 1;
+  }
+
+  const before = { status: app.status, certificateUrl: app.certificateUrl };
+  app.certificateUrl = url;
+  app.pdfUrl = url;
+  app.certificateFileType = type;
+  app.certificateFileName = file.originalname;
+  app.issuedAt = new Date();
+  app.status = 'Approved';
+  app.reviewedBy = app.reviewedBy || officerId;
+  app.updatedBy = officerId;
+  app.rejectionReason = undefined;
+
+  app.history.push({
+    status: 'Approved',
+    by: officerId,
+    note: isReissue ? 'Original certificate updated' : 'Original certificate uploaded',
+    at: new Date(),
+  });
+
+  await app.save();
+
+  await audit(officerId, ROLES.OFFICER, 'dakhala.uploadCertificate', app, before, {
+    certificateUrl: url,
+    certificateFileType: type,
+    certificateNumber: app.certificateNumber,
+  });
+
+  const citizen = await User.findById(app.citizenId).select('mobile');
   await notifyDakhalaStatus({
     recipientId: app.citizenId,
     mobile: citizen?.mobile,

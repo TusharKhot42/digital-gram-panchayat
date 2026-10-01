@@ -49,20 +49,62 @@ async function audit(officerId, action, record, before, after) {
 }
 
 /**
- * Tax-scoped citizen lookup by mobile so an officer can attach a record to the right
- * person. Returns minimal fields only — full user management arrives in M8.
- * @param {string} mobile
+ * Tax-scoped citizen lookup by mobile or name so an officer can attach a record to the right
+ * person. Returns the matched citizen and all search results if multiple.
+ * @param {string|object} input
  */
-export async function lookupCitizen(mobile) {
-  const citizen = await User.findOne({ mobile, role: ROLES.CITIZEN }).select(
-    'fullName mobile village',
-  );
-  if (!citizen) throw new AppError(404, 'CITIZEN_NOT_FOUND', 'No citizen found with that mobile');
+export async function lookupCitizen(input) {
+  let search = '';
+  if (typeof input === 'string') {
+    search = input.trim();
+  } else if (input && typeof input === 'object') {
+    search = (input.q || input.mobile || input.name || '').trim();
+  }
+
+  if (!search) {
+    throw new AppError(400, 'QUERY_REQUIRED', 'Please provide a name or mobile number to search');
+  }
+
+  const isDigits = /^\d+$/.test(search);
+  let filter;
+
+  if (isDigits && search.length === 10) {
+    filter = { role: ROLES.CITIZEN, mobile: search };
+  } else {
+    const rx = new RegExp(escapeRegex(search), 'i');
+    filter = {
+      role: ROLES.CITIZEN,
+      $or: [{ fullName: rx }, { mobile: rx }],
+    };
+  }
+
+  const citizens = await User.find(filter).select('fullName mobile village ward').limit(10).lean();
+
+  if (!citizens.length) {
+    throw new AppError(
+      404,
+      'CITIZEN_NOT_FOUND',
+      'No citizen found matching this name or mobile number',
+    );
+  }
+
+  const primary = citizens[0];
+  const results = citizens.map((c) => ({
+    id: String(c._id),
+    fullName: c.fullName,
+    mobile: c.mobile,
+    village: c.village,
+    ward: c.ward,
+  }));
+
   return {
-    id: citizen.id,
-    fullName: citizen.fullName,
-    mobile: citizen.mobile,
-    village: citizen.village,
+    id: String(primary._id),
+    fullName: primary.fullName,
+    mobile: primary.mobile,
+    village: primary.village,
+    ward: primary.ward,
+    results,
+    totalMatches: results.length,
   };
 }
 
@@ -94,6 +136,7 @@ export async function createRecord({ officerId, body, files }) {
   const record = await TaxRecord.create({
     taxRecordId: buildTaxRecordId(year, seq),
     citizenId: body.citizenId,
+    ward: body.ward || citizen.ward || undefined,
     propertyNumber: body.propertyNumber,
     taxType: body.taxType,
     financialYear: body.financialYear,
@@ -230,15 +273,29 @@ export async function getHistory(id) {
   return { history: json.history, payments: json.payments };
 }
 
-function buildFilter(query) {
+async function buildFilter(query) {
   const filter = { isActive: true };
   if (query.taxType) filter.taxType = query.taxType;
   if (query.financialYear) filter.financialYear = query.financialYear;
   if (query.paymentStatus) filter.paymentStatus = query.paymentStatus;
   if (query.citizenId) filter.citizenId = query.citizenId;
+  if (query.ward) filter.ward = query.ward;
   if (query.q) {
     const rx = new RegExp(escapeRegex(query.q), 'i');
-    filter.$or = [{ taxRecordId: rx }, { propertyNumber: rx }];
+    const matchedUsers = await User.find({
+      role: ROLES.CITIZEN,
+      $or: [{ fullName: rx }, { mobile: rx }],
+    })
+      .select('_id')
+      .limit(50)
+      .lean();
+    const userIds = matchedUsers.map((u) => u._id);
+
+    filter.$or = [
+      { taxRecordId: rx },
+      { propertyNumber: rx },
+      ...(userIds.length > 0 ? [{ citizenId: { $in: userIds } }] : []),
+    ];
   }
   return filter;
 }
@@ -246,21 +303,55 @@ function buildFilter(query) {
 async function paginate(filter, query) {
   const { page, limit, skip } = parsePagination(query);
   const [items, total] = await Promise.all([
-    TaxRecord.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    TaxRecord.find(filter)
+      .populate('citizenId', 'fullName mobile village ward')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
     TaxRecord.countDocuments(filter),
   ]);
-  return { data: items.map((r) => r.toJSON()), total, page, limit };
+  return {
+    data: items.map((r) => {
+      const json = r.toJSON();
+      if (r.citizenId && typeof r.citizenId === 'object') {
+        json.citizen = {
+          id: String(r.citizenId._id || r.citizenId.id),
+          fullName: r.citizenId.fullName,
+          mobile: r.citizenId.mobile,
+          village: r.citizenId.village,
+          ward: r.citizenId.ward,
+        };
+      }
+      return json;
+    }),
+    total,
+    page,
+    limit,
+  };
 }
 
 export async function adminList(query) {
-  return paginate(buildFilter(query), query);
+  const filter = await buildFilter(query);
+  return paginate(filter, query);
 }
 
 /** @param {string} id */
 export async function adminGetOne(id) {
-  const record = await TaxRecord.findOne({ _id: id, isActive: true }).catch(() => null);
+  const record = await TaxRecord.findOne({ _id: id, isActive: true })
+    .populate('citizenId', 'fullName mobile village ward')
+    .catch(() => null);
   if (!record) throw new AppError(404, 'TAX_NOT_FOUND', 'Tax record not found');
-  return record.toJSON();
+  const json = record.toJSON();
+  if (record.citizenId && typeof record.citizenId === 'object') {
+    json.citizen = {
+      id: String(record.citizenId._id || record.citizenId.id),
+      fullName: record.citizenId.fullName,
+      mobile: record.citizenId.mobile,
+      village: record.citizenId.village,
+      ward: record.citizenId.ward,
+    };
+  }
+  return json;
 }
 
 /**

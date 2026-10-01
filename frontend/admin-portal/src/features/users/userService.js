@@ -13,4 +13,12 @@ export const userService = {
     const { data } = await apiClient.patch(`/admin/users/${id}/status`, { status });
     return data.data;
   },
+  async listAdmins(params = {}) {
+    const { data } = await apiClient.get('/admin/admins', { params });
+    return data.data;
+  },
+  async registerAdmin(payload) {
+    const { data } = await apiClient.post('/admin/admins', payload);
+    return data.data.user;
+  },
 };

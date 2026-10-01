@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ROLES } from '@dgp/shared';
 import { authenticate } from '../../middlewares/auth.middleware.js';
-import { authorize } from '../../middlewares/role.middleware.js';
+import { authorize, authorizeRootAdmin } from '../../middlewares/role.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { authLimiter, loginThrottle } from '../../middlewares/rate-limit.middleware.js';
 import * as controller from './auth.controller.js';
@@ -9,6 +9,7 @@ import {
   registerValidation,
   loginValidation,
   officerLoginValidation,
+  registerOfficerValidation,
   unifiedLoginValidation,
   updateProfileValidation,
 } from './auth.validation.js';
@@ -59,3 +60,15 @@ adminAuthRouter.post(
 );
 adminAuthRouter.get('/profile', authenticate, authorize(ROLES.OFFICER), controller.profile);
 adminAuthRouter.post('/logout', authenticate, controller.logout);
+
+// Admin staff management
+adminAuthRouter.get('/admins', authenticate, authorize(ROLES.OFFICER), controller.listAdmins);
+adminAuthRouter.post(
+  '/admins',
+  authenticate,
+  authorize(ROLES.OFFICER),
+  authorizeRootAdmin,
+  registerOfficerValidation,
+  validate,
+  controller.registerOfficer,
+);

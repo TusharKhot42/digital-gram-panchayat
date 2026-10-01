@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Truck, Droplets, Clock, Phone, Search, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { useTimetable } from '@/features/timetable/hooks';
 
 // Schedule data for Ghantagadi & Water Supply with full bilingual support
 const GHANTAGADI_SCHEDULE = [
   {
     id: 'g1',
-    ward_en: 'Ward 1 & 2 (Main Bazaar & Gaothan)',
-    ward_mr: 'प्रभाग १ व २ (मुख्य बाजारपेठ व गावठाण)',
+    ward_en: 'Ward 1 & 2',
+    ward_mr: 'प्रभाग १ व २',
     timingMorning_en: '07:00 AM – 09:00 AM',
     timingMorning_mr: 'सकाळी ०७:०० – ०९:००',
     timingEvening_en: '04:00 PM – 05:30 PM',
@@ -24,8 +25,8 @@ const GHANTAGADI_SCHEDULE = [
   },
   {
     id: 'g2',
-    ward_en: 'Ward 3 & 4 (Shivaji Nagar & School Area)',
-    ward_mr: 'प्रभाग ३ व ४ (शिवाजी नगर व शाळा परिसर)',
+    ward_en: 'Ward 3 & 4',
+    ward_mr: 'प्रभाग ३ व ४',
     timingMorning_en: '09:00 AM – 11:00 AM',
     timingMorning_mr: 'सकाळी ०९:०० – ११:००',
     timingEvening_en: '05:30 PM – 07:00 PM',
@@ -41,8 +42,8 @@ const GHANTAGADI_SCHEDULE = [
   },
   {
     id: 'g3',
-    ward_en: 'Ward 5 & 6 (Temple Area & New Colony)',
-    ward_mr: 'प्रभाग ५ व ६ (मंदिर परिसर व नवीन वसाहत)',
+    ward_en: 'Ward 5 & 6',
+    ward_mr: 'प्रभाग ५ व ६',
     timingMorning_en: '07:30 AM – 09:30 AM',
     timingMorning_mr: 'सकाळी ०७:३० – ०९:३०',
     timingEvening_en: '04:30 PM – 06:00 PM',
@@ -56,30 +57,13 @@ const GHANTAGADI_SCHEDULE = [
     status_en: 'Active Morning',
     status_mr: 'सकाळची फेरी सुरू',
   },
-  {
-    id: 'g4',
-    ward_en: 'Ward 7 & 8 (Industrial & Outer Ward)',
-    ward_mr: 'प्रभाग ७ व ८ (औद्योगिक व बाहेरील प्रभाग)',
-    timingMorning_en: '10:00 AM – 12:00 PM',
-    timingMorning_mr: 'सकाळी १०:०० – १२:००',
-    timingEvening_en: '06:00 PM – 07:30 PM',
-    timingEvening_mr: 'संध्याकाळी ०६:०० – ०७:३०',
-    days_en: 'Mon, Wed, Fri',
-    days_mr: 'सोम, बुध, शुक्र',
-    driverName_en: 'Anand Pawar',
-    driverName_mr: 'आनंद पवार',
-    driverMobile: '9823012348',
-    vehicleNo: 'MH-10-GP-1004',
-    status_en: 'Scheduled',
-    status_mr: 'नियोजित',
-  },
 ];
 
 const WATER_SCHEDULE = [
   {
     id: 'w1',
-    zone_en: 'Zone A — Ward 1 & 2 (North Sector)',
-    zone_mr: 'झोन अ — प्रभाग १ व २ (उत्तर विभाग)',
+    zone_en: 'Ward 1 & 2',
+    zone_mr: 'प्रभाग १ व २',
     timing_en: '06:00 AM – 07:30 AM',
     timing_mr: 'सकाळी ०६:०० – ०७:३०',
     frequency_en: 'Daily Morning',
@@ -94,8 +78,8 @@ const WATER_SCHEDULE = [
   },
   {
     id: 'w2',
-    zone_en: 'Zone B — Ward 3 & 4 (Central Sector)',
-    zone_mr: 'झोन ब — प्रभाग ३ व ४ (मध्यवर्ती विभाग)',
+    zone_en: 'Ward 3 & 4',
+    zone_mr: 'प्रभाग ३ व ४',
     timing_en: '07:30 AM – 09:00 AM',
     timing_mr: 'सकाळी ०७:३० – ०९:००',
     frequency_en: 'Daily Morning',
@@ -110,12 +94,12 @@ const WATER_SCHEDULE = [
   },
   {
     id: 'w3',
-    zone_en: 'Zone C — Ward 5 & 6 (East Sector)',
-    zone_mr: 'झोन क — प्रभाग ५ व ६ (पूर्व विभाग)',
+    zone_en: 'Ward 5 & 6',
+    zone_mr: 'प्रभाग ५ व ६',
     timing_en: '05:00 PM – 06:30 PM',
     timing_mr: 'संध्याकाळी ०५:०० – ०६:३०',
-    frequency_en: 'Alternate Days (Mon, Wed, Fri)',
-    frequency_mr: 'एक दिवसाआड (सोम, बुध, शुक्र)',
+    frequency_en: 'Daily Evening',
+    frequency_mr: 'दररोज संध्याकाळी',
     operatorName_en: 'Mahesh Kadam',
     operatorName_mr: 'महेश कदम',
     operatorMobile: '9890123458',
@@ -123,22 +107,6 @@ const WATER_SCHEDULE = [
     source_mr: 'दक्षिण पंप हाऊस',
     status_en: 'Evening Shift',
     status_mr: 'संध्याकाळची फेरी',
-  },
-  {
-    id: 'w4',
-    zone_en: 'Zone D — Ward 7 & 8 (West Sector)',
-    zone_mr: 'झोन ड — प्रभाग ७ व ८ (पश्चिम विभाग)',
-    timing_en: '06:30 PM – 08:00 PM',
-    timing_mr: 'संध्याकाळी ०६:३० – ०८:००',
-    frequency_en: 'Alternate Days (Tue, Thu, Sat)',
-    frequency_mr: 'एक दिवसाआड (मंगळ, गुरु, शनि)',
-    operatorName_en: 'Ganesh Chavan',
-    operatorName_mr: 'गणेश चव्हाण',
-    operatorMobile: '9890123459',
-    source_en: 'West Distribution Tank',
-    source_mr: 'पश्चिम वितरण टाकी',
-    status_en: 'Scheduled',
-    status_mr: 'नियोजित',
   },
 ];
 
@@ -149,26 +117,32 @@ export function Timetable() {
   const [activeTab, setActiveTab] = useState('ghantagadi'); // 'ghantagadi' | 'water'
   const [search, setSearch] = useState('');
 
-  const filteredGhantagadi = GHANTAGADI_SCHEDULE.filter((item) => {
+  const { data: liveTimetable } = useTimetable();
+  const currentGhantagadi = liveTimetable?.ghantagadi?.length
+    ? liveTimetable.ghantagadi
+    : GHANTAGADI_SCHEDULE;
+  const currentWater = liveTimetable?.water?.length ? liveTimetable.water : WATER_SCHEDULE;
+
+  const filteredGhantagadi = currentGhantagadi.filter((item) => {
     const q = search.toLowerCase();
     return (
-      item.ward_en.toLowerCase().includes(q) ||
-      item.ward_mr.toLowerCase().includes(q) ||
-      item.driverName_en.toLowerCase().includes(q) ||
-      item.driverName_mr.toLowerCase().includes(q) ||
-      item.vehicleNo.toLowerCase().includes(q)
+      (item.ward_en || '').toLowerCase().includes(q) ||
+      (item.ward_mr || '').toLowerCase().includes(q) ||
+      (item.driverName_en || '').toLowerCase().includes(q) ||
+      (item.driverName_mr || '').toLowerCase().includes(q) ||
+      (item.vehicleNo || '').toLowerCase().includes(q)
     );
   });
 
-  const filteredWater = WATER_SCHEDULE.filter((item) => {
+  const filteredWater = currentWater.filter((item) => {
     const q = search.toLowerCase();
     return (
-      item.zone_en.toLowerCase().includes(q) ||
-      item.zone_mr.toLowerCase().includes(q) ||
-      item.operatorName_en.toLowerCase().includes(q) ||
-      item.operatorName_mr.toLowerCase().includes(q) ||
-      item.source_en.toLowerCase().includes(q) ||
-      item.source_mr.toLowerCase().includes(q)
+      (item.zone_en || '').toLowerCase().includes(q) ||
+      (item.zone_mr || '').toLowerCase().includes(q) ||
+      (item.operatorName_en || '').toLowerCase().includes(q) ||
+      (item.operatorName_mr || '').toLowerCase().includes(q) ||
+      (item.source_en || '').toLowerCase().includes(q) ||
+      (item.source_mr || '').toLowerCase().includes(q)
     );
   });
 

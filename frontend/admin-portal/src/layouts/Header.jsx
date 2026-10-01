@@ -22,7 +22,7 @@ const SECTIONS = [
   ['/projects', 'nav.projects'],
   ['/polls', 'nav.polls'],
   ['/documents', 'nav.documents'],
-  ['/feedback', 'nav.feedback'],
+  ['/timetable', 'nav.timetable'],
   ['/help', 'nav.help'],
 ];
 

@@ -71,7 +71,11 @@ export function NoticeForm() {
         {isEdit ? t('notice.form.editTitle') : t('notice.form.createTitle')}
       </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm"
+        noValidate
+      >
         {/*
          * These fields used a bare <label> sibling with no htmlFor, so every control on this
          * form had no accessible name. Field (components/ui/field.jsx) already wires

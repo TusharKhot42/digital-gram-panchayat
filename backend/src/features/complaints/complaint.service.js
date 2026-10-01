@@ -25,6 +25,12 @@ export async function createComplaint({ citizenId, body, files }) {
   const seq = await getNextSequence(`complaint-${year}`);
   const complaintId = buildComplaintId(year, seq);
 
+  let ward = body.ward;
+  if (!ward) {
+    const citizen = await User.findById(citizenId).select('ward');
+    ward = citizen?.ward;
+  }
+
   const doc = {
     complaintId,
     citizenId,
@@ -33,7 +39,7 @@ export async function createComplaint({ citizenId, body, files }) {
     description: body.description,
     images,
     address: body.address || undefined,
-    ward: body.ward || undefined,
+    ward: ward || undefined,
     priority: body.priority || 'Medium',
     status: 'Pending',
     statusHistory: [{ status: 'Pending', by: citizenId, at: new Date() }],

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Inbox } from 'lucide-react';
-import { COMPLAINT_CATEGORIES, COMPLAINT_STATUSES, formatDate } from '@dgp/shared';
+import { COMPLAINT_CATEGORIES, COMPLAINT_STATUSES, WARD_DETAILS, formatDate } from '@dgp/shared';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Select } from '@/components/ui/input';
 import { SkeletonRows } from '@/components/Skeleton';
@@ -24,7 +24,7 @@ import {
 import { useComplaints } from './hooks';
 
 const LIMIT = 20;
-const COLS = 5;
+const COLS = 6;
 
 export function ComplaintsList() {
   const { t, i18n } = useTranslation();
@@ -33,6 +33,7 @@ export function ComplaintsList() {
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('');
   const [category, setCategory] = useState('');
+  const [ward, setWard] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortDir, setSortDir] = useState('desc');
   const [page, setPage] = useState(1);
@@ -45,13 +46,14 @@ export function ComplaintsList() {
     ...(q ? { q } : {}),
     ...(status ? { status } : {}),
     ...(category ? { category } : {}),
+    ...(ward ? { ward } : {}),
   };
   const { data, isLoading, isError, refetch, isFetching } = useComplaints(params);
 
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / LIMIT));
-  const filtered = Boolean(q || status || category);
+  const filtered = Boolean(q || status || category || ward);
 
   const toggleSort = (field) => {
     if (sortBy === field) {
@@ -75,6 +77,7 @@ export function ComplaintsList() {
     setQ('');
     setStatus('');
     setCategory('');
+    setWard('');
     setPage(1);
   };
 
@@ -114,6 +117,19 @@ export function ComplaintsList() {
             </option>
           ))}
         </Select>
+        <Select
+          value={ward}
+          onChange={(e) => resetPageAnd(setWard)(e.target.value)}
+          aria-label={t('complaint.list.allWards')}
+          className="w-auto"
+        >
+          <option value="">{t('complaint.list.allWards')}</option>
+          {WARD_DETAILS.map((w) => (
+            <option key={w.id} value={w.id}>
+              {locale === 'mr' ? w.name_mr : w.name_en}
+            </option>
+          ))}
+        </Select>
       </FilterBar>
 
       <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
@@ -125,6 +141,7 @@ export function ComplaintsList() {
               <SortableTH state={sortOf('category')} onToggle={() => toggleSort('category')}>
                 {t('complaint.list.category')}
               </SortableTH>
+              <TH>{t('complaint.list.ward')}</TH>
               <SortableTH state={sortOf('status')} onToggle={() => toggleSort('status')}>
                 {t('complaint.list.status')}
               </SortableTH>
@@ -179,6 +196,11 @@ export function ComplaintsList() {
                   <TD className="max-w-xs truncate">{c.title}</TD>
                   <TD className="text-muted-foreground">
                     {t(`complaint.category.${c.category}`, c.category)}
+                  </TD>
+                  <TD>
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      {c.ward || '—'}
+                    </span>
                   </TD>
                   <TD>
                     <StatusBadge status={c.status} />

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FileText } from 'lucide-react';
-import { CERT_TYPES, DAKHALA_STATUSES, formatDate } from '@dgp/shared';
+import { CERT_TYPES, DAKHALA_STATUSES, WARD_DETAILS, formatDate } from '@dgp/shared';
 import { Select } from '@/components/ui/input';
 import { SkeletonRows } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
@@ -22,7 +22,7 @@ import { DakhalaStatusBadge } from './DakhalaStatusBadge';
 import { useApplications } from './hooks';
 
 const LIMIT = 20;
-const COLS = 4;
+const COLS = 5;
 
 export function CertificateList() {
   const { t, i18n } = useTranslation();
@@ -30,6 +30,7 @@ export function CertificateList() {
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('');
   const [certificateType, setCertificateType] = useState('');
+  const [ward, setWard] = useState('');
   const [page, setPage] = useState(1);
 
   const params = {
@@ -38,6 +39,7 @@ export function CertificateList() {
     ...(q ? { q } : {}),
     ...(status ? { status } : {}),
     ...(certificateType ? { certificateType } : {}),
+    ...(ward ? { ward } : {}),
   };
   const { data, isLoading, isError } = useApplications(params);
   const rows = data?.data ?? [];
@@ -81,6 +83,19 @@ export function CertificateList() {
             </option>
           ))}
         </Select>
+        <Select
+          value={ward}
+          onChange={(e) => onFilter(setWard)(e.target.value)}
+          aria-label={t('dakhala.dash.allWards')}
+          className="w-auto"
+        >
+          <option value="">{t('dakhala.dash.allWards')}</option>
+          {WARD_DETAILS.map((w) => (
+            <option key={w.id} value={w.id}>
+              {locale === 'mr' ? w.name_mr : w.name_en}
+            </option>
+          ))}
+        </Select>
       </FilterBar>
 
       <TableShell className="max-h-[calc(100dvh-16rem)] overflow-y-auto">
@@ -89,6 +104,7 @@ export function CertificateList() {
             <tr>
               <TH>{t('dakhala.dash.application')}</TH>
               <TH>{t('dakhala.dash.type')}</TH>
+              <TH>{t('dakhala.dash.ward')}</TH>
               <TH>{t('dakhala.dash.date')}</TH>
               <TH>{t('dakhala.dash.status')}</TH>
             </tr>
@@ -122,6 +138,11 @@ export function CertificateList() {
                     </Link>
                   </TD>
                   <TD>{t(`dakhala.type.${a.certificateType}`, a.certificateType)}</TD>
+                  <TD>
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      {a.ward || '—'}
+                    </span>
+                  </TD>
                   <TD className="whitespace-nowrap text-muted-foreground">
                     {formatDate(a.createdAt, locale)}
                   </TD>

@@ -20,8 +20,8 @@ const STAGES = ['Submitted', 'UnderReview', 'Approved', 'Download'];
  * Where the application sits on the rail. A rejected application freezes at the stage that
  * rejected it (Under Review) so the rail shows where it stopped rather than a fake position.
  */
-function stageIndex(status) {
-  if (status === 'Approved') return 2;
+function stageIndex(status, hasCert) {
+  if (status === 'Approved') return hasCert ? 3 : 2;
   if (status === 'UnderReview' || status === 'Rejected') return 1;
   return 0;
 }
@@ -41,12 +41,18 @@ export function ApplicationDetail() {
       <p className="dgp-page text-body text-destructive-strong">{t('dakhala.detail.notFound')}</p>
     );
 
+  const hasCertificate = Boolean(a.certificateUrl || a.pdfUrl);
+
   const viewCertificate = async () => {
     setDownloading(true);
     try {
-      const { pdfUrl } = await certificateService.getCertificate(a.id);
-      // Open the generated certificate inside the app rather than a new browser tab.
-      setPreview({ url: pdfUrl, type: 'pdf', name: `${a.applicationId}.pdf` });
+      const res = await certificateService.getCertificate(a.id);
+      const url = res.certificateUrl || res.pdfUrl;
+      const type = res.type || (url.match(/\.(png|jpe?g|webp)(\?|$)/i) ? 'image' : 'pdf');
+      const ext = type === 'image' ? url.match(/\.(png|jpe?g|webp)(\?|$)/i)?.[1] || 'jpg' : 'pdf';
+      const name = res.certificateFileName || `${a.certificateNumber || a.applicationId}.${ext}`;
+      // Open the certificate inside the app rather than a new browser tab.
+      setPreview({ url, type, name });
     } catch (err) {
       toast.error(err.response?.data?.error?.message || t('dakhala.detail.downloadFailed'));
     } finally {
@@ -71,7 +77,7 @@ export function ApplicationDetail() {
         <CardContent className="px-3 py-5">
           <Stepper
             steps={steps}
-            current={stageIndex(a.status)}
+            current={stageIndex(a.status, hasCertificate)}
             failed={rejected}
             label={t('dakhala.detail.progress')}
           />
@@ -79,10 +85,27 @@ export function ApplicationDetail() {
       </Card>
 
       {a.status === 'Approved' ? (
-        <Button className="mb-4 w-full" onClick={viewCertificate} loading={downloading}>
-          <Eye className="h-4 w-4" aria-hidden="true" />
-          {t('dakhala.detail.viewCertificate')}
-        </Button>
+        hasCertificate ? (
+          <Button className="mb-4 w-full" onClick={viewCertificate} loading={downloading}>
+            <Eye className="h-4 w-4" aria-hidden="true" />
+            {t('dakhala.detail.viewCertificate')}
+          </Button>
+        ) : (
+          <div
+            role="status"
+            className="mb-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-body text-amber-900 dark:border-amber-900/30 dark:bg-amber-950/20 dark:text-amber-200"
+          >
+            <p className="font-medium">
+              {t('dakhala.detail.certPendingTitle', 'Application Approved')}
+            </p>
+            <p className="mt-0.5 text-caption text-amber-800 dark:text-amber-300">
+              {t(
+                'dakhala.detail.certificatePending',
+                'Your application and documents have been approved. The official certificate will be uploaded by the Gram Panchayat office shortly. Please check back soon.',
+              )}
+            </p>
+          </div>
+        )
       ) : null}
 
       {rejected && a.rejectionReason ? (

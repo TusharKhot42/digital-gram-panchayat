@@ -18,3 +18,18 @@ export function authorize(...roles) {
     next();
   };
 }
+
+/**
+ * Gate a route strictly to the root admin.
+ */
+export function authorizeRootAdmin(req, _res, next) {
+  if (!req.user) {
+    next(new AppError(401, 'UNAUTHORIZED', 'Authentication required'));
+    return;
+  }
+  if (!req.user.isRootAdmin) {
+    next(new AppError(403, 'FORBIDDEN', 'Only root admin can perform this action'));
+    return;
+  }
+  next();
+}
