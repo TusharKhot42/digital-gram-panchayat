@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: dgp-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: digital_gram_panchayat
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dgp-api
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongodb
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      API_VERSION: v1
+      MONGODB_URI: mongodb://mongodb:27017/digital_gram_panchayat
+      JWT_SECRET: production-grade-secret-key-minimum-32-chars-long
+      JWT_EXPIRY_CITIZEN: 24h
+      JWT_EXPIRY_OFFICER: 8h
+      CORS_ORIGIN_CITIZEN: http://localhost:5173
+      CORS_ORIGIN_ADMIN: http://localhost:5174
+      SMS_PROVIDER: mock
+      TRANSLATION_PROVIDER: mock
+      LOG_LEVEL: info
+
+volumes:
+  mongo-data:

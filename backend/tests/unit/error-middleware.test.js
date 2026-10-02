@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { errorMiddleware } from '../../src/middlewares/error.middleware.js';
+import { notFoundMiddleware } from '../../src/middlewares/not-found.middleware.js';
+import { authorize, authorizeRootAdmin } from '../../src/middlewares/role.middleware.js';
 import { AppError } from '../../src/utils/app-error.js';
 
 function mockRes() {
@@ -58,5 +60,34 @@ describe('errorMiddleware', () => {
     errorMiddleware(new Error('kaboom'), req, res, () => {});
     expect(res.statusCode).toBe(500);
     expect(res.body.error.code).toBe('INTERNAL_ERROR');
+  });
+});
+
+describe('notFoundMiddleware', () => {
+  test('returns 404 with NOT_FOUND code', () => {
+    const res = mockRes();
+    notFoundMiddleware({ method: 'GET', originalUrl: '/api/v1/non-existent' }, res);
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
+});
+
+describe('role authorization edge cases', () => {
+  test('authorize without req.user passes 401 UNAUTHORIZED to next', () => {
+    let nextErr;
+    authorize('officer')({}, {}, (err) => {
+      nextErr = err;
+    });
+    expect(nextErr).toBeInstanceOf(AppError);
+    expect(nextErr.statusCode).toBe(401);
+  });
+
+  test('authorizeRootAdmin without req.user passes 401 UNAUTHORIZED to next', () => {
+    let nextErr;
+    authorizeRootAdmin({}, {}, (err) => {
+      nextErr = err;
+    });
+    expect(nextErr).toBeInstanceOf(AppError);
+    expect(nextErr.statusCode).toBe(401);
   });
 });

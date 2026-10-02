@@ -5,7 +5,10 @@ import {
   uploadAttachment,
   uploadAttachments,
   uploadPdfBuffer,
+  deleteAsset,
+  deleteAssets,
 } from '../../src/utils/upload.js';
+import { clearStore } from '../../src/features/uploads/upload-store.js';
 import * as configBarrel from '../../src/config/index.js';
 
 const imageFile = {
@@ -82,6 +85,18 @@ describe('upload (Cloudinary unconfigured -> served mock URLs)', () => {
   test('uploadPdfBuffer returns a served URL', async () => {
     const url = await uploadPdfBuffer(Buffer.from('%PDF'), 'certificates');
     expect(url).toMatch(/\/api\/v1\/uploads\//);
+  });
+
+  test('deleteAsset and deleteAssets safely remove files or no-op on invalid', async () => {
+    await expect(deleteAsset(null)).resolves.toBeUndefined();
+    await expect(deleteAsset('http://not-an-upload.com')).resolves.toBeUndefined();
+    const url = await uploadPdfBuffer(Buffer.from('%PDF'), 'test');
+    await expect(deleteAsset(url)).resolves.toBeUndefined();
+    await expect(deleteAssets([url, null])).resolves.toBeUndefined();
+  });
+
+  test('clearStore empties the upload store without throwing', () => {
+    expect(() => clearStore()).not.toThrow();
   });
 });
 
