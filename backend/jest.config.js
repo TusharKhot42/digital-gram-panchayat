@@ -18,14 +18,14 @@ export default {
     '!src/features/notifications/providers/provider.interface.js',
   ],
   coverageReporters: ['text-summary', 'text', 'lcov'],
-  // Gate set just below current coverage (stmts 83 / branches 65 / funcs 82 / lines 84+)
+  // Gate set just below current coverage (stmts 83 / branches 65 / funcs 82 / lines 87)
   // so the suite fails on a regression without being brittle to small refactors.
   coverageThreshold: {
     global: {
       statements: 80,
       branches: 62,
       functions: 78,
-      lines: 82,
+      lines: 84,
     },
   },
 };

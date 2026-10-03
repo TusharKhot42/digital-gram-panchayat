@@ -1,11 +1,5 @@
-import dotenv from 'dotenv';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import 'dotenv/config';
 import { z } from 'zod';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-dotenv.config();
 
 /**
  * Boot fails fast if required vars are missing/invalid. Only vars this milestone actually
